@@ -1,6 +1,7 @@
 name: analytics_dbt
 version: '0.1.0'
 config-version: 2
+require-dbt-version: [">=1.11.0", "<1.12.0"]
 
 profile: analytics_dbt
 
@@ -19,7 +20,6 @@ clean-targets:
 
 vars:
   source_dataset_prefix: "raw"
-  target_dataset: "analytics"
 
 models:
   analytics_dbt:
