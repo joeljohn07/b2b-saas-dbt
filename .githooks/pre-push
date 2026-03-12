@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+# Pre-push hook: block direct pushes to main/master
+# Checks the remote target ref, not just local branch name.
+# This prevents bypass via: git push origin HEAD:main
+set -euo pipefail
+
+REMOTE_NAME="${1:-origin}"
+REMOTE_URL_ARG="${2:-}"
+
+while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
+    # Skip delete pushes
+    if [[ "$LOCAL_SHA" == "0000000000000000000000000000000000000000" ]]; then
+        continue
+    fi
+
+    TARGET_BRANCH="${REMOTE_REF##refs/heads/}"
+    if [[ "$TARGET_BRANCH" == "main" || "$TARGET_BRANCH" == "master" ]]; then
+        # Allow a one-time bootstrap push when the remote repo has no branches yet.
+        # This keeps first publish working, then enforces branch+PR for all later pushes.
+        if [[ "$REMOTE_SHA" == "0000000000000000000000000000000000000000" ]]; then
+            REMOTE_URL="$REMOTE_URL_ARG"
+            if [[ -z "$REMOTE_URL" ]]; then
+                REMOTE_URL="$(git remote get-url "$REMOTE_NAME" 2>/dev/null || true)"
+            fi
+            if [[ -z "$REMOTE_URL" ]]; then
+                case "$REMOTE_NAME" in
+                    *://*|git@*|/*|./*|../*) REMOTE_URL="$REMOTE_NAME" ;;
+                esac
+            fi
+            if [[ -n "$REMOTE_URL" ]]; then
+                REMOTE_HEADS="$(git ls-remote --heads "$REMOTE_URL" 2>/dev/null || true)"
+                if [[ -z "$REMOTE_HEADS" ]]; then
+                    continue
+                fi
+            fi
+        fi
+
+        echo "BLOCKED: Direct push to $TARGET_BRANCH is not allowed." >&2
+        echo "" >&2
+        echo "Create a feature branch and open a PR instead:" >&2
+        echo "  git checkout -b feat/your-description" >&2
+        echo "  git push -u origin HEAD" >&2
+        echo "  gh pr create" >&2
+        echo "" >&2
+        echo "See: ~/Agentic/frameworks/engineering/GIT_BRANCH_WORKFLOW.md" >&2
+        exit 1
+    fi
+done
+
+exit 0

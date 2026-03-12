@@ -1,0 +1,15 @@
+# analytics-dbt — LLM Entry Point
+
+## Read First
+1. CLAUDE.md — project rules and non-negotiables
+2. AGENTS.md — module layout and TDD requirements
+3. decisions.md — architecture decisions
+
+## What This Does
+Product funnel analytics with dbt on BigQuery
+
+## Key Files
+- (fill in as project grows)
+
+## Run Tests
+python3 -m unittest discover -s tests -p 'test_*.py'

@@ -1,0 +1,42 @@
+#!/bin/bash
+# commit-msg hook: enforce conventional commit subject style.
+set -euo pipefail
+
+MSG_FILE="${1:-}"
+if [ -z "$MSG_FILE" ] || [ ! -f "$MSG_FILE" ]; then
+  echo "[commit-msg] Missing commit message file." >&2
+  exit 2
+fi
+
+SUBJECT="$(head -n 1 "$MSG_FILE" | tr -d '\r')"
+if [ -z "$SUBJECT" ]; then
+  echo "[commit-msg] Empty commit subject." >&2
+  exit 1
+fi
+
+# Allow merge/revert auto-generated subjects.
+if printf '%s' "$SUBJECT" | grep -Eq '^(Merge|Revert ")'; then
+  exit 0
+fi
+
+REGEX='^(feat|fix|docs|chore|refactor|test|perf|build|ci|style|revert)(\([^)]+\))?: .+'
+if ! printf '%s' "$SUBJECT" | grep -Eq "$REGEX"; then
+  echo "[commit-msg] Subject does not match required format." >&2
+  echo "[commit-msg] Required: <type>: <summary> or <type>(<scope>): <summary>" >&2
+  echo "[commit-msg] Allowed types: feat|fix|docs|chore|refactor|test|perf|build|ci|style|revert" >&2
+  echo "[commit-msg] Got: $SUBJECT" >&2
+  exit 1
+fi
+
+if [ "${#SUBJECT}" -gt 120 ]; then
+  echo "[commit-msg] Subject too long (${#SUBJECT} > 120)." >&2
+  exit 1
+fi
+
+if printf '%s' "$SUBJECT" | grep -Eiq '^(wip|misc|update)$'; then
+  echo "[commit-msg] Low-signal commit subject is not allowed: $SUBJECT" >&2
+  exit 1
+fi
+
+exit 0
+
