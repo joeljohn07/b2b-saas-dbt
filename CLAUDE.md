@@ -5,7 +5,7 @@ Product funnel analytics with dbt on BigQuery
 
 ## Non-Negotiables
 - No secrets in code, chat, or committed files
-- Conventional commits: feat:, fix:, refactor:, docs:, test:, chore:
+- Conventional commits: feat:, fix:, refactor:, docs:, test:, chore:, perf:, build:, ci:, style:, revert:
 - Pre-commit hook: `git config core.hooksPath .githooks`
 - Preinstall security audit required before adding any new dependency
 - Project must be independently workable from its own repo root (no hub-only execution dependency)

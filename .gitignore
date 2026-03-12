@@ -18,6 +18,11 @@ venv/
 *.cookie
 *.cookies
 
+# dbt
+target/
+dbt_packages/
+logs/
+
 # Runtime artifacts
 state.json
 tmp/
