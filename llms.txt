@@ -1,15 +1,18 @@
 # analytics-dbt — LLM Entry Point
 
 ## Read First
-1. CLAUDE.md — project rules and non-negotiables
-2. AGENTS.md — module layout and TDD requirements
-3. decisions.md — architecture decisions
+1. CLAUDE.md — architecture contract and hard rules
+2. models/*/CLAUDE.md — layer-specific rules (staging, intermediate, marts)
+3. tests/CLAUDE.md — test categories and naming
+4. decisions.md — architecture decisions
 
 ## What This Does
-Product funnel analytics with dbt on BigQuery
+Full-company analytics platform for a B2B SaaS company. dbt on BigQuery, Kimball star schema.
 
 ## Key Files
-- (fill in as project grows)
+- dbt_project.yml — project config, materialization defaults
+- packages.yml — dbt package dependencies
+- macros/generate_schema_name.sql — schema routing
 
-## Run Tests
-python3 -m unittest discover -s tests -p 'test_*.py'
+## Validate
+dbt deps && dbt parse

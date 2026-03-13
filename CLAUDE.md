@@ -1,30 +1,42 @@
-# analytics-dbt — Project Rules
+# analytics-dbt — Architecture Contract
 
-## What This Is
-Product funnel analytics with dbt on BigQuery
+## Project
+Full-company analytics platform for a B2B SaaS company. dbt on BigQuery, Kimball star schema.
+Five source domains: product events, billing subscriptions, billing invoices, marketing spend, support tickets.
 
-## Non-Negotiables
-- No secrets in code, chat, or committed files
-- Conventional commits: feat:, fix:, refactor:, docs:, test:, chore:, perf:, build:, ci:, style:, revert:
-- Pre-commit hook: `git config core.hooksPath .githooks`
-- Preinstall security audit required before adding any new dependency
-- Project must be independently workable from its own repo root (no hub-only execution dependency)
+## Three-Layer Architecture
+- **staging**: 1:1 source shaping, views, `source()` refs only, `contract.enforced`
+- **intermediate**: all business logic (dedup, sessions, identity, attribution, lifecycle), views, `ref()` only
+- **marts**: Kimball star schema, tables, `contract.enforced`, conformed dimensions
+
+## Naming
+- Staging: `stg_{source}__{entity}` (double underscore)
+- Intermediate: `int_{domain}_{concept}`
+- Facts: `fct_{entity}`, Dimensions: `dim_{entity}`, Bridges: `bridge_{m2m}`
+
+## Hard Rules
+- No `select *` — explicit column lists everywhere
+- `{{ doc() }}` for any field description reused across 2+ models
+- Contracts required on all staging and marts models
+- No custom governance macros — use dbt-project-evaluator
+
+## SQL Style
+- SQLFluff for linting
+- Lowercase keywords, trailing commas, 4-space indent
+- CTEs over subqueries
 
 ## Testing
-- python3 -m unittest discover -s tests -p 'test_*.py'
-- TDD for all modules: failing test → smallest fix → green → refactor
-- Mock I/O boundaries in unit tests
-
-## Data Backend
-- Default: BigQuery (hub pipeline). See `~/Agentic/docs/integrations/bigquery-event-contract.md` for schema patterns.
-- Guardrails: partition by date, `require_partition_filter=true`, byte cap on queries, dead-letter table per dataset.
-- Choose local Postgres instead only for: relational CRUD, low-latency transactions, or offline-first apps.
-- Never store secrets, PII, or runtime state in BigQuery.
+- Primary keys: `not_null` + `unique` on every model
+- Foreign keys: `relationships` test on every FK
+- Enums: `accepted_values` on all categorical columns
+- Business rules: singular tests at layer boundaries
+- See `tests/CLAUDE.md` for categories and naming
 
 ## Git
-- **Never commit directly to main.** Create a feature branch first: `git checkout -b feat/description`
-- Push branches with `git push -u origin HEAD`, then `gh pr create`
-- Squash merge via `gh pr merge --squash --delete-branch`
-- Pre-push hook blocks direct pushes to main (primary enforcement).
-- Pre-commit blocks: .env, tokens, secrets
-- Full workflow: `~/Agentic/frameworks/engineering/GIT_BRANCH_WORKFLOW.md`
+- Never commit directly to main — feature branch + PR
+- Conventional commits: feat:, fix:, docs:, test:, refactor:, chore:
+- Squash merge via PR
+
+## Layer Details
+Each model directory has its own CLAUDE.md with layer-specific rules.
+Full documentation in `docs/layers/`.

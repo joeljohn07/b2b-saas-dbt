@@ -1,27 +1,84 @@
 # analytics-dbt
 
-Product funnel analytics with dbt on BigQuery
+Full-company analytics platform for a B2B SaaS company, built with dbt on BigQuery.
+
+Covers the full analytics lifecycle across five source domains — product events, billing, marketing, and support — through a three-layer dbt architecture into a Kimball star schema for BI consumption.
 
 ## Quick Start
 
-1. Clone and enter this project directory.
-2. Install project dependencies.
-3. Run tests:
+Prerequisites: dbt-core 1.11+, dbt-bigquery, Python 3.10+
 
 ```bash
-python3 -m unittest discover -s tests -p 'test_*.py'
+# Copy and configure profiles
+cp profiles.yml.example ~/.dbt/profiles.yml
+# Set GCP_PROJECT_ID in your environment
+
+dbt deps        # install packages
+dbt parse       # validate project structure
+dbt build       # run models + tests
 ```
 
-## Standalone Workability
+## Architecture
 
-This project is expected to be independently workable from this repo root.
+Three-layer dbt project following Kimball dimensional modeling:
 
-Minimum requirements:
-- Local tests run from this repo root.
-- CI runs the same test command.
-- Rules are documented in `CLAUDE.md` and `AGENTS.md`.
+```
+raw sources           staging               intermediate            marts
+───────────          ─────────             ──────────────          ──────
+raw_funnel     ───►  stg_*__events    ───► int_sessions       ──► fct_sessions
+raw_billing    ───►  stg_*__subs      ───► int_mrr_movements  ──► fct_account_mrr
+               ───►  stg_*__invoices  ───► int_attribution    ──► dim_users
+raw_marketing  ───►  stg_*__spend     ───► int_engagement     ──► dim_accounts
+raw_support    ───►  stg_*__tickets   ───► int_account_health ──► dim_date
+                     (view, 1:1)           (view, logic)           (table, star)
+```
 
-## Notes
+## Source Domains
 
-- Date scaffolded: 2026-03-12
-- Repository owner: joeljohn07
+| Domain | Source | Key Entities |
+|--------|--------|-------------|
+| Product | `raw_funnel.events` | Page views, signups, activations, feature usage, experiments |
+| Billing | `raw_billing.subscriptions` | Trials, upgrades, downgrades, cancellations, MRR |
+| Billing | `raw_billing.invoices` | Payments, refunds, line items |
+| Marketing | `raw_marketing.spend` | Channel spend, campaigns, impressions, clicks |
+| Support | `raw_support.tickets` | Tickets, resolution times, CSAT scores |
+
+## Directory Structure
+
+```
+.
+├── models/
+│   ├── staging/          # 1:1 source shaping (views)
+│   ├── intermediate/     # Business logic (views + 1 incremental)
+│   └── marts/            # Kimball star schema (tables)
+├── tests/
+│   ├── invariants/       # PK, not-null, enum checks
+│   ├── reconciliation/   # Cross-layer row/value checks
+│   ├── fanout/           # Grain change detection
+│   └── contracts/        # Schema contract enforcement
+├── macros/               # Reusable SQL macros
+├── seeds/                # Static reference data
+├── docs/                 # Extended documentation
+├── analyses/             # Ad-hoc analytical queries
+└── scripts/              # Utility scripts
+```
+
+## Environment Targets
+
+| Target | Dataset | Auth | Use |
+|--------|---------|------|-----|
+| dev | analytics_dev | OAuth (personal) | Local development |
+| ci | analytics_ci | Service account | CI pipeline |
+| prod | analytics | Impersonated SA | Production |
+
+## Contributing
+
+1. Create a feature branch (never commit directly to main)
+2. Follow conventional commits: `feat:`, `fix:`, `docs:`, `test:`, `refactor:`
+3. Test your changes: `dbt build --select state:modified+`
+4. Push and open a PR
+5. CI runs lint + parse + build + test
+
+## License
+
+MIT
