@@ -1,6 +1,6 @@
 # ============================================================
 # AUTOMATION: CI
-# WHAT IT DOES: Runs tests on push and PR to main
+# WHAT IT DOES: Validates dbt project structure on push and PR
 # WHAT IT MODIFIES: Nothing — read-only check
 # AUTO-COMMITS: No
 # HOW TO DISABLE: Delete this file
@@ -18,9 +18,16 @@ permissions:
   contents: read
 
 jobs:
-  test:
+  validate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Run tests
-        run: python3 -m unittest discover -s tests -p 'test_*.py'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dbt
+        run: pip install dbt-core dbt-bigquery
+      - name: Install packages
+        run: dbt deps
+      - name: Validate project
+        run: dbt parse
