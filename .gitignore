@@ -29,6 +29,10 @@ state.json
 tmp/
 downloads/
 
+# Generated data
+scripts/synthetic_data/
+*.parquet
+
 # OS / editor
 .DS_Store
 *.swp

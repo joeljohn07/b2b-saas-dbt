@@ -1,4 +1,4 @@
-# analytics-dbt
+# b2b-saas-dbt
 
 Full-company analytics platform for a B2B SaaS company, built with dbt on BigQuery.
 

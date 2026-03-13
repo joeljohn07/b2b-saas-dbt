@@ -1,4 +1,4 @@
-analytics_dbt:
+b2b_saas_dbt:
   target: dev
 
   outputs:

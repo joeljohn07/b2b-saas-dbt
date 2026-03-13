@@ -1,9 +1,9 @@
-# Decision Log — analytics-dbt
+# Decision Log — b2b-saas-dbt
 
 ## 2026-03-12: Initial setup
 - Project created and scaffolded
 - Description: Full-company analytics platform with dbt on BigQuery
-- Repo: https://github.com/joeljohn07/analytics-dbt
+- Repo: https://github.com/joeljohn07/b2b-saas-dbt
 
 ## 2026-03-13: Architecture contract + tiered agent instructions
 - Rewrote CLAUDE.md with dbt-specific three-layer architecture contract
