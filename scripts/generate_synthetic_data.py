@@ -3,11 +3,11 @@
 Generate synthetic B2B SaaS data for b2b-saas-dbt.
 
 Populates BigQuery raw source tables with realistic data:
-  - raw_funnel.events          (~8M rows, 50K users, 24 months)
-  - raw_billing.subscriptions  (~18-20K rows)
-  - raw_billing.invoices       (~14-16K rows)
+  - raw_funnel.events          (~5.5M rows, 50K users, 24 months)
+  - raw_billing.subscriptions  (~20K rows)
+  - raw_billing.invoices       (~24K rows)
   - raw_marketing.spend        (~6K rows)
-  - raw_support.tickets        (~50-55K rows)
+  - raw_support.tickets        (~87K rows)
 
 Usage:
     source .venv/bin/activate
@@ -21,6 +21,7 @@ import json
 import os
 import uuid
 from datetime import datetime, timedelta, date, timezone
+from decimal import Decimal
 from pathlib import Path
 
 import numpy as np
@@ -1007,8 +1008,7 @@ def build_subscriptions_df(account_subs):
             if isinstance(event_time, date) and not isinstance(event_time, datetime):
                 event_time = datetime.combine(event_time, datetime.min.time(),
                                              tzinfo=timezone.utc)
-            ingest_time = event_time + timedelta(seconds=rint(1, 30))
-            loaded_at = ingest_time + timedelta(seconds=rint(1, 10))
+            loaded_at = event_time + timedelta(seconds=rint(1, 40))
 
             mrr = event["mrr_amount"]
             if currency == "EUR" and mrr > 0:
@@ -1387,13 +1387,13 @@ TICKETS_SCHEMA = [
 ]
 
 
-def create_datasets(client):
+def create_datasets(client, location="EU"):
     """Create raw source datasets if they don't exist."""
     datasets = ["raw_funnel", "raw_billing", "raw_marketing", "raw_support"]
     for ds_name in datasets:
         ds_ref = bigquery.DatasetReference(client.project, ds_name)
         ds = bigquery.Dataset(ds_ref)
-        ds.location = "EU"
+        ds.location = location
         try:
             client.create_dataset(ds, exists_ok=True)
             print(f"  Dataset {ds_name}: OK")
@@ -1408,8 +1408,9 @@ def upload_table(client, dataset, table_name, df, schema,
     table_id = f"{client.project}.{dataset}.{table_name}"
     print(f"  Uploading {table_id} ({len(df):,} rows, {write_disposition})...")
 
+    df = df.copy()
+
     # Cast NUMERIC columns to Decimal so pyarrow serializes them correctly
-    from decimal import Decimal
     for field in schema:
         if field.field_type == "NUMERIC" and field.name in df.columns:
             df[field.name] = df[field.name].apply(
@@ -1460,6 +1461,8 @@ def make_parser():
                         help="Number of users to generate (default: 50000)")
     parser.add_argument("--tables", nargs="+", choices=_ALL_TABLES,
                         help="Upload only these tables (default: all)")
+    parser.add_argument("--location", default="EU",
+                        help="BigQuery dataset location (default: EU)")
     return parser
 
 
@@ -1481,7 +1484,10 @@ def main():
     print(f"  Output: {', '.join(sorted(tables))}")
     print()
 
-    # Phase 1: Users and accounts (always needed)
+    # Generate ALL data regardless of --tables to preserve rng determinism.
+    # The --tables flag only controls which tables are uploaded/saved.
+
+    # Phase 1: Users and accounts
     users = generate_users(num_users)
     users = assign_journeys(users)
     accounts = generate_accounts(users)
@@ -1489,41 +1495,36 @@ def main():
     print()
 
     # Phase 2: Events (batched in 250K-row DataFrames)
-    needs_events = "events" in tables
-    event_batches = generate_all_events(users, account_subs) if needs_events else []
-    if needs_events:
-        print()
+    event_batches = generate_all_events(users, account_subs)
+    print()
 
     # Phase 3: Billing
-    subs_df = build_subscriptions_df(account_subs) if "subscriptions" in tables else None
-    invoices_df = build_invoices_df(account_subs) if "invoices" in tables else None
-    if subs_df is not None or invoices_df is not None:
-        print()
+    subs_df = build_subscriptions_df(account_subs)
+    invoices_df = build_invoices_df(account_subs)
+    print()
 
     # Phase 4: Marketing
-    spend_df = build_marketing_spend_df() if "spend" in tables else None
-    if spend_df is not None:
-        print()
+    spend_df = build_marketing_spend_df()
+    print()
 
     # Phase 5: Support
-    tickets_df = build_support_tickets_df(users, accounts, account_subs) if "tickets" in tables else None
-    if tickets_df is not None:
-        print()
+    tickets_df = build_support_tickets_df(users, accounts, account_subs)
+    print()
 
-    # Summary
+    # Summary (only show requested tables)
     total_events = sum(len(b) for b in event_batches)
     print("=" * 60)
     print("Summary")
     print("=" * 60)
-    if needs_events:
+    if "events" in tables:
         print(f"  Events:        {total_events:>10,} rows ({len(event_batches)} batches)")
-    if subs_df is not None:
+    if "subscriptions" in tables:
         print(f"  Subscriptions: {len(subs_df):>10,} rows")
-    if invoices_df is not None:
+    if "invoices" in tables:
         print(f"  Invoices:      {len(invoices_df):>10,} rows")
-    if spend_df is not None:
+    if "spend" in tables:
         print(f"  Spend:         {len(spend_df):>10,} rows")
-    if tickets_df is not None:
+    if "tickets" in tables:
         print(f"  Tickets:       {len(tickets_df):>10,} rows")
     print()
 
@@ -1566,7 +1567,7 @@ def main():
         client = bigquery.Client(project=args.project)
 
         print("Creating datasets...")
-        create_datasets(client)
+        create_datasets(client, location=args.location)
         print()
 
         print("Uploading tables...")

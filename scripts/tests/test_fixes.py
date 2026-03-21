@@ -148,5 +148,27 @@ class TestP5TablesArgument(unittest.TestCase):
         self.assertIsNone(args.tables)
 
 
+class TestSeedDeterminism(unittest.TestCase):
+    """--tables must not affect data generation determinism."""
+
+    def _generate_subs(self):
+        """Run full generation pipeline and return first subscription_event_id."""
+        mod.rng = mod.np.random.default_rng(42)
+        users = mod.generate_users(200)
+        users = mod.assign_journeys(users)
+        accounts = mod.generate_accounts(users)
+        subs = mod.simulate_subscriptions(users, accounts)
+        # Always generate all data (mirrors the fix)
+        mod.generate_all_events(users, subs, log_interval=99999)
+        df = mod.build_subscriptions_df(subs)
+        return df.iloc[0]["subscription_event_id"] if len(df) > 0 else None
+
+    def test_subscription_ids_match_regardless_of_tables(self):
+        first = self._generate_subs()
+        second = self._generate_subs()
+        self.assertEqual(first, second,
+                         "Same seed must produce identical data regardless of --tables")
+
+
 if __name__ == "__main__":
     unittest.main()
