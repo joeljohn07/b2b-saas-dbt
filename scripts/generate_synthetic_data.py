@@ -1408,6 +1408,14 @@ def upload_table(client, dataset, table_name, df, schema,
     table_id = f"{client.project}.{dataset}.{table_name}"
     print(f"  Uploading {table_id} ({len(df):,} rows, {write_disposition})...")
 
+    # Cast NUMERIC columns to Decimal so pyarrow serializes them correctly
+    from decimal import Decimal
+    for field in schema:
+        if field.field_type == "NUMERIC" and field.name in df.columns:
+            df[field.name] = df[field.name].apply(
+                lambda x: Decimal(str(x)) if pd.notna(x) else None
+            )
+
     job_config = bigquery.LoadJobConfig(
         schema=schema,
         write_disposition=write_disposition,
