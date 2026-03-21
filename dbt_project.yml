@@ -20,6 +20,9 @@ clean-targets:
 
 vars:
   source_dataset_prefix: "raw"
+  # dbt-project-evaluator: allow extended mart prefixes
+  model_types_to_check: ['staging', 'intermediate', 'marts', 'other']
+  other_prefixes: ['agg', 'rpt', 'mart']
 
 models:
   b2b_saas_dbt:
