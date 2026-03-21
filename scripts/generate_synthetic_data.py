@@ -181,12 +181,6 @@ def weighted_choice(options: dict) -> str:
     return rng.choice(keys, p=weights)
 
 
-def weighted_choices(options: dict, size: int) -> np.ndarray:
-    keys = list(options.keys())
-    weights = list(options.values())
-    return rng.choice(keys, size=size, p=weights)
-
-
 def random_time_on_day(d: date) -> datetime:
     """Random datetime on a given date with weekday/weekend weighting."""
     if d.weekday() < 5:  # weekday
@@ -311,7 +305,6 @@ def assign_journeys(users):
 
     for user in users:
         signup_date = user["signup_date"]
-        days_since_signup = (END_DATE - signup_date).days
 
         # Activation: 60% activate within 1-7 days (bots never activate)
         user["activated"] = False if user.get("is_bot") else rng.random() < SIGNUP_TO_ACTIVATE
@@ -343,7 +336,6 @@ def generate_accounts(users):
     """Create accounts. ~70% of activated users create one; others join existing."""
     print("Generating accounts...")
     accounts = {}
-    user_by_id = {u["user_id"]: u for u in users}
     activated = [u for u in users if u["activated"]]
 
     # 70% of activated users create an account
@@ -381,7 +373,8 @@ def generate_accounts(users):
             u = unassigned[idx]
             idx += 1
             join_delay = rint(1, 30)
-            join_date = acct["created_date"] + timedelta(days=int(join_delay))
+            earliest = max(acct["created_date"], u["activation_date"])
+            join_date = earliest + timedelta(days=int(join_delay))
             if join_date > END_DATE:
                 continue
             u["account_id"] = acct["account_id"]
@@ -400,7 +393,8 @@ def generate_accounts(users):
             u = unassigned[idx]
             idx += 1
             join_delay = rint(1, 60)
-            join_date = acct["created_date"] + timedelta(days=int(join_delay))
+            earliest = max(acct["created_date"], u["activation_date"])
+            join_date = earliest + timedelta(days=int(join_delay))
             if join_date > END_DATE:
                 continue
             u["account_id"] = acct["account_id"]
@@ -418,8 +412,9 @@ def simulate_subscriptions(users, accounts):
     print("Simulating subscription lifecycles...")
 
     account_subs = {}
+    user_dict = {u["user_id"]: u for u in users}
     for account_id, acct in accounts.items():
-        owner = next(u for u in users if u["user_id"] == acct["owner_user_id"])
+        owner = user_dict[acct["owner_user_id"]]
         if not owner["activated"]:
             continue
 
@@ -947,8 +942,8 @@ def generate_user_events(user, account_subs):
     return events
 
 
-def generate_all_events(users, account_subs, batch_size=5000):
-    """Generate events for all users, yielding DataFrames in batches."""
+def generate_all_events(users, account_subs, log_interval=5000):
+    """Generate events for all users, returning DataFrames in batches."""
     print("Generating events...")
     all_events = []
     total = 0
@@ -958,7 +953,7 @@ def generate_all_events(users, account_subs, batch_size=5000):
         user_events = generate_user_events(user, account_subs)
         all_events.extend(user_events)
 
-        if (i + 1) % batch_size == 0:
+        if (i + 1) % log_interval == 0:
             print(f"  Users processed: {i+1:,}/{len(users):,} "
                   f"(events so far: {total + len(all_events):,})")
 
@@ -997,7 +992,7 @@ def generate_all_events(users, account_subs, batch_size=5000):
 
 # ── Phase 3: Billing Data ─────────────────────────────────────────────────
 
-def build_subscriptions_df(account_subs, accounts):
+def build_subscriptions_df(account_subs):
     """Build raw_billing.subscriptions DataFrame."""
     print("Building subscriptions table...")
     rows = []
@@ -1064,6 +1059,8 @@ def build_invoices_df(account_subs):
         current_plan = None
         billing_cycle = "monthly"
 
+        # Build plan transitions once (O(n)) for use across all invoices
+        invoice_plan_transitions = []
         for event in lifecycle:
             et = event["event_time"]
             if isinstance(et, date) and not isinstance(et, datetime):
@@ -1073,8 +1070,10 @@ def build_invoices_df(account_subs):
                 active_start = et
                 current_plan = event["plan"]
                 billing_cycle = event["billing_cycle"]
+                invoice_plan_transitions.append((et.date(), current_plan))
             elif event["event_type"] in ("upgrade", "downgrade"):
                 current_plan = event["plan"]
+                invoice_plan_transitions.append((et.date(), current_plan))
             elif event["event_type"] == "cancellation":
                 if active_start:
                     paid_periods.append((active_start, et, current_plan, billing_cycle))
@@ -1082,6 +1081,9 @@ def build_invoices_df(account_subs):
             elif event["event_type"] == "reactivation":
                 active_start = et
                 current_plan = event["plan"]
+                invoice_plan_transitions.append((et.date(), current_plan))
+
+        invoice_plan_transitions.sort(key=lambda x: x[0])
 
         # Still-active subscription: period runs to END_DATE
         if active_start:
@@ -1091,19 +1093,9 @@ def build_invoices_df(account_subs):
         for period_start, period_end, plan, cycle in paid_periods:
             invoice_date = period_start
 
-            # Walk through lifecycle to track plan changes within this period
             while invoice_date <= min(period_end, end_dt):
-                # Find effective plan at this invoice date
-                effective_plan = plan
-                for event in lifecycle:
-                    et = event["event_time"]
-                    if isinstance(et, date) and not isinstance(et, datetime):
-                        et = datetime.combine(et, datetime.min.time(),
-                                             tzinfo=timezone.utc)
-                    if et <= invoice_date:
-                        if event["event_type"] in ("subscription_start", "upgrade",
-                                                   "downgrade", "reactivation"):
-                            effective_plan = event["plan"]
+                effective_plan = _get_plan_at(invoice_plan_transitions,
+                                              invoice_date.date())
 
                 # Invoice amount (respects price change date and currency)
                 plan_price = get_plan_price(effective_plan, invoice_date)
@@ -1118,7 +1110,7 @@ def build_invoices_df(account_subs):
                 status_roll = rng.random()
                 if status_roll < 0.92:
                     status = "paid"
-                    paid_at = invoice_date + timedelta(hours=rint(0, 24))
+                    paid_at = min(invoice_date + timedelta(hours=rint(0, 24)), end_dt)
                 elif status_roll < 0.96:
                     status = "pending"
                     paid_at = None
@@ -1127,7 +1119,7 @@ def build_invoices_df(account_subs):
                     paid_at = None
                 else:
                     status = "refunded"
-                    paid_at = invoice_date + timedelta(hours=rint(0, 24))
+                    paid_at = min(invoice_date + timedelta(hours=rint(0, 24)), end_dt)
 
                 refund_amount = (round(amount * rng.uniform(0.3, 1.0), 2)
                                 if status == "refunded" else 0)
@@ -1331,8 +1323,8 @@ EVENTS_SCHEMA = [
     bigquery.SchemaField("browser", "STRING"),
     bigquery.SchemaField("os", "STRING"),
     bigquery.SchemaField("user_agent", "STRING"),
-    bigquery.SchemaField("experiment_flags", "JSON"),
-    bigquery.SchemaField("properties", "JSON"),
+    bigquery.SchemaField("experiment_flags", "STRING"),
+    bigquery.SchemaField("properties", "STRING"),
 ]
 
 SUBSCRIPTIONS_SCHEMA = [
@@ -1364,7 +1356,7 @@ INVOICES_SCHEMA = [
     bigquery.SchemaField("currency", "STRING", mode="REQUIRED"),
     bigquery.SchemaField("status", "STRING", mode="REQUIRED"),
     bigquery.SchemaField("refund_amount", "NUMERIC", mode="REQUIRED"),
-    bigquery.SchemaField("line_items", "JSON"),
+    bigquery.SchemaField("line_items", "STRING"),
 ]
 
 SPEND_SCHEMA = [
@@ -1445,65 +1437,86 @@ def save_parquet(df, path):
 
 # ── Main ───────────────────────────────────────────────────────────────────
 
-def main():
+_ALL_TABLES = ["events", "subscriptions", "invoices", "spend", "tickets"]
+
+
+def make_parser():
     parser = argparse.ArgumentParser(description="Generate synthetic analytics data")
     parser.add_argument("--project", default=os.environ.get("GCP_PROJECT_ID"),
-                       help="GCP project ID (default: $GCP_PROJECT_ID)")
+                        help="GCP project ID (default: $GCP_PROJECT_ID)")
     parser.add_argument("--dry-run", action="store_true",
-                       help="Save to local parquet files instead of BigQuery")
+                        help="Save to local parquet files instead of BigQuery")
     parser.add_argument("--seed", type=int, default=SEED,
-                       help="Random seed for reproducibility")
+                        help="Random seed for reproducibility")
     parser.add_argument("--users", type=int, default=NUM_USERS,
-                       help="Number of users to generate (default: 50000)")
-    args = parser.parse_args()
+                        help="Number of users to generate (default: 50000)")
+    parser.add_argument("--tables", nargs="+", choices=_ALL_TABLES,
+                        help="Upload only these tables (default: all)")
+    return parser
+
+
+def main():
+    args = make_parser().parse_args()
 
     global rng
     rng = np.random.default_rng(args.seed)
     num_users = args.users
 
     print("=" * 60)
-    print("Analytics-dbt Synthetic Data Generator")
+    print("b2b-saas-dbt Synthetic Data Generator")
     print("=" * 60)
+    tables = set(args.tables) if args.tables else set(_ALL_TABLES)
     print(f"  Users: {num_users:,}")
     print(f"  Period: {START_DATE} to {END_DATE} ({NUM_DAYS} days)")
     print(f"  Seed: {args.seed}")
     print(f"  Mode: {'dry-run (parquet)' if args.dry_run else 'BigQuery upload'}")
+    print(f"  Output: {', '.join(sorted(tables))}")
     print()
 
-    # Phase 1: Users and accounts
+    # Phase 1: Users and accounts (always needed)
     users = generate_users(num_users)
     users = assign_journeys(users)
     accounts = generate_accounts(users)
     account_subs = simulate_subscriptions(users, accounts)
     print()
 
-    # Phase 2: Events (streamed to disk/BQ to avoid OOM)
-    event_batches = generate_all_events(users, account_subs)
-    print()
+    # Phase 2: Events (batched in 250K-row DataFrames)
+    needs_events = "events" in tables
+    event_batches = generate_all_events(users, account_subs) if needs_events else []
+    if needs_events:
+        print()
 
     # Phase 3: Billing
-    subs_df = build_subscriptions_df(account_subs, accounts)
-    invoices_df = build_invoices_df(account_subs)
-    print()
+    subs_df = build_subscriptions_df(account_subs) if "subscriptions" in tables else None
+    invoices_df = build_invoices_df(account_subs) if "invoices" in tables else None
+    if subs_df is not None or invoices_df is not None:
+        print()
 
     # Phase 4: Marketing
-    spend_df = build_marketing_spend_df()
-    print()
+    spend_df = build_marketing_spend_df() if "spend" in tables else None
+    if spend_df is not None:
+        print()
 
     # Phase 5: Support
-    tickets_df = build_support_tickets_df(users, accounts, account_subs)
-    print()
+    tickets_df = build_support_tickets_df(users, accounts, account_subs) if "tickets" in tables else None
+    if tickets_df is not None:
+        print()
 
     # Summary
     total_events = sum(len(b) for b in event_batches)
     print("=" * 60)
     print("Summary")
     print("=" * 60)
-    print(f"  Events:        {total_events:>10,} rows ({len(event_batches)} batches)")
-    print(f"  Subscriptions: {len(subs_df):>10,} rows")
-    print(f"  Invoices:      {len(invoices_df):>10,} rows")
-    print(f"  Spend:         {len(spend_df):>10,} rows")
-    print(f"  Tickets:       {len(tickets_df):>10,} rows")
+    if needs_events:
+        print(f"  Events:        {total_events:>10,} rows ({len(event_batches)} batches)")
+    if subs_df is not None:
+        print(f"  Subscriptions: {len(subs_df):>10,} rows")
+    if invoices_df is not None:
+        print(f"  Invoices:      {len(invoices_df):>10,} rows")
+    if spend_df is not None:
+        print(f"  Spend:         {len(spend_df):>10,} rows")
+    if tickets_df is not None:
+        print(f"  Tickets:       {len(tickets_df):>10,} rows")
     print()
 
     if args.dry_run:
@@ -1511,23 +1524,31 @@ def main():
         out_dir = Path("scripts/synthetic_data")
         out_dir.mkdir(parents=True, exist_ok=True)
         print("Saving parquet files...")
-        for i, batch in enumerate(event_batches):
-            batch["experiment_flags"] = batch["experiment_flags"].apply(
-                lambda x: json.dumps(x) if x else None
-            )
-            save_parquet(batch, out_dir / f"events_part{i:03d}.parquet")
-        save_parquet(subs_df, out_dir / "subscriptions.parquet")
-        save_parquet(invoices_df, out_dir / "invoices.parquet")
-        save_parquet(spend_df, out_dir / "spend.parquet")
-        save_parquet(tickets_df, out_dir / "tickets.parquet")
+        if "events" in tables:
+            for i, batch in enumerate(event_batches):
+                batch["experiment_flags"] = batch["experiment_flags"].apply(
+                    lambda x: json.dumps(x) if x else None
+                )
+                save_parquet(batch, out_dir / f"events_part{i:03d}.parquet")
+        if "subscriptions" in tables:
+            save_parquet(subs_df, out_dir / "subscriptions.parquet")
+        if "invoices" in tables:
+            save_parquet(invoices_df, out_dir / "invoices.parquet")
+        if "spend" in tables:
+            save_parquet(spend_df, out_dir / "spend.parquet")
+        if "tickets" in tables:
+            save_parquet(tickets_df, out_dir / "tickets.parquet")
     else:
         # Upload to BigQuery
         if not args.project:
             # Try to get from gcloud config
             import subprocess
-            result = subprocess.run(["gcloud", "config", "get-value", "project"],
-                                   capture_output=True, text=True)
-            args.project = result.stdout.strip()
+            try:
+                result = subprocess.run(["gcloud", "config", "get-value", "project"],
+                                        capture_output=True, text=True)
+                args.project = result.stdout.strip()
+            except (FileNotFoundError, OSError):
+                pass
 
         if not args.project:
             print("ERROR: No GCP project. Set --project or $GCP_PROJECT_ID")
@@ -1541,28 +1562,36 @@ def main():
         print()
 
         print("Uploading tables...")
-        # Events: upload in batches to avoid OOM
-        for i, batch in enumerate(event_batches):
-            batch["experiment_flags"] = batch["experiment_flags"].apply(
-                lambda x: json.dumps(x) if x else None
-            )
-            disposition = "WRITE_TRUNCATE" if i == 0 else "WRITE_APPEND"
-            upload_table(client, "raw_funnel", "events", batch,
-                        EVENTS_SCHEMA, partition_field="event_date",
-                        cluster_fields=["event_type", "platform"],
-                        write_disposition=disposition)
-        upload_table(client, "raw_billing", "subscriptions", subs_df,
-                    SUBSCRIPTIONS_SCHEMA, partition_field="event_time",
-                    cluster_fields=["account_id", "event_type"])
-        upload_table(client, "raw_billing", "invoices", invoices_df,
-                    INVOICES_SCHEMA, partition_field="issued_at",
-                    cluster_fields=["account_id", "status"])
-        upload_table(client, "raw_marketing", "spend", spend_df,
-                    SPEND_SCHEMA, partition_field="date",
-                    cluster_fields=["channel"])
-        upload_table(client, "raw_support", "tickets", tickets_df,
-                    TICKETS_SCHEMA, partition_field="created_at",
-                    cluster_fields=["account_id", "category"])
+        try:
+            if "events" in tables:
+                for i, batch in enumerate(event_batches):
+                    batch["experiment_flags"] = batch["experiment_flags"].apply(
+                        lambda x: json.dumps(x) if x else None
+                    )
+                    disposition = "WRITE_TRUNCATE" if i == 0 else "WRITE_APPEND"
+                    upload_table(client, "raw_funnel", "events", batch,
+                                 EVENTS_SCHEMA, partition_field="event_date",
+                                 cluster_fields=["event_type", "platform"],
+                                 write_disposition=disposition)
+            if "subscriptions" in tables:
+                upload_table(client, "raw_billing", "subscriptions", subs_df,
+                             SUBSCRIPTIONS_SCHEMA, partition_field="event_time",
+                             cluster_fields=["account_id", "event_type"])
+            if "invoices" in tables:
+                upload_table(client, "raw_billing", "invoices", invoices_df,
+                             INVOICES_SCHEMA, partition_field="issued_at",
+                             cluster_fields=["account_id", "status"])
+            if "spend" in tables:
+                upload_table(client, "raw_marketing", "spend", spend_df,
+                             SPEND_SCHEMA, partition_field="date",
+                             cluster_fields=["channel"])
+            if "tickets" in tables:
+                upload_table(client, "raw_support", "tickets", tickets_df,
+                             TICKETS_SCHEMA, partition_field="created_at",
+                             cluster_fields=["account_id", "category"])
+        except Exception as exc:
+            print(f"ERROR: BigQuery upload failed: {exc}")
+            return 1
 
     print()
     print("Done!")
