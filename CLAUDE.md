@@ -1,4 +1,4 @@
-# analytics-dbt — Architecture Contract
+# b2b-saas-dbt — Architecture Contract
 
 ## Project
 Full-company analytics platform for a B2B SaaS company. dbt on BigQuery, Kimball star schema.

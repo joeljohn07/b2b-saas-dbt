@@ -17,6 +17,10 @@ on:
 permissions:
   contents: read
 
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  DBT_CI_KEYFILE: /tmp/dbt-ci-keyfile.json
+
 jobs:
   validate:
     runs-on: ubuntu-latest
@@ -29,5 +33,12 @@ jobs:
         run: pip install dbt-core dbt-bigquery
       - name: Install packages
         run: dbt deps
+      - name: Set up dbt profile
+        env:
+          DBT_CI_KEYFILE_JSON: ${{ secrets.DBT_CI_KEYFILE_JSON }}
+        run: |
+          mkdir -p ~/.dbt
+          cp profiles.yml.example ~/.dbt/profiles.yml
+          echo "$DBT_CI_KEYFILE_JSON" > /tmp/dbt-ci-keyfile.json
       - name: Validate project
-        run: dbt parse
+        run: dbt parse --target ci

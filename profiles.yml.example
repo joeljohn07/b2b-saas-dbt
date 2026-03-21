@@ -1,4 +1,4 @@
-analytics_dbt:
+b2b_saas_dbt:
   target: dev
 
   outputs:
@@ -21,9 +21,9 @@ analytics_dbt:
 
     ci:
       type: bigquery
-      method: oauth-secrets
+      method: service-account
       project: "{{ env_var('GCP_PROJECT_ID') }}"
       dataset: analytics_ci
       location: EU
       threads: 4
-      keyfile_json: "{{ env_var('DBT_CI_KEYFILE_JSON') }}"
+      keyfile: "{{ env_var('DBT_CI_KEYFILE') }}"

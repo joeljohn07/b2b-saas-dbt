@@ -1,4 +1,4 @@
-# analytics-dbt — LLM Entry Point
+# b2b-saas-dbt — LLM Entry Point
 
 ## Read First
 1. CLAUDE.md — architecture contract and hard rules
