@@ -26,7 +26,7 @@ Three-layer dbt project following Kimball dimensional modeling:
 raw sources           staging               intermediate            marts
 ───────────          ─────────             ──────────────          ──────
 raw_funnel     ───►  stg_*__events    ───► int_sessions       ──► fct_sessions
-raw_billing    ───►  stg_*__subs      ───► int_mrr_movements  ──► fct_account_mrr
+raw_billing    ───►  stg_*__subs      ───► int_mrr_movements  ──► fct_account_mrr_snapshot
                ───►  stg_*__invoices  ───► int_attribution    ──► dim_users
 raw_marketing  ───►  stg_*__spend     ───► int_engagement     ──► dim_accounts
 raw_support    ───►  stg_*__tickets   ───► int_account_health ──► dim_date
@@ -48,20 +48,35 @@ raw_support    ───►  stg_*__tickets   ───► int_account_health �
 ```
 .
 ├── models/
-│   ├── staging/          # 1:1 source shaping (views)
-│   ├── intermediate/     # Business logic (views + 1 incremental)
-│   └── marts/            # Kimball star schema (tables)
+│   ├── staging/                # 1:1 source shaping (views)
+│   │   ├── raw_funnel/         # Product events
+│   │   ├── raw_billing/        # Subscriptions + invoices
+│   │   ├── raw_marketing/      # Channel spend
+│   │   └── raw_support/        # Support tickets
+│   ├── intermediate/           # Business logic (views + 1 incremental)
+│   │   ├── product/            # Event pipeline, sessions, identity, funnel
+│   │   ├── billing/            # Subscription lifecycle, MRR movements
+│   │   ├── engagement/         # Engagement states, experiments
+│   │   └── cross_domain/       # Attribution, checkout, ticket metrics, health
+│   └── marts/                  # Kimball star schema (tables)
+│       ├── core/               # Conformed dims + company-level facts
+│       ├── product/            # Product analytics
+│       ├── billing/            # Billing facts
+│       ├── marketing/          # Channel spend facts
+│       └── support/            # Support ticket facts
 ├── tests/
-│   ├── invariants/       # PK, not-null, enum checks
-│   ├── reconciliation/   # Cross-layer row/value checks
-│   ├── fanout/           # Grain change detection
-│   └── contracts/        # Schema contract enforcement
-├── macros/               # Reusable SQL macros
-├── seeds/                # Static reference data
-├── docs/                 # Extended documentation
-├── analyses/             # Ad-hoc analytical queries
-└── scripts/              # Utility scripts
+│   ├── invariants/             # PK, not-null, enum checks
+│   ├── reconciliation/         # Cross-layer row/value checks
+│   ├── fanout/                 # Grain change detection
+│   └── contracts/              # Schema contract enforcement
+├── macros/                     # Reusable SQL macros
+├── seeds/                      # Static reference data
+├── docs/                       # Extended documentation
+├── analyses/                   # Ad-hoc analytical queries
+└── scripts/                    # Utility scripts
 ```
+
+Additional mart model types: `agg_` (pre-aggregated), `rpt_` (reporting), `mart_` (blended). See `docs/layers/` for full reference.
 
 ## Environment Targets
 

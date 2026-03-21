@@ -11,3 +11,13 @@
 - Rewrote README.md with architecture diagram, source domains, environment targets
 - Created Tier 2 doc stubs in docs/layers/
 - Updated llms.txt with dbt references
+
+## 2026-03-21: Expanded conventions
+- Added mart prefixes: agg_ (coarser grain), rpt_ (dashboard-specific), mart_ (dim+fact blend)
+- Added intermediate suffixes: _prep (source-specific prep), _unioned (multi-source union)
+- Retired exp_ prefix / export layer concept — rpt_ within marts replaces it
+- Added column naming consistency as hard rule
+- Added SQL style: group by all, union all by name
+- Adopted subdirectories within layers (source/domain/business-area)
+- Adopted per-directory _models.yml YAML layout convention
+- Populated docs/layers/ stubs with full layer contract and dimensional modeling guidelines
