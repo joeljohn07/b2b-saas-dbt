@@ -18,5 +18,5 @@ select
 from {{ ref('int_sessions') }} as a
 inner join {{ ref('int_sessions') }} as b
     on a.anon_id = b.anon_id
-    and a.session_id < b.session_id
+    and a.session_start_at < b.session_start_at
     and a.session_end_at > b.session_start_at

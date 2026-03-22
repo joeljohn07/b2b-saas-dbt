@@ -38,8 +38,8 @@ session_boundaries as (
                     then 1
                 when
                     timestamp_diff(
-                        event_time, prev_event_time, minute
-                    ) > 30
+                        event_time, prev_event_time, second
+                    ) > 1800
                     then 1
                 else 0
             end
@@ -67,7 +67,7 @@ first_event_per_session as (
     from session_boundaries
     qualify row_number() over (
         partition by anon_id, session_seq
-        order by event_time asc
+        order by event_time asc, event_id asc
     ) = 1
 
 ),
