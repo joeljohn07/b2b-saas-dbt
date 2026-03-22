@@ -1,7 +1,7 @@
 # ============================================================
 # AUTOMATION: CI
-# WHAT IT DOES: Validates dbt project structure on push and PR
-# WHAT IT MODIFIES: Nothing — read-only check
+# WHAT IT DOES: Lints SQL, validates naming, builds + tests all models
+# WHAT IT MODIFIES: Creates/refreshes CI BQ datasets (analytics_ci_*)
 # AUTO-COMMITS: No
 # HOW TO DISABLE: Delete this file
 # ============================================================
@@ -14,31 +14,107 @@ on:
     branches: [main]
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
-
-env:
-  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  DBT_CI_KEYFILE: /tmp/dbt-ci-keyfile.json
+  id-token: write
 
 jobs:
-  validate:
+  lint:
+    name: Lint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install sqlfluff sqlfluff-templater-dbt dbt-core dbt-bigquery
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Create dummy profile for templater
+        env:
+          GCP_PROJECT_ID: dummy-project
+        run: |
+          mkdir -p ~/.dbt
+          printf '%s\n' \
+            'b2b_saas_dbt:' \
+            '  target: ci' \
+            '  outputs:' \
+            '    ci:' \
+            '      type: bigquery' \
+            '      method: oauth' \
+            '      project: dummy-project' \
+            '      dataset: dummy_dataset' \
+            '      location: EU' \
+            '      threads: 1' \
+            > ~/.dbt/profiles.yml
+
+      - name: SQLFluff lint
+        run: sqlfluff lint models/
+        env:
+          GCP_PROJECT_ID: dummy-project
+
+      - name: Lint model names
+        run: scripts/lint-model-names.sh
+
+  build-and-validate:
+    name: Build & Validate
+    needs: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
       - name: Install dbt
         run: pip install dbt-core dbt-bigquery
-      - name: Install packages
+
+      - name: Cache dbt packages
+        uses: actions/cache@v4
+        with:
+          path: dbt_packages
+          key: dbt-packages-${{ hashFiles('packages.yml') }}
+
+      - name: Install dbt packages
         run: dbt deps
+
+      - name: Authenticate to GCP (OIDC/WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
       - name: Set up dbt profile
-        env:
-          DBT_CI_KEYFILE_JSON: ${{ secrets.DBT_CI_KEYFILE_JSON }}
         run: |
           mkdir -p ~/.dbt
           cp profiles.yml.example ~/.dbt/profiles.yml
-          echo "$DBT_CI_KEYFILE_JSON" > /tmp/dbt-ci-keyfile.json
-      - name: Validate project
-        run: dbt parse --target ci
+
+      - name: Build all models and run tests
+        run: dbt build --target ci --full-refresh
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Run dbt-project-evaluator
+        run: dbt build --select package:dbt_project_evaluator --target ci
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Upload manifest (push to main only)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-manifest
+          path: target/manifest.json
+          retention-days: 90

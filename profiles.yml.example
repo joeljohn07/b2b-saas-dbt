@@ -21,9 +21,8 @@ b2b_saas_dbt:
 
     ci:
       type: bigquery
-      method: service-account
+      method: oauth
       project: "{{ env_var('GCP_PROJECT_ID') }}"
       dataset: analytics_ci
       location: EU
       threads: 4
-      keyfile: "{{ env_var('DBT_CI_KEYFILE') }}"
