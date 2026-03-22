@@ -2,7 +2,11 @@
 -- If more than 1% of rows were removed, something is wrong with
 -- the dedup logic or source data quality has degraded.
 
-{{ config(severity='error') }}
+{{ config(
+    severity='error',
+    tags=['data_quality'],
+    description='Validates dedup removed ~0.5% duplicate events, not more than 1%'
+) }}
 
 with counts as (
 

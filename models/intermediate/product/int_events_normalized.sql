@@ -40,7 +40,7 @@ with source as (
         experiment_flags,
         row_number() over (
             partition by event_id
-            order by _loaded_at asc
+            order by _loaded_at asc, ingest_time asc
         ) as _dedup_row_num
     from {{ ref('stg_funnel__events') }}
 

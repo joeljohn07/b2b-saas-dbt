@@ -317,6 +317,20 @@ Raw JSON string of invoice line items. Kept as-is for downstream processing.
 
 ---
 
+## Interval columns
+
+{% docs col_valid_from %}
+Start of an effective-dated interval (inclusive). Used in identity stitching
+and account membership periods.
+{% enddocs %}
+
+{% docs col_valid_to %}
+End of an effective-dated interval (exclusive). Null means the interval is
+current/open-ended. Used in identity stitching and account membership periods.
+{% enddocs %}
+
+---
+
 ## Intermediate-derived columns
 
 {% docs col_is_active %}

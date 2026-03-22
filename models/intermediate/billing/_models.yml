@@ -74,3 +74,8 @@ models:
 
       - name: days_since_previous_event
         description: '{{ doc("col_days_since_previous_event") }}'
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              config:
+                where: "days_since_previous_event is not null"

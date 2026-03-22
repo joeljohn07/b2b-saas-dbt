@@ -51,9 +51,19 @@ models:
 
       - name: resolution_time_hours
         description: '{{ doc("col_resolution_time_hours") }}'
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              config:
+                where: "resolution_time_hours is not null"
 
       - name: first_response_hours
         description: '{{ doc("col_first_response_hours") }}'
+        tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              config:
+                where: "first_response_hours is not null"
 
       - name: is_resolved
         description: '{{ doc("col_is_resolved") }}'
