@@ -10,7 +10,9 @@ fi
 
 STAGED=$(git diff --cached --name-only --diff-filter=ACM)
 
-NON_TEST_CHANGES=$(echo "$STAGED" | grep -E -v '(^tests/|(^|/)test_.*\.py$|_test\.py$|\.md$|\.sql$|\.yml$|\.yaml$|^docs/|^\.github/|^\.githooks/|^macros/|^seeds/|^analyses/|^AGENTS\.md$|^CLAUDE\.md$|^decisions\.md$|^llms\.txt$|^\.gitignore$|^LICENSE$)' || true)
+# Exempt: docs, dbt files (sql/yml/yaml), config, macros, seeds, CI, hooks, scripts
+# dbt model changes are validated by dbt schema tests, not Python unit tests
+NON_TEST_CHANGES=$(echo "$STAGED" | grep -E -v '(^tests/|(^|/)test_.*\.py$|_test\.py$|\.md$|\.sql$|\.yml$|\.yaml$|^docs/|^\.github/|^\.githooks/|^macros/|^seeds/|^analyses/|^scripts/|^AGENTS\.md$|^CLAUDE\.md$|^decisions\.md$|^llms\.txt$|^\.gitignore$|^\.sqlfluff|^\.pre-commit|^LICENSE$)' || true)
 TEST_CHANGES=$(echo "$STAGED" | grep -E '(^tests/|(^|/)test_.*\.py$|_test\.py$)' || true)
 
 if [[ -n "$NON_TEST_CHANGES" && -z "$TEST_CHANGES" ]]; then

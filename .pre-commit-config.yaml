@@ -1,3 +1,5 @@
+default_install_hook_types: [pre-commit, commit-msg, pre-push]
+
 repos:
   # General file hygiene
   - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -21,17 +23,18 @@ repos:
   - repo: https://github.com/dbt-checkpoint/dbt-checkpoint
     rev: v2.0.5
     hooks:
+      - id: dbt-parse
+        args: [--global-flags, --no-partial-parse]
       - id: check-model-has-tests-by-name
-        files: ^models/.*\.sql$
+        files: (^models/.*\.sql$|_models\.yml$)
         args:
           - --tests
-          - unique
-          - not_null
+          - not_null=1
           - --
       - id: check-model-has-description
-        files: ^models/.*\.sql$
+        files: (^models/.*\.sql$|_models\.yml$)
       - id: check-model-columns-have-desc
-        files: ^models/.*\.sql$
+        files: (^models/.*\.sql$|_models\.yml$)
       - id: check-script-has-no-table-name
         files: ^models/.*\.sql$
 
