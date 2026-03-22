@@ -1,0 +1,40 @@
+# ============================================================
+# AUTOMATION: PR Teardown
+# WHAT IT DOES: Drops CI-created BQ datasets when PR closes
+# WHAT IT MODIFIES: BigQuery datasets (analytics_ci_*)
+# AUTO-COMMITS: No
+# HOW TO DISABLE: Delete this file
+# ============================================================
+name: PR Teardown
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Authenticate to GCP (OIDC/WIF)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Drop CI datasets
+        run: |
+          for dataset in analytics_ci_staging analytics_ci_intermediate analytics_ci_marts; do
+            echo "Dropping $dataset (if exists)..."
+            bq rm -r -f --project_id="${GCP_PROJECT_ID}" "${dataset}" 2>/dev/null || true
+          done
+          echo "CI dataset cleanup complete."

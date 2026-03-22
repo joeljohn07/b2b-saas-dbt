@@ -35,3 +35,34 @@ models:
     marts:
       +materialized: table
       +schema: marts
+
+  dbt_project_evaluator:
+    +severity: warn
+    marts:
+      dag:
+        fct_staging_dependent_on_staging:
+          +severity: error
+        fct_staging_dependent_on_source:
+          +severity: error
+        fct_marts_or_intermediate_dependent_on_source:
+          +severity: error
+        fct_direct_join_to_source:
+          +severity: error
+        fct_source_fanout:
+          +severity: warn
+        fct_model_fanout:
+          +severity: warn
+      structure:
+        fct_model_naming_conventions:
+          +severity: error
+        fct_test_coverage:
+          +severity: warn
+        fct_documentation_coverage:
+          +severity: warn
+      governance:
+        fct_public_models_without_contract:
+          +enabled: false
+        fct_undocumented_public_models:
+          +enabled: false
+        fct_exposures_dependent_on_private_models:
+          +enabled: false
