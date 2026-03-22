@@ -22,26 +22,22 @@ subscriptions as (
 
 ),
 
-matched as (
+candidates as (
 
     select
         c.checkout_event_id,
-        c.user_id,
-        c.account_id,
-        c.checkout_at,
-        c.target_plan,
         s.subscription_event_id,
         s.subscription_at,
         row_number() over (
             partition by c.checkout_event_id
             order by s.subscription_at asc
-        ) as checkout_match_rank,
+        ) as checkout_rank,
         row_number() over (
             partition by s.subscription_event_id
             order by c.checkout_at desc
-        ) as sub_match_rank
+        ) as sub_rank
     from checkouts as c
-    left join subscriptions as s
+    inner join subscriptions as s
         on
             c.account_id = s.account_id
             and c.checkout_at <= s.subscription_at
@@ -51,26 +47,29 @@ matched as (
 
 ),
 
-best_matches as (
+winners as (
 
-    select *
-    from matched
-    where
-        checkout_match_rank = 1
-        and (sub_match_rank = 1 or subscription_event_id is null)
+    select
+        checkout_event_id,
+        subscription_event_id,
+        subscription_at
+    from candidates
+    where checkout_rank = 1 and sub_rank = 1
 
 )
 
 select
-    checkout_event_id,
-    user_id,
-    account_id,
-    checkout_at,
-    target_plan,
-    subscription_event_id,
-    subscription_at,
-    subscription_event_id is not null as converted,
+    c.checkout_event_id,
+    c.user_id,
+    c.account_id,
+    c.checkout_at,
+    c.target_plan,
+    w.subscription_event_id,
+    w.subscription_at,
+    w.subscription_event_id is not null as converted,
     date_diff(
-        date(subscription_at), date(checkout_at), day
+        date(w.subscription_at), date(c.checkout_at), day
     ) as time_to_conversion_days
-from best_matches
+from checkouts as c
+left join winners as w
+    on c.checkout_event_id = w.checkout_event_id
