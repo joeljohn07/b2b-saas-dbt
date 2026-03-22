@@ -1,0 +1,63 @@
+repos:
+  # General file hygiene
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-merge-conflict
+
+  # SQL linting (jinja templater for speed; CI uses dbt templater for full accuracy)
+  - repo: https://github.com/sqlfluff/sqlfluff
+    rev: 4.0.4
+    hooks:
+      - id: sqlfluff-lint
+        files: ^models/.*\.sql$
+        args: [--templater, jinja]
+
+  # dbt model governance
+  - repo: https://github.com/dbt-checkpoint/dbt-checkpoint
+    rev: v2.0.5
+    hooks:
+      - id: check-model-has-tests-by-name
+        files: ^models/.*\.sql$
+        args:
+          - --tests
+          - unique
+          - not_null
+          - --
+      - id: check-model-has-description
+        files: ^models/.*\.sql$
+      - id: check-model-columns-have-desc
+        files: ^models/.*\.sql$
+      - id: check-script-has-no-table-name
+        files: ^models/.*\.sql$
+
+  # Migrated from .githooks/ — all local hooks
+  - repo: local
+    hooks:
+      - id: secret-scan
+        name: secret scan
+        language: script
+        entry: scripts/secret-scan.sh
+        stages: [pre-commit]
+
+      - id: tdd-gate
+        name: tdd gate
+        language: script
+        entry: scripts/tdd-gate.sh
+        stages: [pre-commit]
+
+      - id: conventional-commit
+        name: conventional commit
+        language: script
+        entry: .githooks/commit-msg
+        stages: [commit-msg]
+
+      - id: no-push-to-main
+        name: no push to main
+        language: script
+        entry: .githooks/pre-push
+        stages: [pre-push]
