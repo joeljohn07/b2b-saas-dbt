@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: int_subscription_lifecycle
+    description: '{{ doc("int_subscription_lifecycle") }}'
+    config:
+      tags:
+        - intermediate
+    columns:
+      - name: subscription_event_id
+        description: '{{ doc("col_subscription_event_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_id
+        description: '{{ doc("col_subscription_id") }}'
+        tests:
+          - not_null
+
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: account_id
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: event_type
+        description: '{{ doc("col_subscription_event_type") }}'
+        tests:
+          - not_null
+
+      - name: event_time
+        description: '{{ doc("col_event_time") }}'
+        tests:
+          - not_null
+
+      - name: plan
+        description: '{{ doc("col_plan") }}'
+        tests:
+          - not_null
+
+      - name: previous_plan
+        description: '{{ doc("col_previous_plan") }}'
+
+      - name: billing_cycle
+        description: '{{ doc("col_billing_cycle") }}'
+        tests:
+          - not_null
+
+      - name: mrr_amount
+        description: '{{ doc("col_mrr_amount") }}'
+        tests:
+          - not_null
+
+      - name: currency
+        description: '{{ doc("col_currency") }}'
+        tests:
+          - not_null
+
+      - name: cancel_reason
+        description: '{{ doc("col_cancel_reason") }}'
+
+      - name: is_voluntary
+        description: '{{ doc("col_is_voluntary") }}'
+
+      - name: is_active
+        description: '{{ doc("col_is_active") }}'
+        tests:
+          - not_null
+
+      - name: days_since_previous_event
+        description: '{{ doc("col_days_since_previous_event") }}'

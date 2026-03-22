@@ -5,7 +5,7 @@ All business logic lives here. Dedup, sessionization, identity stitching, attrib
 
 ## Conventions
 - Materialized: view (default). Use table only if query is too heavy for downstream.
-- Exception: `int_events_normalized` is incremental (merge on event_id, 36h lookback)
+- Exception: `int_events_normalized` starts as view; issue #21 converts to incremental (merge on event_id, 36h lookback)
 - Naming: `int_{domain}_{concept}` (suffixes: `_prep` for source-specific prep, `_unioned` for multi-source union)
 - `ref()` staging or other intermediate models only — never `source()`
 - No `contract.enforced` (intermediate is internal)

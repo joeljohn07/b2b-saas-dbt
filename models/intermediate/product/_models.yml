@@ -1,0 +1,124 @@
+version: 2
+
+models:
+  - name: int_events_normalized
+    description: '{{ doc("int_events_normalized") }}'
+    config:
+      materialized: view
+      tags:
+        - intermediate
+    columns:
+      - name: event_id
+        description: '{{ doc("col_event_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+
+      - name: anon_id
+        description: '{{ doc("col_anon_id") }}'
+        tests:
+          - not_null
+
+      - name: account_id
+        description: '{{ doc("col_account_id") }}'
+
+      - name: event_time
+        description: '{{ doc("col_event_time") }}'
+        tests:
+          - not_null
+
+      - name: ingest_time
+        description: '{{ doc("col_ingest_time") }}'
+
+      - name: _loaded_at
+        description: '{{ doc("col__loaded_at") }}'
+        tests:
+          - not_null
+
+      - name: event_date
+        description: '{{ doc("col_event_date") }}'
+        tests:
+          - not_null
+
+      - name: event_type
+        description: '{{ doc("col_event_type") }}'
+        tests:
+          - not_null
+
+      - name: platform
+        description: '{{ doc("col_platform") }}'
+
+      - name: channel
+        description: '{{ doc("col_channel") }}'
+
+      - name: plan_context
+        description: '{{ doc("col_plan_context") }}'
+
+      - name: utm_source
+        description: '{{ doc("col_utm_source") }}'
+
+      - name: utm_medium
+        description: '{{ doc("col_utm_medium") }}'
+
+      - name: utm_campaign
+        description: '{{ doc("col_utm_campaign") }}'
+
+      - name: utm_term
+        description: '{{ doc("col_utm_term") }}'
+
+      - name: utm_content
+        description: '{{ doc("col_utm_content") }}'
+
+      - name: device_type
+        description: '{{ doc("col_device_type") }}'
+
+      - name: browser
+        description: '{{ doc("col_browser") }}'
+
+      - name: os
+        description: '{{ doc("col_os") }}'
+
+      - name: user_agent
+        description: '{{ doc("col_user_agent") }}'
+
+      - name: page_url
+        description: '{{ doc("col_page_url") }}'
+
+      - name: referrer
+        description: '{{ doc("col_referrer") }}'
+
+      - name: signup_method
+        description: '{{ doc("col_signup_method") }}'
+
+      - name: activation_action
+        description: '{{ doc("col_activation_action") }}'
+
+      - name: time_to_activate_hours
+        description: '{{ doc("col_time_to_activate_hours") }}'
+
+      - name: feature_name
+        description: '{{ doc("col_feature_name") }}'
+
+      - name: feature_duration_seconds
+        description: '{{ doc("col_feature_duration_seconds") }}'
+
+      - name: source_page
+        description: '{{ doc("col_source_page") }}'
+
+      - name: target_plan
+        description: '{{ doc("col_target_plan") }}'
+
+      - name: billing_cycle
+        description: '{{ doc("col_billing_cycle") }}'
+
+      - name: member_role
+        description: '{{ doc("col_member_role") }}'
+
+      - name: member_reason
+        description: '{{ doc("col_member_reason") }}'
+
+      - name: experiment_flags
+        description: '{{ doc("col_experiment_flags") }}'
