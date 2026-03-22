@@ -1,7 +1,11 @@
 -- Validates that no two identity stitch intervals overlap for the same anon_id.
 -- Half-open intervals [valid_from, valid_to) must not have any temporal overlap.
 
-{{ config(severity='error') }}
+{{ config(
+    severity='error',
+    tags=['operations_alert'],
+    description='No two identity stitch intervals may overlap for the same anon_id'
+) }}
 
 with intervals as (
 

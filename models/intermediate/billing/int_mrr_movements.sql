@@ -1,4 +1,18 @@
-with lifecycle as (
+with non_trial_events as (
+
+    select
+        account_id,
+        subscription_event_id,
+        subscription_id,
+        event_type,
+        event_time,
+        mrr_amount
+    from {{ ref('int_subscription_lifecycle') }}
+    where event_type not in ('trial_start', 'trial_end')
+
+),
+
+lifecycle as (
 
     select
         account_id,
@@ -15,7 +29,7 @@ with lifecycle as (
             partition by account_id
             order by event_time
         ) as previous_event_type
-    from {{ ref('int_subscription_lifecycle') }}
+    from non_trial_events
 
 ),
 
@@ -50,7 +64,6 @@ movements as (
         mrr_amount as mrr_after,
         mrr_amount - coalesce(previous_mrr, 0) as mrr_delta
     from lifecycle
-    where event_type not in ('trial_start', 'trial_end')
 
 )
 

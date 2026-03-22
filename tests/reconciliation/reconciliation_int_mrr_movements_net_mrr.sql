@@ -2,7 +2,11 @@
 -- Compares the cumulative MRR movements against the latest subscription
 -- lifecycle event's mrr_amount for each account.
 
-{{ config(severity='error') }}
+{{ config(
+    severity='error',
+    tags=['billing_validation'],
+    description='SUM(mrr_delta) must equal final MRR per account'
+) }}
 
 with movements_total as (
 
