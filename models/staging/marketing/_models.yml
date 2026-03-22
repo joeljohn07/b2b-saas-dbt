@@ -1,0 +1,77 @@
+version: 2
+
+models:
+  - name: stg_marketing__spend
+    description: '{{ doc("stg_marketing__spend") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - staging
+    columns:
+      - name: spend_id
+        data_type: string
+        description: '{{ doc("col_spend_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: spend_date
+        data_type: date
+        description: '{{ doc("col_spend_date") }}'
+        tests:
+          - not_null
+
+      - name: channel
+        data_type: string
+        description: '{{ doc("col_channel") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - organic
+                  - paid_search
+                  - paid_social
+                  - referral
+                  - email
+                  - direct
+
+      - name: campaign_id
+        data_type: string
+        description: '{{ doc("col_campaign_id") }}'
+        tests:
+          - not_null
+
+      - name: campaign_name
+        data_type: string
+        description: '{{ doc("col_campaign_name") }}'
+
+      - name: impressions
+        data_type: int64
+        description: '{{ doc("col_impressions") }}'
+
+      - name: clicks
+        data_type: int64
+        description: '{{ doc("col_clicks") }}'
+
+      - name: spend_amount
+        data_type: numeric
+        description: '{{ doc("col_spend_amount") }}'
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+
+      - name: currency
+        data_type: string
+        description: '{{ doc("col_currency") }}'
+        tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp
+        description: '{{ doc("col__loaded_at") }}'
+        tests:
+          - not_null

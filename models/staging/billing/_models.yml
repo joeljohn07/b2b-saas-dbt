@@ -1,0 +1,215 @@
+version: 2
+
+models:
+  - name: stg_billing__subscriptions
+    description: '{{ doc("stg_billing__subscriptions") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - staging
+    columns:
+      - name: subscription_event_id
+        data_type: string
+        description: '{{ doc("col_subscription_event_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_id
+        data_type: string
+        description: '{{ doc("col_subscription_id") }}'
+        tests:
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: event_type
+        data_type: string
+        description: '{{ doc("col_subscription_event_type") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - trial_start
+                  - trial_end
+                  - subscription_start
+                  - upgrade
+                  - downgrade
+                  - renewal
+                  - cancellation
+                  - reactivation
+
+      - name: event_time
+        data_type: timestamp
+        description: '{{ doc("col_event_time") }}'
+        tests:
+          - not_null
+
+      - name: _loaded_at
+        data_type: timestamp
+        description: '{{ doc("col__loaded_at") }}'
+        tests:
+          - not_null
+
+      - name: plan
+        data_type: string
+        description: '{{ doc("col_plan") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - free
+                  - starter
+                  - pro
+                  - enterprise
+
+      - name: previous_plan
+        data_type: string
+        description: '{{ doc("col_previous_plan") }}'
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - free
+                  - starter
+                  - pro
+                  - enterprise
+              config:
+                where: previous_plan is not null
+
+      - name: billing_cycle
+        data_type: string
+        description: '{{ doc("col_billing_cycle") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - monthly
+                  - annual
+
+      - name: mrr_amount
+        data_type: numeric
+        description: '{{ doc("col_mrr_amount") }}'
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+
+      - name: currency
+        data_type: string
+        description: '{{ doc("col_currency") }}'
+        tests:
+          - not_null
+
+      - name: cancel_reason
+        data_type: string
+        description: '{{ doc("col_cancel_reason") }}'
+
+      - name: is_voluntary
+        data_type: boolean
+        description: '{{ doc("col_is_voluntary") }}'
+
+  - name: stg_billing__invoices
+    description: '{{ doc("stg_billing__invoices") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - staging
+    columns:
+      - name: invoice_id
+        data_type: string
+        description: '{{ doc("col_invoice_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_id
+        data_type: string
+        description: '{{ doc("col_subscription_id") }}'
+        tests:
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: issued_at
+        data_type: timestamp
+        description: '{{ doc("col_issued_at") }}'
+        tests:
+          - not_null
+
+      - name: paid_at
+        data_type: timestamp
+        description: '{{ doc("col_paid_at") }}'
+
+      - name: _loaded_at
+        data_type: timestamp
+        description: '{{ doc("col__loaded_at") }}'
+        tests:
+          - not_null
+
+      - name: amount
+        data_type: numeric
+        description: '{{ doc("col_amount") }}'
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+
+      - name: currency
+        data_type: string
+        description: '{{ doc("col_currency") }}'
+        tests:
+          - not_null
+
+      - name: status
+        data_type: string
+        description: '{{ doc("col_invoice_status") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - paid
+                  - pending
+                  - failed
+                  - refunded
+
+      - name: refund_amount
+        data_type: numeric
+        description: '{{ doc("col_refund_amount") }}'
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+
+      - name: line_items
+        data_type: string
+        description: '{{ doc("col_line_items") }}'

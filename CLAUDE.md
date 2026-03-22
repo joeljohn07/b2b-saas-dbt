@@ -35,11 +35,9 @@ Five source domains: product events, billing subscriptions, billing invoices, ma
 - One `_sources.yml` per staging subdirectory for source declarations
 
 ## Testing
-- Primary keys: `not_null` + `unique` on every model
-- Foreign keys: `relationships` test on every FK
-- Enums: `accepted_values` on all categorical columns
-- Business rules: singular tests at layer boundaries
-- See `tests/CLAUDE.md` for categories and naming
+- See `tests/CLAUDE.md` for all testing rules, categories, exceptions, and naming
+- Dev builds: `dbt build --exclude package:dbt_project_evaluator`
+- Evaluator runs in CI only (or on demand: `dbt build --select package:dbt_project_evaluator`)
 
 ## Git
 - Never commit directly to main — feature branch + PR
