@@ -1,7 +1,11 @@
 -- Validates that all health scores and sub-scores are within [0, 100]
 -- and that the weighted formula holds: health = 0.4*activity + 0.3*billing + 0.3*support.
 
-{{ config(severity='error') }}
+{{ config(
+    severity='error',
+    tags=['operations_alert'],
+    description='Health scores and sub-scores must be [0,100] and satisfy weighted formula'
+) }}
 
 select
     account_id,

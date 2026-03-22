@@ -27,6 +27,10 @@ billing as (
         max(case when is_active then 1 else 0 end) as has_active_sub,
         max(event_time) as last_billing_event
     from {{ ref('int_subscription_lifecycle') }}
+    where
+        event_time >= timestamp_sub(
+            current_timestamp(), interval 28 day
+        )
     group by all
 
 ),

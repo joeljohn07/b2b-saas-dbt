@@ -35,7 +35,11 @@ matched as (
         row_number() over (
             partition by c.checkout_event_id
             order by s.subscription_at asc
-        ) as match_rank
+        ) as checkout_match_rank,
+        row_number() over (
+            partition by s.subscription_event_id
+            order by c.checkout_at desc
+        ) as sub_match_rank
     from checkouts as c
     left join subscriptions as s
         on
@@ -44,6 +48,16 @@ matched as (
             and s.subscription_at <= timestamp_add(
                 c.checkout_at, interval 30 day
             )
+
+),
+
+best_matches as (
+
+    select *
+    from matched
+    where
+        checkout_match_rank = 1
+        and (sub_match_rank = 1 or subscription_event_id is null)
 
 )
 
@@ -59,5 +73,4 @@ select
     date_diff(
         date(subscription_at), date(checkout_at), day
     ) as time_to_conversion_days
-from matched
-where match_rank = 1
+from best_matches
