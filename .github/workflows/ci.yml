@@ -32,7 +32,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
+          cache: 'pip'
+          cache-dependency-path: requirements-ci.txt
 
       - name: Install dependencies
         run: pip install sqlfluff sqlfluff-templater-dbt dbt-core dbt-bigquery
@@ -76,7 +77,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
+          cache: 'pip'
+          cache-dependency-path: requirements-ci.txt
 
       - name: Install dbt
         run: pip install dbt-core dbt-bigquery
