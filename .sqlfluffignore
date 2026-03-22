@@ -1,0 +1,6 @@
+dbt_packages/
+target/
+logs/
+macros/
+tests/
+.venv/

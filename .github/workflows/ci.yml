@@ -60,7 +60,7 @@ jobs:
             > ~/.dbt/profiles.yml
 
       - name: SQLFluff lint
-        run: sqlfluff lint models/ --dialect bigquery
+        run: sqlfluff lint models/
         env:
           GCP_PROJECT_ID: dummy-project
 
