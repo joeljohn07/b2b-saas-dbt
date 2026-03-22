@@ -35,34 +35,11 @@ jobs:
           cache: 'pip'
           cache-dependency-path: requirements-ci.txt
 
-      - name: Install dependencies
-        run: pip install sqlfluff sqlfluff-templater-dbt dbt-core dbt-bigquery
-
-      - name: Install dbt packages
-        run: dbt deps
-
-      - name: Create dummy profile for templater
-        env:
-          GCP_PROJECT_ID: dummy-project
-        run: |
-          mkdir -p ~/.dbt
-          printf '%s\n' \
-            'b2b_saas_dbt:' \
-            '  target: ci' \
-            '  outputs:' \
-            '    ci:' \
-            '      type: bigquery' \
-            '      method: oauth' \
-            '      project: dummy-project' \
-            '      dataset: dummy_dataset' \
-            '      location: EU' \
-            '      threads: 1' \
-            > ~/.dbt/profiles.yml
+      - name: Install sqlfluff
+        run: pip install sqlfluff
 
       - name: SQLFluff lint
-        run: sqlfluff lint models/
-        env:
-          GCP_PROJECT_ID: dummy-project
+        run: sqlfluff lint models/ --templater jinja
 
       - name: Lint model names
         run: scripts/lint-model-names.sh
