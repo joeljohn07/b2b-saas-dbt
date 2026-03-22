@@ -46,6 +46,10 @@ intervals as (
             partition by anon_id
             order by transition_time
         ) as next_transition_time,
+        lag(transition_time) over (
+            partition by anon_id
+            order by transition_time
+        ) as prev_transition_time,
         row_number() over (
             partition by anon_id
             order by transition_time desc
@@ -59,35 +63,16 @@ with_lookback as (
     select
         anon_id,
         user_id,
-        timestamp_sub(transition_time, interval 90 day)
-            as valid_from,
+        greatest(
+            timestamp_sub(transition_time, interval 90 day),
+            coalesce(prev_transition_time, timestamp('1970-01-01'))
+        ) as valid_from,
         next_transition_time as valid_to,
         case
             when recency_rank = 1 then 'last_touch'
             else 'historical'
         end as stitch_source
     from intervals
-
-),
-
-capped as (
-
-    select
-        w.anon_id,
-        w.user_id,
-        greatest(
-            w.valid_from,
-            coalesce(
-                lag(w.valid_to) over (
-                    partition by w.anon_id
-                    order by w.valid_from
-                ),
-                w.valid_from
-            )
-        ) as valid_from,
-        w.valid_to,
-        w.stitch_source
-    from with_lookback as w
 
 )
 
@@ -97,5 +82,5 @@ select
     valid_from,
     valid_to,
     stitch_source
-from capped
+from with_lookback
 where valid_from < coalesce(valid_to, timestamp('9999-12-31'))
