@@ -310,3 +310,5 @@ models:
 
       - name: is_current_stage
         description: Whether this is the user's highest funnel stage.
+        tests:
+          - not_null

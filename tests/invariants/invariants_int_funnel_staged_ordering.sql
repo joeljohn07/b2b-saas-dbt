@@ -1,7 +1,11 @@
 -- Validates that every user with an activation stage also has a signup stage.
 -- Funnel ordering invariant: activation requires signup first.
 
-{{ config(severity='error') }}
+{{ config(
+    severity='error',
+    tags=['operations_alert'],
+    description='Validates that every user with an activation stage also has a signup stage.'
+) }}
 
 with user_stages as (
 

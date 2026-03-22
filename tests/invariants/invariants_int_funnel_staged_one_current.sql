@@ -1,6 +1,10 @@
 -- Validates that each user has exactly one is_current_stage = true row.
 
-{{ config(severity='error') }}
+{{ config(
+    severity='error',
+    tags=['operations_alert'],
+    description='Validates that each user has exactly one is_current_stage = true row.'
+) }}
 
 select
     user_id,

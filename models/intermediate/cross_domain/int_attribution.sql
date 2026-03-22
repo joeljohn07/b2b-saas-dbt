@@ -45,7 +45,7 @@ attribution_window as (
     inner join activations as a
         on e.resolved_user_id = a.resolved_user_id
     where
-        e.event_time <= a.activation_at
+        e.event_time < a.activation_at
         and e.event_time >= timestamp_sub(
             a.activation_at, interval 30 day
         )

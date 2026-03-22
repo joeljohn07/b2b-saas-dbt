@@ -1,7 +1,11 @@
 -- Validates that no two sessions overlap for the same anon_id.
 -- Session time ranges [session_start_at, session_end_at] must not overlap.
 
-{{ config(severity='error') }}
+{{ config(
+    severity='error',
+    tags=['operations_alert'],
+    description='Validates that no two sessions overlap for the same anon_id.'
+) }}
 
 select
     a.anon_id,
