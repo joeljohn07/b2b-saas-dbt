@@ -10,7 +10,7 @@ analysis-paths: ["analyses"]
 test-paths: ["tests"]
 seed-paths: ["seeds"]
 macro-paths: ["macros"]
-docs-paths: ["docs"]
+docs-paths: ["docs", "models"]
 asset-paths: ["assets"]
 
 target-path: "target"
@@ -19,10 +19,10 @@ clean-targets:
   - "dbt_packages"
 
 vars:
-  source_dataset_prefix: "raw"
-  # dbt-project-evaluator: allow extended mart prefixes
-  model_types_to_check: ['staging', 'intermediate', 'marts', 'other']
-  other_prefixes: ['agg', 'rpt', 'mart']
+  # dbt-project-evaluator: naming convention overrides
+  model_types: ['staging', 'intermediate', 'marts', 'other']
+  marts_prefixes: ['fct_', 'dim_', 'bridge_']
+  other_prefixes: ['agg_', 'rpt_', 'mart_']
 
 models:
   b2b_saas_dbt:

@@ -15,7 +15,8 @@
 
 ## What Belongs Here
 - Column renaming and type casting
-- JSON shredding (properties, line_items, experiment_flags)
+- JSON shredding (properties → flat columns, experiment_flags passed through as JSON string for downstream unnesting)
+- Exception: `line_items` on invoices is passed through as raw JSON — shredding deferred to int_invoices_prep because the line item structure is variable-length and better handled at the intermediate layer
 - Null handling for optional fields
 
 ## What Does Not Belong Here
@@ -24,5 +25,5 @@
 - References to other models
 
 ## Directory Organization
-Models organized by source system: raw_funnel/, raw_billing/, raw_marketing/, raw_support/
+Models organized by source system: funnel/, billing/, marketing/, support/
 Each subdirectory contains `_sources.yml` (source declarations) and `_models.yml` (schema definitions).

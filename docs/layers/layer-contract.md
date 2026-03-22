@@ -19,12 +19,13 @@ Rules and conventions for each layer of the dbt project.
 - Column naming: snake_case, no abbreviations, same concept = same column name across all staging models
 
 ### File Organization
-- Subdirectories by source system: `raw_funnel/`, `raw_billing/`, `raw_marketing/`, `raw_support/`
+- Subdirectories by source system: `funnel/`, `billing/`, `marketing/`, `support/`
 - Each subdirectory contains `_sources.yml` (source declarations) and `_models.yml` (schema definitions)
 
 ### Transformations
 - Column renaming and type casting to canonical types (TIMESTAMP, DATE, STRING, INT64, NUMERIC)
-- JSON shredding (properties, line_items, experiment_flags → flat columns)
+- JSON shredding (properties → flat columns, experiment_flags passed through for downstream unnesting)
+- Exception: `line_items` on invoices passed through as raw JSON — shredded in int_invoices_prep
 - Null handling for optional fields
 
 ---

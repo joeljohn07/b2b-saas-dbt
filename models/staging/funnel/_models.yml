@@ -1,0 +1,231 @@
+version: 2
+
+models:
+  - name: stg_funnel__events
+    description: '{{ doc("stg_funnel__events") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - staging
+    columns:
+      # --- identifiers ---
+      - name: event_id
+        data_type: string
+        description: '{{ doc("col_event_id") }}'
+        tests:
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+
+      - name: anon_id
+        data_type: string
+        description: '{{ doc("col_anon_id") }}'
+        tests:
+          - not_null
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+
+      # --- timestamps ---
+      - name: event_time
+        data_type: timestamp
+        description: '{{ doc("col_event_time") }}'
+        tests:
+          - not_null
+
+      - name: ingest_time
+        data_type: timestamp
+        description: '{{ doc("col_ingest_time") }}'
+
+      - name: _loaded_at
+        data_type: timestamp
+        description: '{{ doc("col__loaded_at") }}'
+        tests:
+          - not_null
+
+      - name: event_date
+        data_type: date
+        description: '{{ doc("col_event_date") }}'
+        tests:
+          - not_null
+
+      # --- event classification ---
+      - name: event_type
+        data_type: string
+        description: '{{ doc("col_event_type") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - page_view
+                  - signup
+                  - activation
+                  - feature_use
+                  - paywall_view
+                  - checkout_start
+                  - upgrade_click
+                  - member_invited
+                  - member_joined
+                  - member_removed
+
+      - name: platform
+        data_type: string
+        description: '{{ doc("col_platform") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - web
+                  - ios
+                  - android
+
+      - name: channel
+        data_type: string
+        description: '{{ doc("col_channel") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - organic
+                  - paid_search
+                  - paid_social
+                  - referral
+                  - email
+                  - direct
+
+      - name: plan_context
+        data_type: string
+        description: '{{ doc("col_plan_context") }}'
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - free
+                  - starter
+                  - pro
+                  - enterprise
+              config:
+                where: plan_context is not null
+
+      # --- utm ---
+      - name: utm_source
+        data_type: string
+        description: '{{ doc("col_utm_source") }}'
+
+      - name: utm_medium
+        data_type: string
+        description: '{{ doc("col_utm_medium") }}'
+
+      - name: utm_campaign
+        data_type: string
+        description: '{{ doc("col_utm_campaign") }}'
+
+      - name: utm_term
+        data_type: string
+        description: '{{ doc("col_utm_term") }}'
+
+      - name: utm_content
+        data_type: string
+        description: '{{ doc("col_utm_content") }}'
+
+      # --- device ---
+      - name: device_type
+        data_type: string
+        description: '{{ doc("col_device_type") }}'
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - desktop
+                  - mobile
+                  - tablet
+
+      - name: browser
+        data_type: string
+        description: '{{ doc("col_browser") }}'
+
+      - name: os
+        data_type: string
+        description: '{{ doc("col_os") }}'
+
+      - name: user_agent
+        data_type: string
+        description: '{{ doc("col_user_agent") }}'
+
+      # --- properties JSON shred ---
+      - name: page_url
+        data_type: string
+        description: '{{ doc("col_page_url") }}'
+
+      - name: referrer
+        data_type: string
+        description: '{{ doc("col_referrer") }}'
+
+      - name: signup_method
+        data_type: string
+        description: '{{ doc("col_signup_method") }}'
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - email
+                  - google
+                  - github
+              config:
+                where: signup_method is not null
+
+      - name: activation_action
+        data_type: string
+        description: '{{ doc("col_activation_action") }}'
+
+      - name: time_to_activate_hours
+        data_type: float64
+        description: '{{ doc("col_time_to_activate_hours") }}'
+
+      - name: feature_name
+        data_type: string
+        description: '{{ doc("col_feature_name") }}'
+
+      - name: feature_duration_seconds
+        data_type: int64
+        description: '{{ doc("col_feature_duration_seconds") }}'
+
+      - name: source_page
+        data_type: string
+        description: '{{ doc("col_source_page") }}'
+
+      - name: target_plan
+        data_type: string
+        description: '{{ doc("col_target_plan") }}'
+
+      - name: billing_cycle
+        data_type: string
+        description: '{{ doc("col_billing_cycle") }}'
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - monthly
+                  - annual
+              config:
+                where: billing_cycle is not null
+
+      - name: member_role
+        data_type: string
+        description: '{{ doc("col_member_role") }}'
+
+      - name: member_reason
+        data_type: string
+        description: '{{ doc("col_member_reason") }}'
+
+      # --- experiment flags ---
+      - name: experiment_flags
+        data_type: string
+        description: '{{ doc("col_experiment_flags") }}'

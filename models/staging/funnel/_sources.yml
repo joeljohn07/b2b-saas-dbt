@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: raw_funnel
+  - name: funnel
     database: "{{ env_var('GCP_PROJECT_ID') }}"
     schema: raw_funnel
     description: Product analytics event stream
@@ -22,8 +22,8 @@ sources:
               period: hour
         columns:
           - name: event_id
-            description: Unique event identifier
+            description: '{{ doc("col_event_id") }}'
           - name: event_time
-            description: Timestamp when the event occurred
+            description: '{{ doc("col_event_time") }}'
           - name: _loaded_at
-            description: Timestamp when the row was loaded into the warehouse
+            description: '{{ doc("col__loaded_at") }}'

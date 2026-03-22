@@ -37,11 +37,11 @@ raw_support    ───►  stg_*__tickets   ───► int_account_health �
 
 | Domain | Source | Key Entities |
 |--------|--------|-------------|
-| Product | `raw_funnel.events` | Page views, signups, activations, feature usage, experiments |
-| Billing | `raw_billing.subscriptions` | Trials, upgrades, downgrades, cancellations, MRR |
-| Billing | `raw_billing.invoices` | Payments, refunds, line items |
-| Marketing | `raw_marketing.spend` | Channel spend, campaigns, impressions, clicks |
-| Support | `raw_support.tickets` | Tickets, resolution times, CSAT scores |
+| Product | `funnel.events` | Page views, signups, activations, feature usage, experiments |
+| Billing | `billing.subscriptions` | Trials, upgrades, downgrades, cancellations, MRR |
+| Billing | `billing.invoices` | Payments, refunds, line items |
+| Marketing | `marketing.spend` | Channel spend, campaigns, impressions, clicks |
+| Support | `support.tickets` | Tickets, resolution times, CSAT scores |
 
 ## Directory Structure
 
@@ -49,10 +49,10 @@ raw_support    ───►  stg_*__tickets   ───► int_account_health �
 .
 ├── models/
 │   ├── staging/                # 1:1 source shaping (views)
-│   │   ├── raw_funnel/         # Product events
-│   │   ├── raw_billing/        # Subscriptions + invoices
-│   │   ├── raw_marketing/      # Channel spend
-│   │   └── raw_support/        # Support tickets
+│   │   ├── funnel/             # Product events
+│   │   ├── billing/            # Subscriptions + invoices
+│   │   ├── marketing/          # Channel spend
+│   │   └── support/            # Support tickets
 │   ├── intermediate/           # Business logic (views + 1 incremental)
 │   │   ├── product/            # Event pipeline, sessions, identity, funnel
 │   │   ├── billing/            # Subscription lifecycle, MRR movements

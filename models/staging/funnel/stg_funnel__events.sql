@@ -1,6 +1,30 @@
 with source as (
 
-    select * from {{ source('raw_funnel', 'events') }}
+    select
+        event_id,
+        event_time,
+        ingest_time,
+        _loaded_at,
+        event_date,
+        event_type,
+        user_id,
+        anon_id,
+        account_id,
+        platform,
+        channel,
+        plan_context,
+        utm_source,
+        utm_medium,
+        utm_campaign,
+        utm_term,
+        utm_content,
+        device_type,
+        browser,
+        os,
+        user_agent,
+        properties,
+        experiment_flags
+    from {{ source('funnel', 'events') }}
 
 ),
 
@@ -63,4 +87,39 @@ renamed as (
 
 )
 
-select * from renamed
+select
+    event_id,
+    user_id,
+    anon_id,
+    account_id,
+    event_time,
+    ingest_time,
+    _loaded_at,
+    event_date,
+    event_type,
+    platform,
+    channel,
+    plan_context,
+    utm_source,
+    utm_medium,
+    utm_campaign,
+    utm_term,
+    utm_content,
+    device_type,
+    browser,
+    os,
+    user_agent,
+    page_url,
+    referrer,
+    signup_method,
+    activation_action,
+    time_to_activate_hours,
+    feature_name,
+    feature_duration_seconds,
+    source_page,
+    target_plan,
+    billing_cycle,
+    member_role,
+    member_reason,
+    experiment_flags
+from renamed
