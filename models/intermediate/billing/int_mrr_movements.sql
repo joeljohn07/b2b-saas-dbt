@@ -22,11 +22,11 @@ lifecycle as (
         event_time,
         mrr_amount,
         lag(mrr_amount) over (
-            partition by account_id
+            partition by account_id, subscription_id
             order by event_time
         ) as previous_mrr,
         lag(event_type) over (
-            partition by account_id
+            partition by account_id, subscription_id
             order by event_time
         ) as previous_event_type
     from non_trial_events
