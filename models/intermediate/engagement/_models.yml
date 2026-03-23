@@ -1,0 +1,97 @@
+version: 2
+
+models:
+  - name: int_engagement_states
+    description: '{{ doc("int_engagement_states") }}'
+    config:
+      tags:
+        - intermediate
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - user_id
+            - snapshot_week_start
+    columns:
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: snapshot_week_start
+        description: Monday start date of the snapshot week.
+        tests:
+          - not_null
+
+      - name: engagement_state
+        description: >
+          Weekly engagement classification: pre_active (before activation),
+          active (activity within 14d), dormant (14-42d), disengaged (42d+).
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - pre_active
+                - active
+                - dormant
+                - disengaged
+
+      - name: is_re_engaged
+        description: >
+          Whether the user transitioned from dormant or disengaged to active
+          this week.
+        tests:
+          - not_null
+
+      - name: days_since_last_activity
+        description: Calendar days since the user's last activity as of snapshot week.
+
+      - name: last_activity_at
+        description: Timestamp of the user's most recent activity before snapshot week.
+
+  - name: int_experiment_results
+    description: '{{ doc("int_experiment_results") }}'
+    config:
+      tags:
+        - intermediate
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - user_id
+            - experiment_id
+    columns:
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: experiment_id
+        description: Experiment identifier from experiment_flags JSON.
+        tests:
+          - not_null
+
+      - name: variant
+        description: Experiment variant assigned to the user.
+        tests:
+          - not_null
+
+      - name: first_exposure_at
+        description: Timestamp of the user's first exposure to the experiment.
+        tests:
+          - not_null
+
+      - name: converted
+        description: Whether the user activated after experiment exposure.
+        tests:
+          - not_null
+
+      - name: conversion_at
+        description: Timestamp of activation after exposure. Null if not converted.
+
+      - name: exposure_duration_hours
+        description: >
+          Hours between first and last exposure event. Only rows with
+          exposure_duration_hours >= 24 are included (24h exclusion rule).
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 24
