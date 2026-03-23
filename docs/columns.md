@@ -1,0 +1,363 @@
+# Shared Column Doc Blocks
+
+Canonical doc blocks for columns reused across 2+ models. Per
+`docs/doc-block-convention.md`, naming follows `col_{column}` for shared
+columns and `col_{domain}_{column}` for domain-qualified columns.
+
+---
+
+## Identifiers
+
+{% docs col_event_id %}
+Event identifier. Not unique in staging due to ~0.5% known duplicate events
+in the source system. Uniqueness is enforced after dedup in
+int_events_normalized.
+{% enddocs %}
+
+{% docs col_user_id %}
+Authenticated user identifier. Null for anonymous events that occur before
+signup or login.
+{% enddocs %}
+
+{% docs col_anon_id %}
+Anonymous visitor identifier. Assigned on first visit and persists across
+sessions until the user authenticates.
+{% enddocs %}
+
+{% docs col_account_id %}
+Account identifier. Groups users into a shared workspace or billing entity.
+Null for pre-signup events.
+{% enddocs %}
+
+{% docs col_subscription_event_id %}
+Unique identifier for a subscription lifecycle event.
+{% enddocs %}
+
+{% docs col_subscription_id %}
+Subscription identifier. Groups all lifecycle events for the same
+subscription.
+{% enddocs %}
+
+{% docs col_invoice_id %}
+Unique invoice identifier.
+{% enddocs %}
+
+{% docs col_spend_id %}
+Unique marketing spend record identifier.
+{% enddocs %}
+
+{% docs col_ticket_id %}
+Unique support ticket identifier.
+{% enddocs %}
+
+{% docs col_campaign_id %}
+Marketing campaign identifier.
+{% enddocs %}
+
+---
+
+## Timestamps
+
+{% docs col_event_time %}
+Timestamp when the event occurred.
+{% enddocs %}
+
+{% docs col_ingest_time %}
+Timestamp when the event was ingested by the pipeline.
+{% enddocs %}
+
+{% docs col__loaded_at %}
+Timestamp when the row was loaded into the warehouse.
+{% enddocs %}
+
+{% docs col_issued_at %}
+Timestamp when the invoice was issued.
+{% enddocs %}
+
+{% docs col_paid_at %}
+Timestamp when the invoice was paid. Null if unpaid.
+{% enddocs %}
+
+{% docs col_created_at %}
+Timestamp when the ticket was created.
+{% enddocs %}
+
+{% docs col_resolved_at %}
+Timestamp when the ticket was resolved. Null if still open.
+{% enddocs %}
+
+---
+
+## Dates
+
+{% docs col_event_date %}
+Date of the event. Populated by the source system from event_time.
+{% enddocs %}
+
+{% docs col_spend_date %}
+Date of the marketing spend. Renamed from source 'date' column.
+{% enddocs %}
+
+---
+
+## Classification
+
+{% docs col_event_type %}
+Type of event. Categorizes the user action or system event that was recorded.
+{% enddocs %}
+
+{% docs col_subscription_event_type %}
+Type of subscription event (trial_start, trial_end, subscription_start,
+upgrade, downgrade, renewal, cancellation, reactivation).
+{% enddocs %}
+
+{% docs col_platform %}
+Platform where the event occurred (web, ios, android).
+{% enddocs %}
+
+{% docs col_channel %}
+Acquisition or marketing channel (organic, paid_search, paid_social,
+referral, email, direct).
+{% enddocs %}
+
+{% docs col_plan_context %}
+The user's current plan at the time the event was recorded.
+{% enddocs %}
+
+{% docs col_plan %}
+Subscription plan at the time of the event (free, starter, pro, enterprise).
+{% enddocs %}
+
+{% docs col_previous_plan %}
+Previous subscription plan before this event. Null for the first subscription
+event on an account.
+{% enddocs %}
+
+{% docs col_category %}
+Support ticket category (bug, feature_request, billing, onboarding, other).
+{% enddocs %}
+
+{% docs col_priority %}
+Support ticket priority level (low, medium, high, critical).
+{% enddocs %}
+
+{% docs col_ticket_status %}
+Support ticket status (open, in_progress, resolved, closed).
+{% enddocs %}
+
+{% docs col_invoice_status %}
+Invoice payment status (paid, pending, failed, refunded).
+{% enddocs %}
+
+---
+
+## UTM
+
+{% docs col_utm_source %}
+UTM source parameter from the referring URL. Null when not present.
+{% enddocs %}
+
+{% docs col_utm_medium %}
+UTM medium parameter from the referring URL. Null when not present.
+{% enddocs %}
+
+{% docs col_utm_campaign %}
+UTM campaign parameter from the referring URL. Null when not present.
+{% enddocs %}
+
+{% docs col_utm_term %}
+UTM term parameter from the referring URL. Null when not present.
+{% enddocs %}
+
+{% docs col_utm_content %}
+UTM content parameter from the referring URL. Null when not present.
+{% enddocs %}
+
+---
+
+## Device
+
+{% docs col_device_type %}
+Device type used for the event (desktop, mobile, tablet).
+{% enddocs %}
+
+{% docs col_browser %}
+Browser name used for the event.
+{% enddocs %}
+
+{% docs col_os %}
+Operating system of the device used for the event.
+{% enddocs %}
+
+{% docs col_user_agent %}
+Raw user agent string from the HTTP request.
+{% enddocs %}
+
+---
+
+## Financial
+
+{% docs col_mrr_amount %}
+Monthly recurring revenue amount in the subscription currency.
+{% enddocs %}
+
+{% docs col_billing_cycle %}
+Billing cycle (monthly, annual).
+{% enddocs %}
+
+{% docs col_currency %}
+ISO 4217 currency code (e.g., USD, EUR).
+{% enddocs %}
+
+{% docs col_amount %}
+Invoice total amount in the invoice currency.
+{% enddocs %}
+
+{% docs col_refund_amount %}
+Refund amount applied to the invoice. Zero if no refund.
+{% enddocs %}
+
+{% docs col_spend_amount %}
+Amount spent on the campaign for the given date.
+{% enddocs %}
+
+{% docs col_cancel_reason %}
+Reason for cancellation. Null for non-cancellation events.
+{% enddocs %}
+
+{% docs col_is_voluntary %}
+Whether the cancellation was initiated by the customer (true) or by the
+system (false). Null for non-cancellation events.
+{% enddocs %}
+
+---
+
+## Metrics
+
+{% docs col_impressions %}
+Number of ad impressions served.
+{% enddocs %}
+
+{% docs col_clicks %}
+Number of ad clicks received.
+{% enddocs %}
+
+{% docs col_csat_score %}
+Customer satisfaction score (1-5). Null if the customer has not yet rated
+the interaction.
+{% enddocs %}
+
+{% docs col_first_response_seconds %}
+Time to first agent response in seconds. Null if no response has been sent.
+{% enddocs %}
+
+---
+
+## Event-specific columns
+
+{% docs col_page_url %}
+Page URL visited. Populated for page_view events only.
+{% enddocs %}
+
+{% docs col_referrer %}
+Referrer URL for the page view. Populated for page_view events only.
+{% enddocs %}
+
+{% docs col_signup_method %}
+Method used to sign up (e.g., email, google, github). Populated for signup
+events only.
+{% enddocs %}
+
+{% docs col_activation_action %}
+The specific action that qualified as activation. Populated for activation
+events only.
+{% enddocs %}
+
+{% docs col_time_to_activate_hours %}
+Hours elapsed from signup to activation. Populated for activation events only.
+{% enddocs %}
+
+{% docs col_feature_name %}
+Name of the feature used. Populated for feature_use events only.
+{% enddocs %}
+
+{% docs col_feature_duration_seconds %}
+Duration of feature use in seconds. Populated for feature_use events only.
+{% enddocs %}
+
+{% docs col_source_page %}
+Page that triggered a paywall view. Populated for paywall_view events only.
+{% enddocs %}
+
+{% docs col_target_plan %}
+Target plan for a checkout or upgrade action. Populated for checkout_start
+and upgrade_click events.
+{% enddocs %}
+
+{% docs col_member_role %}
+Role assigned to a team member. Populated for member_joined events only.
+{% enddocs %}
+
+{% docs col_member_reason %}
+Reason for removing a team member. Populated for member_removed events only.
+{% enddocs %}
+
+{% docs col_experiment_flags %}
+JSON-serialized array of experiment assignments. Each element contains
+experiment_id and variant. Unnested downstream in int_experiment_results.
+{% enddocs %}
+
+{% docs col_campaign_name %}
+Human-readable marketing campaign name.
+{% enddocs %}
+
+{% docs col_line_items %}
+Raw JSON string of invoice line items. Kept as-is for downstream processing.
+{% enddocs %}
+
+---
+
+## Interval columns
+
+{% docs col_valid_from %}
+Start of an effective-dated interval (inclusive). Used in identity stitching
+and account membership periods.
+{% enddocs %}
+
+{% docs col_valid_to %}
+End of an effective-dated interval (exclusive). Null means the interval is
+current/open-ended. Used in identity stitching and account membership periods.
+{% enddocs %}
+
+---
+
+## Intermediate-derived columns
+
+{% docs col_is_active %}
+Whether the subscription is currently active, derived from the event type.
+{% enddocs %}
+
+{% docs col_days_since_previous_event %}
+Calendar days since the previous subscription lifecycle event for this
+account.
+{% enddocs %}
+
+{% docs col_resolution_time_hours %}
+Hours between ticket creation and resolution.
+{% enddocs %}
+
+{% docs col_first_response_hours %}
+Hours between ticket creation and first agent response.
+{% enddocs %}
+
+{% docs col_is_resolved %}
+Whether the ticket has been resolved or closed.
+{% enddocs %}
+
+{% docs col_is_paid %}
+Whether the invoice has been paid.
+{% enddocs %}
+
+{% docs col_net_amount %}
+Invoice amount minus refund amount.
+{% enddocs %}
