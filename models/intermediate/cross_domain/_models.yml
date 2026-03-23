@@ -250,3 +250,104 @@ models:
         description: Timestamp of the user's first activation event.
         tests:
           - not_null
+
+  - name: int_checkout_conversion
+    description: '{{ doc("int_checkout_conversion") }}'
+    config:
+      tags:
+        - intermediate
+    columns:
+      - name: checkout_event_id
+        description: Event ID of the checkout_start event.
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: account_id
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: checkout_at
+        description: Timestamp of the checkout_start event.
+        tests:
+          - not_null
+
+      - name: target_plan
+        description: '{{ doc("col_target_plan") }}'
+
+      - name: subscription_event_id
+        description: Matched subscription_start event ID. Null if not converted.
+
+      - name: subscription_at
+        description: Timestamp of the matched subscription_start. Null if not converted.
+
+      - name: converted
+        description: Whether the checkout led to a subscription within 30 days.
+        tests:
+          - not_null
+
+      - name: time_to_conversion_days
+        description: Days between checkout and subscription. Null if not converted.
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "<= 30 or time_to_conversion_days is null"
+
+  - name: int_account_health
+    description: '{{ doc("int_account_health") }}'
+    config:
+      tags:
+        - intermediate
+    columns:
+      - name: account_id
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: health_score
+        description: Composite weighted health score bounded [0, 100].
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+
+      - name: activity_score
+        description: Activity component (40% weight). Based on session count.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+
+      - name: billing_score
+        description: Billing component (30% weight). Based on subscription status.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+
+      - name: support_score
+        description: Support component (30% weight). Based on ticket volume and CSAT.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100
+
+      - name: calculated_at
+        description: Timestamp when the health score was calculated.
+        tests:
+          - not_null
+
+      - name: trailing_window_days
+        description: Number of trailing days used for the score calculation (28).
+        tests:
+          - not_null
