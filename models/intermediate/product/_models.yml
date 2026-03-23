@@ -204,3 +204,111 @@ models:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               min_value: 0
+
+  - name: int_sessions
+    description: '{{ doc("int_sessions") }}'
+    config:
+      tags:
+        - intermediate
+    columns:
+      - name: session_id
+        description: Deterministic hash of anon_id and first event ID.
+        tests:
+          - unique
+          - not_null
+
+      - name: anon_id
+        description: '{{ doc("col_anon_id") }}'
+        tests:
+          - not_null
+
+      - name: stitched_user_id
+        description: Authenticated user ID resolved via identity stitching. Null for anonymous sessions.
+
+      - name: session_start_at
+        description: Timestamp of the first event in the session.
+        tests:
+          - not_null
+
+      - name: session_end_at
+        description: Timestamp of the last event in the session.
+        tests:
+          - not_null
+
+      - name: session_duration_seconds
+        description: Duration of session in seconds.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+
+      - name: event_count
+        description: Number of events in the session.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 1
+
+      - name: page_view_count
+        description: Number of page_view events in the session.
+
+      - name: utm_source
+        description: '{{ doc("col_utm_source") }}'
+
+      - name: utm_medium
+        description: '{{ doc("col_utm_medium") }}'
+
+      - name: utm_campaign
+        description: '{{ doc("col_utm_campaign") }}'
+
+      - name: platform
+        description: '{{ doc("col_platform") }}'
+
+      - name: device_type
+        description: '{{ doc("col_device_type") }}'
+
+      - name: browser
+        description: '{{ doc("col_browser") }}'
+
+      - name: session_date
+        description: Date of the session start.
+        tests:
+          - not_null
+
+  - name: int_funnel_staged
+    description: '{{ doc("int_funnel_staged") }}'
+    config:
+      tags:
+        - intermediate
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - user_id
+            - stage
+    columns:
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: stage
+        description: Funnel stage name.
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - page_view
+                - signup
+                - activation
+                - feature_use
+                - checkout_start
+
+      - name: stage_reached_at
+        description: Timestamp when this funnel stage was first reached.
+        tests:
+          - not_null
+
+      - name: is_current_stage
+        description: Whether this is the user's highest funnel stage.
+        tests:
+          - not_null
