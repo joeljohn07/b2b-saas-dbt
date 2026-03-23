@@ -122,3 +122,85 @@ models:
 
       - name: experiment_flags
         description: '{{ doc("col_experiment_flags") }}'
+
+  - name: int_identity_stitched
+    description: '{{ doc("int_identity_stitched") }}'
+    config:
+      tags:
+        - intermediate
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - anon_id
+            - valid_from
+    columns:
+      - name: anon_id
+        description: '{{ doc("col_anon_id") }}'
+        tests:
+          - not_null
+
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: valid_from
+        description: Start of the identity stitch interval (inclusive).
+        tests:
+          - not_null
+
+      - name: valid_to
+        description: >
+          End of the identity stitch interval (exclusive). Null means the
+          mapping is current/open-ended.
+
+      - name: stitch_source
+        description: How the stitch was determined (last_touch or historical).
+        tests:
+          - not_null
+          - accepted_values:
+              values:
+                - last_touch
+                - historical
+
+  - name: int_account_memberships
+    description: '{{ doc("int_account_memberships") }}'
+    config:
+      tags:
+        - intermediate
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - user_id
+            - account_id
+            - valid_from
+    columns:
+      - name: user_id
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: account_id
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: role
+        description: '{{ doc("col_member_role") }}'
+
+      - name: valid_from
+        description: Timestamp when the user joined the account.
+        tests:
+          - not_null
+
+      - name: valid_to
+        description: >
+          Timestamp when the user was removed from the account.
+          Null means the user is still a member.
+
+      - name: membership_duration_days
+        description: Duration of membership in calendar days.
+        tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
