@@ -152,8 +152,11 @@ select
     user_id,
     snapshot_week_start,
     engagement_state,
-    previous_state in ('dormant', 'disengaged')
-    and engagement_state = 'active' as is_re_engaged,
+    coalesce(
+        previous_state in ('dormant', 'disengaged')
+        and engagement_state = 'active',
+        false
+    ) as is_re_engaged,
     days_since_last_activity,
     last_activity_at
 from classified
