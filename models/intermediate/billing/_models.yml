@@ -107,12 +107,12 @@ models:
           - not_null
 
       - name: movement_date
-        description: Date of the MRR movement.
+        description: '{{ doc("col_movement_date") }}'
         tests:
           - not_null
 
       - name: movement_type
-        description: Category of MRR change.
+        description: '{{ doc("col_movement_type") }}'
         tests:
           - not_null
           - accepted_values:
@@ -124,16 +124,16 @@ models:
                 - reactivation
 
       - name: mrr_before
-        description: MRR amount before this movement.
+        description: '{{ doc("col_mrr_before") }}'
         tests:
           - not_null
 
       - name: mrr_after
-        description: MRR amount after this movement.
+        description: '{{ doc("col_mrr_after") }}'
         tests:
           - not_null
 
       - name: mrr_delta
-        description: Change in MRR (mrr_after - mrr_before).
+        description: '{{ doc("col_mrr_delta") }}'
         tests:
           - not_null

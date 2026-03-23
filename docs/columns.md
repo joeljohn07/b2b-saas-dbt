@@ -361,3 +361,251 @@ Whether the invoice has been paid.
 {% docs col_net_amount %}
 Invoice amount minus refund amount.
 {% enddocs %}
+
+---
+
+## MRR movement columns
+
+{% docs col_movement_date %}
+Date of the MRR movement event.
+{% enddocs %}
+
+{% docs col_movement_type %}
+Category of MRR change (new, expansion, contraction, churn, reactivation).
+{% enddocs %}
+
+{% docs col_mrr_before %}
+MRR amount before this movement.
+{% enddocs %}
+
+{% docs col_mrr_after %}
+MRR amount after this movement.
+{% enddocs %}
+
+{% docs col_mrr_delta %}
+Change in MRR (mrr_after minus mrr_before).
+{% enddocs %}
+
+---
+
+## Attribution columns
+
+{% docs col_first_touch_channel %}
+Channel of the first touchpoint within 30 days of activation.
+{% enddocs %}
+
+{% docs col_first_touch_source %}
+UTM source of the first touchpoint. Null for organic users.
+{% enddocs %}
+
+{% docs col_first_touch_medium %}
+UTM medium of the first touchpoint. Null for organic users.
+{% enddocs %}
+
+{% docs col_first_touch_campaign %}
+UTM campaign of the first touchpoint. Null for organic users.
+{% enddocs %}
+
+{% docs col_first_touch_at %}
+Timestamp of the first touchpoint.
+{% enddocs %}
+
+{% docs col_last_touch_channel %}
+Channel of the last touchpoint before activation.
+{% enddocs %}
+
+{% docs col_last_touch_source %}
+UTM source of the last touchpoint. Null for organic users.
+{% enddocs %}
+
+{% docs col_last_touch_medium %}
+UTM medium of the last touchpoint. Null for organic users.
+{% enddocs %}
+
+{% docs col_last_touch_campaign %}
+UTM campaign of the last touchpoint. Null for organic users.
+{% enddocs %}
+
+{% docs col_last_touch_at %}
+Timestamp of the last touchpoint before activation.
+{% enddocs %}
+
+{% docs col_activation_at %}
+Timestamp of the user's first activation event.
+{% enddocs %}
+
+---
+
+## Checkout conversion columns
+
+{% docs col_checkout_event_id %}
+Event ID of the checkout_start event.
+{% enddocs %}
+
+{% docs col_checkout_at %}
+Timestamp of the checkout_start event.
+{% enddocs %}
+
+{% docs col_subscription_at %}
+Timestamp of the matched subscription_start. Null if not converted.
+{% enddocs %}
+
+{% docs col_converted %}
+Whether the checkout led to a subscription within 30 days, or whether a
+user activated after experiment exposure.
+{% enddocs %}
+
+{% docs col_time_to_conversion_days %}
+Days between checkout and subscription. Null if not converted.
+{% enddocs %}
+
+---
+
+## Account health columns
+
+{% docs col_health_score %}
+Composite weighted health score bounded [0, 100]. Activity 40%, billing
+30%, support 30%.
+{% enddocs %}
+
+{% docs col_activity_score %}
+Activity component of health score (40% weight). Based on session count
+in trailing window.
+{% enddocs %}
+
+{% docs col_billing_score %}
+Billing component of health score (30% weight). Based on subscription
+status and recency.
+{% enddocs %}
+
+{% docs col_support_score %}
+Support component of health score (30% weight). Based on ticket volume
+and CSAT scores.
+{% enddocs %}
+
+{% docs col_calculated_at %}
+Timestamp when the health score was calculated.
+{% enddocs %}
+
+{% docs col_trailing_window_days %}
+Number of trailing days used for the score calculation.
+{% enddocs %}
+
+---
+
+## Engagement columns
+
+{% docs col_snapshot_week_start %}
+Monday start date of the snapshot week.
+{% enddocs %}
+
+{% docs col_engagement_state %}
+Weekly engagement classification: pre_active (before activation), active
+(activity within 14d), dormant (14-42d), disengaged (42d+).
+{% enddocs %}
+
+{% docs col_is_re_engaged %}
+Whether the user transitioned from dormant or disengaged to active this
+week.
+{% enddocs %}
+
+{% docs col_days_since_last_activity %}
+Calendar days since the user's last activity as of snapshot week.
+{% enddocs %}
+
+{% docs col_last_activity_at %}
+Timestamp of the user's most recent activity before snapshot week.
+{% enddocs %}
+
+---
+
+## Experiment columns
+
+{% docs col_experiment_id %}
+Experiment identifier from experiment_flags JSON.
+{% enddocs %}
+
+{% docs col_variant %}
+Experiment variant assigned to the user.
+{% enddocs %}
+
+{% docs col_first_exposure_at %}
+Timestamp of the user's first exposure to the experiment.
+{% enddocs %}
+
+{% docs col_conversion_at %}
+Timestamp of activation after experiment exposure. Null if not converted.
+{% enddocs %}
+
+{% docs col_exposure_duration_hours %}
+Hours between first and last exposure event. Only rows with 24+ hours are
+included (24h exclusion rule).
+{% enddocs %}
+
+---
+
+## Identity columns
+
+{% docs col_stitch_source %}
+How the identity stitch was determined (last_touch or historical).
+{% enddocs %}
+
+## Session columns
+
+{% docs col_session_id %}
+Deterministic hash of anon_id and first event ID within the session.
+{% enddocs %}
+
+{% docs col_stitched_user_id %}
+Authenticated user ID resolved via identity stitching. Null for anonymous
+sessions.
+{% enddocs %}
+
+{% docs col_session_start_at %}
+Timestamp of the first event in the session.
+{% enddocs %}
+
+{% docs col_session_end_at %}
+Timestamp of the last event in the session.
+{% enddocs %}
+
+{% docs col_session_duration_seconds %}
+Duration of session in seconds (end minus start).
+{% enddocs %}
+
+{% docs col_event_count %}
+Number of events in the session.
+{% enddocs %}
+
+{% docs col_page_view_count %}
+Number of page_view events in the session.
+{% enddocs %}
+
+{% docs col_session_date %}
+Date of the session start.
+{% enddocs %}
+
+---
+
+## Funnel columns
+
+{% docs col_stage %}
+Funnel stage name (page_view, signup, activation, feature_use,
+checkout_start).
+{% enddocs %}
+
+{% docs col_stage_reached_at %}
+Timestamp when this funnel stage was first reached.
+{% enddocs %}
+
+{% docs col_is_current_stage %}
+Whether this is the user's highest funnel stage.
+{% enddocs %}
+
+---
+
+## Membership columns
+
+{% docs col_membership_duration_days %}
+Duration of account membership in calendar days.
+{% enddocs %}

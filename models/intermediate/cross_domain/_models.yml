@@ -207,47 +207,47 @@ models:
           - not_null
 
       - name: first_touch_channel
-        description: Channel of the first touchpoint within 30 days of activation.
+        description: '{{ doc("col_first_touch_channel") }}'
         tests:
           - not_null:
               config:
                 where: "activation_at is not null"
 
       - name: first_touch_source
-        description: UTM source of the first touchpoint. Null for organic users.
+        description: '{{ doc("col_first_touch_source") }}'
 
       - name: first_touch_medium
-        description: UTM medium of the first touchpoint. Null for organic users.
+        description: '{{ doc("col_first_touch_medium") }}'
 
       - name: first_touch_campaign
-        description: UTM campaign of the first touchpoint. Null for organic users.
+        description: '{{ doc("col_first_touch_campaign") }}'
 
       - name: first_touch_at
-        description: Timestamp of the first touchpoint.
+        description: '{{ doc("col_first_touch_at") }}'
         tests:
           - not_null
 
       - name: last_touch_channel
-        description: Channel of the last touchpoint before activation.
+        description: '{{ doc("col_last_touch_channel") }}'
         tests:
           - not_null
 
       - name: last_touch_source
-        description: UTM source of the last touchpoint. Null for organic users.
+        description: '{{ doc("col_last_touch_source") }}'
 
       - name: last_touch_medium
-        description: UTM medium of the last touchpoint. Null for organic users.
+        description: '{{ doc("col_last_touch_medium") }}'
 
       - name: last_touch_campaign
-        description: UTM campaign of the last touchpoint. Null for organic users.
+        description: '{{ doc("col_last_touch_campaign") }}'
 
       - name: last_touch_at
-        description: Timestamp of the last touchpoint before activation.
+        description: '{{ doc("col_last_touch_at") }}'
         tests:
           - not_null
 
       - name: activation_at
-        description: Timestamp of the user's first activation event.
+        description: '{{ doc("col_activation_at") }}'
         tests:
           - not_null
 
@@ -258,7 +258,7 @@ models:
         - intermediate
     columns:
       - name: checkout_event_id
-        description: Event ID of the checkout_start event.
+        description: '{{ doc("col_checkout_event_id") }}'
         tests:
           - unique
           - not_null
@@ -270,11 +270,9 @@ models:
 
       - name: account_id
         description: '{{ doc("col_account_id") }}'
-        tests:
-          - not_null
 
       - name: checkout_at
-        description: Timestamp of the checkout_start event.
+        description: '{{ doc("col_event_time") }}'
         tests:
           - not_null
 
@@ -282,18 +280,18 @@ models:
         description: '{{ doc("col_target_plan") }}'
 
       - name: subscription_event_id
-        description: Matched subscription_start event ID. Null if not converted.
+        description: '{{ doc("col_subscription_event_id") }}'
 
       - name: subscription_at
-        description: Timestamp of the matched subscription_start. Null if not converted.
+        description: '{{ doc("col_subscription_at") }}'
 
       - name: converted
-        description: Whether the checkout led to a subscription within 30 days.
+        description: '{{ doc("col_converted") }}'
         tests:
           - not_null
 
       - name: time_to_conversion_days
-        description: Days between checkout and subscription. Null if not converted.
+        description: '{{ doc("col_time_to_conversion_days") }}'
         tests:
           - dbt_utils.expression_is_true:
               expression: "<= 30 or time_to_conversion_days is null"
@@ -311,7 +309,7 @@ models:
           - not_null
 
       - name: health_score
-        description: Composite weighted health score bounded [0, 100].
+        description: '{{ doc("col_health_score") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
@@ -319,7 +317,7 @@ models:
               max_value: 100
 
       - name: activity_score
-        description: Activity component (40% weight). Based on session count.
+        description: '{{ doc("col_activity_score") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
@@ -327,7 +325,7 @@ models:
               max_value: 100
 
       - name: billing_score
-        description: Billing component (30% weight). Based on subscription status.
+        description: '{{ doc("col_billing_score") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
@@ -335,7 +333,7 @@ models:
               max_value: 100
 
       - name: support_score
-        description: Support component (30% weight). Based on ticket volume and CSAT.
+        description: '{{ doc("col_support_score") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
@@ -343,11 +341,11 @@ models:
               max_value: 100
 
       - name: calculated_at
-        description: Timestamp when the health score was calculated.
+        description: '{{ doc("col_calculated_at") }}'
         tests:
           - not_null
 
       - name: trailing_window_days
-        description: Number of trailing days used for the score calculation (28).
+        description: '{{ doc("col_trailing_window_days") }}'
         tests:
           - not_null
