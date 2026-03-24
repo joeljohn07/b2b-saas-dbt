@@ -1,11 +1,11 @@
 experiment_id,experiment_name,status,start_date,end_date,description
 exp_onboarding_v2,Onboarding Flow V2,completed,2024-03-31,2024-05-30,Testing revised onboarding flow with simplified steps
-exp_pricing_page,Pricing Page Redesign,completed,2024-05-29,2024-07-13,A/B test of new pricing page layout and copy
+exp_pricing_page,Pricing Page Redesign,completed,2024-05-30,2024-07-14,A/B test of new pricing page layout and copy
 exp_checkout_flow,Simplified Checkout,completed,2024-07-29,2024-09-07,Streamlined checkout process with fewer steps
-exp_feature_tour,Interactive Feature Tour,completed,2024-09-16,2024-11-05,Guided product tour for new users after signup
+exp_feature_tour,Interactive Feature Tour,completed,2024-09-17,2024-11-06,Guided product tour for new users after signup
 exp_email_cadence,Email Cadence Test,completed,2024-04-30,2024-07-29,Testing different email frequency for onboarding sequences
 exp_onboarding_v3,Onboarding Flow V3,completed,2025-04-05,2025-06-04,Third iteration of onboarding with personalized paths
 exp_annual_nudge,Annual Plan Nudge,completed,2025-05-25,2025-07-09,Testing prompts to switch from monthly to annual billing
-exp_activation_cta,Activation CTA Experiment,completed,2025-07-13,2025-09-01,Testing different call-to-action copy for activation step
-exp_referral_program,Referral Incentive Test,active,2025-08-31,,Testing referral incentives for existing users
-exp_dashboard_redesign,Dashboard Redesign,active,2025-11-14,,Redesigned dashboard layout with key metrics prominently displayed
+exp_activation_cta,Activation CTA Experiment,completed,2025-07-14,2025-09-02,Testing different call-to-action copy for activation step
+exp_referral_program,Referral Incentive Test,completed,2025-09-02,2025-11-01,Testing referral incentives for existing users
+exp_dashboard_redesign,Dashboard Redesign,completed,2025-11-11,2025-12-26,Redesigned dashboard layout with key metrics prominently displayed
