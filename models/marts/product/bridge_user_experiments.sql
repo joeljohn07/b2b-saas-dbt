@@ -1,4 +1,5 @@
 select
+    farm_fingerprint(user_id) as user_key,
     user_id,
     farm_fingerprint(experiment_id) as experiment_key,
     variant,

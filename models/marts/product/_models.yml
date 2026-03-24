@@ -145,6 +145,15 @@ models:
         sla: daily
         tier: 2
     columns:
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
@@ -175,5 +184,5 @@ models:
     tests:
       - dbt_utils.unique_combination_of_columns:
           combination_of_columns:
-            - user_id
+            - user_key
             - experiment_key

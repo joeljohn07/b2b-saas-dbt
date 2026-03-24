@@ -1,6 +1,16 @@
 with accounts as (
     select distinct account_id
     from {{ ref('int_account_memberships') }}
+
+    union distinct
+
+    select distinct account_id
+    from {{ ref('int_subscription_lifecycle') }}
+
+    union distinct
+
+    select distinct account_id
+    from {{ ref('int_account_health') }}
 ),
 
 current_sub as (
@@ -63,7 +73,7 @@ select
     farm_fingerprint(aq.first_touch_channel) as acquisition_channel_key,
     date(aq.activation_at) as acquisition_date,
     case
-        when cs.is_active and cs.event_type in ('subscription_start', 'renewal', 'upgrade') then 'active'
+        when cs.is_active and cs.event_type in ('subscription_start', 'renewal', 'upgrade', 'downgrade') then 'active'
         when cs.event_type = 'reactivation' then 'reactivated'
         when cs.event_type = 'cancellation' then 'churned'
         when cs.event_type = 'trial_start' then 'trial'

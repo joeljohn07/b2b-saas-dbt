@@ -14,6 +14,9 @@ current_membership as (
         role,
     from {{ ref('int_account_memberships') }}
     where valid_to is null
+    qualify row_number() over (
+        partition by user_id order by valid_from desc, account_id
+    ) = 1
 ),
 
 attribution as (
