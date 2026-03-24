@@ -34,7 +34,8 @@ signups as (
         user_id,
         min(event_time) as signup_at
     from {{ ref('int_events_normalized') }}
-    where event_type = 'signup'
+    where
+        event_type = 'signup'
         and user_id is not null
     group by all
 ),
