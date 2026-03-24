@@ -10,5 +10,5 @@ select
     utm_campaign,
     session_duration_seconds,
     event_count,
-    page_view_count,
+    page_view_count
 from {{ ref('int_sessions') }}

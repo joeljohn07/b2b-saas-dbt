@@ -15,6 +15,6 @@ with channels as (
 
 select
     farm_fingerprint(channel) as channel_key,
-    channel,
+    channel
 from channels
 where channel is not null

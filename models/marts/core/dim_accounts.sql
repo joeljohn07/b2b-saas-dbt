@@ -21,7 +21,7 @@ current_sub as (
         mrr_amount,
         currency,
         event_type,
-        is_active,
+        is_active
     from {{ ref('int_subscription_lifecycle') }}
     qualify row_number() over (partition by account_id order by event_time desc) = 1
 ),
@@ -32,14 +32,14 @@ health as (
         health_score,
         activity_score,
         billing_score,
-        support_score,
+        support_score
     from {{ ref('int_account_health') }}
 ),
 
 member_count as (
     select
         account_id,
-        count(distinct user_id) as user_count,
+        count(distinct user_id) as user_count
     from {{ ref('int_account_memberships') }}
     where valid_to is null
     group by all
@@ -52,8 +52,8 @@ account_acquisition as (
         a.activation_at,
         row_number() over (
             partition by m.account_id
-            order by a.activation_at, a.user_id
-        ) as rn,
+            order by a.activation_at asc, a.user_id asc
+        ) as rn
     from {{ ref('int_account_memberships') }} as m
     inner join {{ ref('int_attribution') }} as a on m.user_id = a.user_id
 )
@@ -78,7 +78,7 @@ select
         when cs.event_type = 'cancellation' then 'churned'
         when cs.event_type = 'trial_start' then 'trial'
         else 'unknown'
-    end as lifecycle_stage,
+    end as lifecycle_stage
 from accounts as acc
 left join current_sub as cs on acc.account_id = cs.account_id
 left join health as h on acc.account_id = h.account_id

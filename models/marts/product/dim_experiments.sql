@@ -5,5 +5,5 @@ select
     status,
     start_date,
     end_date,
-    description,
+    description
 from {{ ref('experiment_metadata') }}
