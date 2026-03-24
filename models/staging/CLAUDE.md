@@ -12,6 +12,7 @@
 - Cast to canonical types (TIMESTAMP, DATE, STRING, INT64, NUMERIC)
 - Rename source columns to snake_case, no abbreviations
 - Column naming consistency: columns referring to the same business concept must use identical names across all staging models
+- No inline descriptions — all descriptions must use `{{ doc() }}` blocks
 
 ## What Belongs Here
 - Column renaming and type casting

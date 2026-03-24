@@ -9,6 +9,7 @@ All business logic lives here. Dedup, sessionization, identity stitching, attrib
 - Naming: `int_{domain}_{concept}` (suffixes: `_prep` for source-specific prep, `_unioned` for multi-source union)
 - `ref()` staging or other intermediate models only — never `source()`
 - No `contract.enforced` (intermediate is internal)
+- No inline descriptions — all descriptions must use `{{ doc() }}` blocks
 
 ## What Belongs Here
 - Deduplication and normalization
