@@ -2,8 +2,9 @@
 
 {% docs dim_date %}
 Calendar date dimension seeded from a static CSV. Covers 2024-01-01 through
-2026-12-31. Grain: one row per calendar date. Used as the conformed date
-dimension for all date-keyed facts.
+2029-12-31. Grain: one row per calendar date. Used as the conformed date
+dimension for all date-keyed facts. Regenerate the seed CSV before the end
+date to prevent FK test failures on newer data.
 {% enddocs %}
 
 {% docs dim_channels %}
