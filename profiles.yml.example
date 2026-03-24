@@ -23,6 +23,6 @@ b2b_saas_dbt:
       type: bigquery
       method: oauth
       project: "{{ env_var('GCP_PROJECT_ID') }}"
-      dataset: analytics_ci
+      dataset: "analytics_ci_{{ env_var('PR_NUMBER', 'local') }}"
       location: EU
       threads: 4

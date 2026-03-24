@@ -1,7 +1,7 @@
 # ============================================================
 # AUTOMATION: CI
 # WHAT IT DOES: Lints SQL, validates naming, builds + tests all models
-# WHAT IT MODIFIES: Creates/refreshes CI BQ datasets (analytics_ci_*)
+# WHAT IT MODIFIES: Creates/refreshes per-PR CI BQ datasets (analytics_ci_{pr_number}_*)
 # AUTO-COMMITS: No
 # HOW TO DISABLE: Delete this file
 # ============================================================
@@ -48,6 +48,9 @@ jobs:
     name: Build & Validate
     needs: lint
     runs-on: ubuntu-latest
+    env:
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      PR_NUMBER: ${{ github.event.pull_request.number || github.run_id }}
     steps:
       - uses: actions/checkout@v4
 
@@ -82,13 +85,9 @@ jobs:
 
       - name: Build all models and run tests
         run: dbt build --target ci --full-refresh
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Run dbt-project-evaluator
         run: dbt build --select package:dbt_project_evaluator --target ci
-        env:
-          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: Upload manifest (push to main only)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -97,3 +96,20 @@ jobs:
           name: dbt-manifest
           path: target/manifest.json
           retention-days: 90
+
+      # Non-PR runs use run_id as dataset namespace — clean up after ourselves
+      # since pr-teardown.yml only fires on pull_request closed events.
+      - name: Set up Cloud SDK
+        if: always() && github.event_name != 'pull_request'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Drop ephemeral CI datasets
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          for dataset in \
+            "analytics_ci_${PR_NUMBER}" \
+            "analytics_ci_${PR_NUMBER}_staging" \
+            "analytics_ci_${PR_NUMBER}_intermediate" \
+            "analytics_ci_${PR_NUMBER}_marts"; do
+            bq rm -r -f --project_id="${GCP_PROJECT_ID}" "${dataset}" || true
+          done
