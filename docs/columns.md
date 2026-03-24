@@ -609,3 +609,155 @@ Whether this is the user's highest funnel stage.
 {% docs col_membership_duration_days %}
 Duration of account membership in calendar days.
 {% enddocs %}
+
+---
+
+## Surrogate key columns
+
+{% docs col_date_key %}
+Surrogate key for the date dimension. Integer in YYYYMMDD format.
+{% enddocs %}
+
+{% docs col_channel_key %}
+Surrogate key for the channel dimension. farm_fingerprint hash of the
+channel string.
+{% enddocs %}
+
+{% docs col_session_key %}
+Surrogate key for the session dimension. farm_fingerprint hash of the
+session ID.
+{% enddocs %}
+
+{% docs col_experiment_key %}
+Surrogate key for the experiment dimension. farm_fingerprint hash of
+the experiment ID.
+{% enddocs %}
+
+{% docs col_user_key %}
+Surrogate key for the user dimension. farm_fingerprint hash of the
+user ID.
+{% enddocs %}
+
+{% docs col_account_key %}
+Surrogate key for the account dimension. farm_fingerprint hash of the
+account ID.
+{% enddocs %}
+
+---
+
+## Date dimension columns
+
+{% docs col_date_day %}
+Calendar date.
+{% enddocs %}
+
+{% docs col_day_of_week %}
+ISO day of week (1=Monday through 7=Sunday).
+{% enddocs %}
+
+{% docs col_day_name %}
+Name of the day of week (Monday through Sunday).
+{% enddocs %}
+
+{% docs col_day_of_month %}
+Day of the month (1-31).
+{% enddocs %}
+
+{% docs col_day_of_year %}
+Day of the year (1-366).
+{% enddocs %}
+
+{% docs col_week_start_date %}
+Monday start date of the ISO week containing this date.
+{% enddocs %}
+
+{% docs col_month_start_date %}
+First day of the month containing this date.
+{% enddocs %}
+
+{% docs col_month_name %}
+Name of the month (January through December).
+{% enddocs %}
+
+{% docs col_month_number %}
+Month number (1-12).
+{% enddocs %}
+
+{% docs col_quarter_number %}
+Quarter number (1-4).
+{% enddocs %}
+
+{% docs col_quarter_start_date %}
+First day of the quarter containing this date.
+{% enddocs %}
+
+{% docs col_year_number %}
+Calendar year.
+{% enddocs %}
+
+{% docs col_is_weekend %}
+Whether the date falls on Saturday or Sunday.
+{% enddocs %}
+
+---
+
+## Role-playing foreign key columns
+
+{% docs col_session_date_key %}
+Foreign key to dim_date for the session start date.
+{% enddocs %}
+
+{% docs col_first_touch_channel_key %}
+Foreign key to dim_channels for the first attribution touchpoint channel.
+{% enddocs %}
+
+{% docs col_last_touch_channel_key %}
+Foreign key to dim_channels for the last attribution touchpoint channel.
+{% enddocs %}
+
+{% docs col_acquisition_channel_key %}
+Foreign key to dim_channels for the account acquisition channel, derived
+from the first activated user's first-touch channel.
+{% enddocs %}
+
+---
+
+## Marts dimension columns
+
+{% docs col_experiment_name %}
+Human-readable experiment name.
+{% enddocs %}
+
+{% docs col_experiment_status %}
+Current experiment status (active, completed, paused).
+{% enddocs %}
+
+{% docs col_experiment_description %}
+Description of the experiment's purpose and hypothesis.
+{% enddocs %}
+
+{% docs col_experiment_start_date %}
+Date when the experiment started.
+{% enddocs %}
+
+{% docs col_experiment_end_date %}
+Date when the experiment ended. Null if still active.
+{% enddocs %}
+
+{% docs col_signup_at %}
+Timestamp of the user's first signup event.
+{% enddocs %}
+
+{% docs col_acquisition_date %}
+Date when the account was acquired, based on the first activated user's
+activation timestamp.
+{% enddocs %}
+
+{% docs col_lifecycle_stage %}
+Account lifecycle stage derived from the latest subscription event
+(trial, active, churned, reactivated).
+{% enddocs %}
+
+{% docs col_user_count %}
+Number of currently active members in the account.
+{% enddocs %}

@@ -24,6 +24,21 @@ vars:
   marts_prefixes: ['fct_', 'dim_', 'bridge_']
   other_prefixes: ['agg_', 'rpt_', 'mart_']
 
+seeds:
+  b2b_saas_dbt:
+    +schema: marts
+    dim_date:
+      +column_types:
+        date_key: int64
+        date_day: date
+        week_start_date: date
+        month_start_date: date
+        quarter_start_date: date
+    experiment_metadata:
+      +column_types:
+        start_date: date
+        end_date: date
+
 models:
   b2b_saas_dbt:
     staging:

@@ -1,0 +1,188 @@
+version: 2
+
+models:
+  - name: dim_sessions
+    description: '{{ doc("dim_sessions") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 2
+    columns:
+      - name: session_key
+        data_type: int64
+        description: '{{ doc("col_session_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: session_id
+        data_type: string
+        description: '{{ doc("col_session_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: session_date_key
+        data_type: int64
+        description: '{{ doc("col_session_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: platform
+        data_type: string
+        description: '{{ doc("col_platform") }}'
+
+      - name: device_type
+        data_type: string
+        description: '{{ doc("col_device_type") }}'
+
+      - name: browser
+        data_type: string
+        description: '{{ doc("col_browser") }}'
+
+      - name: utm_source
+        data_type: string
+        description: '{{ doc("col_utm_source") }}'
+
+      - name: utm_medium
+        data_type: string
+        description: '{{ doc("col_utm_medium") }}'
+
+      - name: utm_campaign
+        data_type: string
+        description: '{{ doc("col_utm_campaign") }}'
+
+      - name: session_duration_seconds
+        data_type: int64
+        description: '{{ doc("col_session_duration_seconds") }}'
+
+      - name: event_count
+        data_type: int64
+        description: '{{ doc("col_event_count") }}'
+
+      - name: page_view_count
+        data_type: int64
+        description: '{{ doc("col_page_view_count") }}'
+
+  - name: dim_experiments
+    description: '{{ doc("dim_experiments") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 2
+    columns:
+      - name: experiment_key
+        data_type: int64
+        description: '{{ doc("col_experiment_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: experiment_id
+        data_type: string
+        description: '{{ doc("col_experiment_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: experiment_name
+        data_type: string
+        description: '{{ doc("col_experiment_name") }}'
+        tests:
+          - not_null
+
+      - name: status
+        data_type: string
+        description: '{{ doc("col_experiment_status") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - active
+                  - completed
+                  - paused
+
+      - name: start_date
+        data_type: date
+        description: '{{ doc("col_experiment_start_date") }}'
+        tests:
+          - not_null
+
+      - name: end_date
+        data_type: date
+        description: '{{ doc("col_experiment_end_date") }}'
+
+      - name: description
+        data_type: string
+        description: '{{ doc("col_experiment_description") }}'
+
+  - name: bridge_user_experiments
+    description: '{{ doc("bridge_user_experiments") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 2
+    columns:
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: experiment_key
+        data_type: int64
+        description: '{{ doc("col_experiment_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_experiments')
+              field: experiment_key
+
+      - name: variant
+        data_type: string
+        description: '{{ doc("col_variant") }}'
+        tests:
+          - not_null
+
+      - name: first_exposure_at
+        data_type: timestamp
+        description: '{{ doc("col_first_exposure_at") }}'
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - user_key
+            - experiment_key
