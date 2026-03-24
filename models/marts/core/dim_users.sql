@@ -10,8 +10,7 @@ with latest_engagement as (
 current_membership as (
     select
         user_id,
-        account_id,
-        role
+        account_id
     from {{ ref('int_account_memberships') }}
     where valid_to is null
     qualify row_number() over (

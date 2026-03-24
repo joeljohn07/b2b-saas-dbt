@@ -761,7 +761,3 @@ Account lifecycle stage derived from the latest subscription event
 {% docs col_user_count %}
 Number of currently active members in the account.
 {% enddocs %}
-
-{% docs col_role %}
-User role within the account membership.
-{% enddocs %}
