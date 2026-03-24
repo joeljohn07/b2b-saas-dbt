@@ -17,7 +17,7 @@ Five source domains: product events, billing subscriptions, billing invoices, ma
 
 ## Hard Rules
 - No `select *` — explicit column lists everywhere
-- `{{ doc() }}` for any field description reused across 2+ models
+- No inline descriptions — every description must use `{{ doc() }}` blocks
 - Contracts required on all staging models and marts `fct_`, `dim_`, `bridge_` models. Optional on `agg_`, `rpt_`, `mart_`
 - No custom governance macros — use dbt-project-evaluator
 - Column naming consistency: same concept = same column name across all models
@@ -27,7 +27,7 @@ Five source domains: product events, billing subscriptions, billing invoices, ma
 - Lowercase keywords, trailing commas, 4-space indent
 - CTEs over subqueries
 - Prefer `group by all` over explicit column ordinals
-- Use `union all by name` for multi-source unions
+- Use `union all` with explicit matching column lists for multi-source unions
 
 ## File Organization
 - Models organized into subdirectories within layers (by source, domain, or business area)
@@ -39,6 +39,14 @@ Five source domains: product events, billing subscriptions, billing invoices, ma
 - Dev builds: `dbt build --exclude package:dbt_project_evaluator`
 - Evaluator runs in CI only (or on demand: `dbt build --select package:dbt_project_evaluator`)
 
+## Documentation
+- Doc block convention: `docs/doc-block-convention.md`
+- Inline descriptions banned — enforced by `scripts/lint-doc-blocks.sh` (pre-commit hook)
+
+## Review
+- PR checklist (layer-specific): `docs/review/pr-checklist.md`
+- Common mistakes and anti-patterns: `docs/review/common-mistakes.md`
+
 ## Git
 - Never commit directly to main — feature branch + PR
 - Conventional commits: feat:, fix:, docs:, test:, refactor:, chore:
@@ -46,4 +54,11 @@ Five source domains: product events, billing subscriptions, billing invoices, ma
 
 ## Layer Details
 Each model directory has its own CLAUDE.md with layer-specific rules.
-Full documentation in `docs/layers/`.
+Full layer contract in `docs/layers/`.
+
+## Skills
+Workflow instructions in `docs/skills/`. Read the relevant file before executing.
+- `dbt-validate` — lint + naming + doc blocks + dbt build
+- `dbt-pr-review` — structured PR review with audit pass
+- `dbt-scaffold` — generate model + YAML + test stubs
+- `dbt-audit` — deep compliance audit (test coverage, layer compliance, docs)

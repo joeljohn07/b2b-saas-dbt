@@ -1,5 +1,23 @@
 # Doc Block Convention
 
+## No Inline Descriptions
+
+**Every column and model description must use `{{ doc() }}` blocks. No exceptions.**
+
+```yaml
+# BAD — inline string
+columns:
+  - name: user_id
+    description: "The unique identifier for a user"
+
+# GOOD — doc block reference
+columns:
+  - name: user_id
+    description: "{{ doc('col_user_id') }}"
+```
+
+Enforced by `scripts/lint-doc-blocks.sh` (pre-commit hook) and CI.
+
 ## Naming Patterns
 
 | Scope | Pattern | Example |

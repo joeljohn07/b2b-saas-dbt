@@ -18,6 +18,7 @@ Kimball star schema. Consumer-facing facts and dimensions.
 - `agg_`, `rpt_`, `mart_` may also `ref()` other marts models (facts, dimensions)
 - Conformed dimensions: shared dim keys across all facts
 - Role-playing FKs use suffixed keys (e.g., `session_date_key`, `acquisition_date_key`)
+- No inline descriptions — all descriptions must use `{{ doc() }}` blocks
 
 ## What Belongs Here
 - Fact tables at declared grain (one row = one event/snapshot)
