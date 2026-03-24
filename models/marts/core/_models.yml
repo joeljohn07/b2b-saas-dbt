@@ -1,0 +1,194 @@
+version: 2
+
+models:
+  - name: dim_channels
+    description: '{{ doc("dim_channels") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: channel_key
+        data_type: int64
+        description: '{{ doc("col_channel_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: channel
+        data_type: string
+        description: '{{ doc("col_channel") }}'
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_users
+    description: '{{ doc("dim_users") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+
+      - name: signup_at
+        data_type: timestamp
+        description: '{{ doc("col_signup_at") }}'
+
+      - name: activation_at
+        data_type: timestamp
+        description: '{{ doc("col_activation_at") }}'
+
+      - name: first_touch_channel_key
+        data_type: int64
+        description: '{{ doc("col_first_touch_channel_key") }}'
+        tests:
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+              where: "first_touch_channel_key is not null"
+
+      - name: last_touch_channel_key
+        data_type: int64
+        description: '{{ doc("col_last_touch_channel_key") }}'
+        tests:
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+              where: "last_touch_channel_key is not null"
+
+      - name: engagement_state
+        data_type: string
+        description: '{{ doc("col_engagement_state") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - pre_active
+                  - active
+                  - dormant
+                  - disengaged
+
+      - name: is_re_engaged
+        data_type: boolean
+        description: '{{ doc("col_is_re_engaged") }}'
+        tests:
+          - not_null
+
+  - name: dim_accounts
+    description: '{{ doc("dim_accounts") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: account_key
+        data_type: int64
+        description: '{{ doc("col_account_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: plan
+        data_type: string
+        description: '{{ doc("col_plan") }}'
+
+      - name: billing_cycle
+        data_type: string
+        description: '{{ doc("col_billing_cycle") }}'
+
+      - name: mrr_amount
+        data_type: numeric
+        description: '{{ doc("col_mrr_amount") }}'
+
+      - name: currency
+        data_type: string
+        description: '{{ doc("col_currency") }}'
+
+      - name: user_count
+        data_type: int64
+        description: '{{ doc("col_user_count") }}'
+
+      - name: health_score
+        data_type: float64
+        description: '{{ doc("col_health_score") }}'
+
+      - name: activity_score
+        data_type: float64
+        description: '{{ doc("col_activity_score") }}'
+
+      - name: billing_score
+        data_type: float64
+        description: '{{ doc("col_billing_score") }}'
+
+      - name: support_score
+        data_type: float64
+        description: '{{ doc("col_support_score") }}'
+
+      - name: acquisition_channel_key
+        data_type: int64
+        description: '{{ doc("col_acquisition_channel_key") }}'
+        tests:
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+              where: "acquisition_channel_key is not null"
+
+      - name: acquisition_date
+        data_type: date
+        description: '{{ doc("col_acquisition_date") }}'
+
+      - name: lifecycle_stage
+        data_type: string
+        description: '{{ doc("col_lifecycle_stage") }}'
+        tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - trial
+                  - active
+                  - churned
+                  - reactivated
+                  - unknown
