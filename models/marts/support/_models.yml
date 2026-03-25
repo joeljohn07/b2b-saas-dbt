@@ -1,0 +1,136 @@
+version: 2
+
+models:
+  - name: fct_support_tickets
+    description: '{{ doc("fct_support_tickets") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 3
+    columns:
+      - name: ticket_key
+        data_type: int64
+        description: '{{ doc("col_ticket_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: ticket_id
+        data_type: string
+        description: '{{ doc("col_ticket_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: account_key
+        data_type: int64
+        description: '{{ doc("col_account_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_accounts')
+              field: account_key
+
+      - name: created_date_key
+        data_type: int64
+        description: '{{ doc("col_created_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: created_at
+        data_type: timestamp
+        description: '{{ doc("col_created_at") }}'
+        tests:
+          - not_null
+
+      - name: resolved_at
+        data_type: timestamp
+        description: '{{ doc("col_resolved_at") }}'
+
+      - name: category
+        data_type: string
+        description: '{{ doc("col_category") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - billing
+                  - bug
+                  - feature_request
+                  - onboarding
+                  - other
+
+      - name: priority
+        data_type: string
+        description: '{{ doc("col_priority") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - critical
+                  - high
+                  - medium
+                  - low
+
+      - name: status
+        data_type: string
+        description: '{{ doc("col_ticket_status") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - closed
+                  - in_progress
+                  - open
+                  - resolved
+
+      - name: csat_score
+        data_type: int64
+        description: '{{ doc("col_csat_score") }}'
+
+      - name: resolution_time_hours
+        data_type: float64
+        description: '{{ doc("col_resolution_time_hours") }}'
+
+      - name: first_response_hours
+        data_type: float64
+        description: '{{ doc("col_first_response_hours") }}'
+
+      - name: is_resolved
+        data_type: boolean
+        description: '{{ doc("col_is_resolved") }}'
+        tests:
+          - not_null

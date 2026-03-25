@@ -227,7 +227,7 @@ Reason for cancellation. Null for non-cancellation events.
 
 {% docs col_is_voluntary %}
 Whether the cancellation was initiated by the customer (true) or by the
-system (false). Null for non-cancellation events.
+system (false). False for non-cancellation events.
 {% enddocs %}
 
 ---
@@ -643,6 +643,43 @@ Surrogate key for the account dimension. farm_fingerprint hash of the
 account ID.
 {% enddocs %}
 
+{% docs col_signup_key %}
+Surrogate key for the signup fact. farm_fingerprint hash of the event ID.
+{% enddocs %}
+
+{% docs col_activation_key %}
+Surrogate key for the activation fact. farm_fingerprint hash of the user ID.
+{% enddocs %}
+
+{% docs col_feature_usage_key %}
+Surrogate key for the feature usage fact. farm_fingerprint hash of the
+event ID.
+{% enddocs %}
+
+{% docs col_spend_key %}
+Surrogate key for the marketing spend fact. farm_fingerprint hash of the
+spend ID.
+{% enddocs %}
+
+{% docs col_ticket_key %}
+Surrogate key for the support ticket fact. farm_fingerprint hash of the
+ticket ID.
+{% enddocs %}
+
+{% docs col_subscription_event_key %}
+Surrogate key for the subscription event fact. farm_fingerprint hash of the
+subscription event ID.
+{% enddocs %}
+
+{% docs col_mrr_movement_key %}
+Surrogate key for the MRR movement fact. farm_fingerprint hash of the
+concatenation of account ID and subscription event ID.
+{% enddocs %}
+
+{% docs col_invoice_key %}
+Surrogate key for the invoice fact. farm_fingerprint hash of the invoice ID.
+{% enddocs %}
+
 ---
 
 ## Date dimension columns
@@ -720,6 +757,42 @@ Foreign key to dim_channels for the account acquisition channel, derived
 from the first activated user's first-touch channel.
 {% enddocs %}
 
+{% docs col_signup_date_key %}
+Foreign key to dim_date for the signup event date.
+{% enddocs %}
+
+{% docs col_activation_date_key %}
+Foreign key to dim_date for the activation event date.
+{% enddocs %}
+
+{% docs col_usage_date_key %}
+Foreign key to dim_date for the feature usage event date.
+{% enddocs %}
+
+{% docs col_created_date_key %}
+Foreign key to dim_date for the ticket creation date.
+{% enddocs %}
+
+{% docs col_event_date_key %}
+Foreign key to dim_date for the subscription event date.
+{% enddocs %}
+
+{% docs col_movement_date_key %}
+Foreign key to dim_date for the MRR movement date.
+{% enddocs %}
+
+{% docs col_issued_date_key %}
+Foreign key to dim_date for the invoice issue date.
+{% enddocs %}
+
+{% docs col_spend_date_key %}
+Foreign key to dim_date for the marketing spend date.
+{% enddocs %}
+
+{% docs col_exposure_date_key %}
+Foreign key to dim_date for the experiment first-exposure date.
+{% enddocs %}
+
 ---
 
 ## Marts dimension columns
@@ -760,4 +833,8 @@ Account lifecycle stage derived from the latest subscription event
 
 {% docs col_user_count %}
 Number of currently active members in the account.
+{% enddocs %}
+
+{% docs col_usage_at %}
+Timestamp when the feature usage event occurred.
 {% enddocs %}

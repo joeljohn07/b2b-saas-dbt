@@ -40,3 +40,61 @@ Account dimension joining subscription lifecycle, health scores, member counts,
 and acquisition attribution. Grain: one row per account (SCD Type 1 — current
 state).
 {% enddocs %}
+
+{% docs fct_signups %}
+Signup event fact sourced from normalized product events. Grain: one row per
+signup event. Includes channel, UTM, and device attributes as degenerate
+dimensions.
+{% enddocs %}
+
+{% docs fct_activations %}
+Activation event fact sourced from attribution data. Grain: one row per user
+activation. Only activated users appear (filtered upstream in int_attribution).
+{% enddocs %}
+
+{% docs fct_feature_usage %}
+Feature usage event fact sourced from normalized product events. Grain: one row
+per feature_use event. Tracks feature name, duration, and device context.
+{% enddocs %}
+
+{% docs fct_sessions %}
+Session fact sourced from sessionized product events. Grain: one row per
+session. Carries session duration, event counts, and page view counts as
+measures. Device and UTM attributes included as degenerate dimensions.
+{% enddocs %}
+
+{% docs fct_marketing_spend %}
+Marketing spend fact sourced from marketing spend prep. Grain: one row per
+spend record (channel x campaign x date). Tracks spend amount, impressions,
+and clicks.
+{% enddocs %}
+
+{% docs fct_support_tickets %}
+Support ticket fact sourced from ticket metrics. Grain: one row per ticket.
+Carries resolution time, first response time, CSAT score, and resolution
+status.
+{% enddocs %}
+
+{% docs fct_subscriptions %}
+Subscription lifecycle event fact sourced from subscription lifecycle. Grain:
+one row per subscription event. Tracks plan changes, MRR, billing cycle, and
+cancellation details.
+{% enddocs %}
+
+{% docs fct_mrr_movements %}
+MRR movement fact sourced from MRR movements intermediate. Grain: one row per
+MRR movement event per account. Tracks movement type, MRR before/after, and
+delta for cohort-based MRR analysis.
+{% enddocs %}
+
+{% docs fct_invoices %}
+Invoice fact sourced from invoices prep. Grain: one row per invoice. Tracks
+amounts, payment status, refunds, and net revenue.
+{% enddocs %}
+
+{% docs fct_experiment_exposures %}
+Experiment exposure factless fact sourced from experiment results. Grain: one
+row per user x experiment. Extends bridge_user_experiments with conversion
+metrics (converted, conversion_at) and exposure duration. Composite PK
+(user_key + experiment_key).
+{% enddocs %}
