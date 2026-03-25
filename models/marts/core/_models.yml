@@ -381,3 +381,107 @@ models:
         description: '{{ doc("col_last_touch_channel") }}'
         tests:
           - not_null
+
+  - name: fct_retention_cohorts
+    description: '{{ doc("fct_retention_cohorts") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: retention_cohort_key
+        data_type: int64
+        description: '{{ doc("col_retention_cohort_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: cohort_week_start_date
+        data_type: date
+        description: '{{ doc("col_cohort_week_start_date") }}'
+        tests:
+          - not_null
+
+      - name: cohort_week_date_key
+        data_type: int64
+        description: '{{ doc("col_cohort_week_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: retention_period
+        data_type: string
+        description: '{{ doc("col_retention_period") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - W1
+                  - W2
+                  - W3
+                  - W4
+                  - M2
+                  - M3
+                  - M6
+                  - M12
+
+      - name: period_offset_days
+        data_type: int64
+        description: '{{ doc("col_period_offset_days") }}'
+        tests:
+          - not_null
+
+      - name: period_end_date
+        data_type: date
+        description: '{{ doc("col_period_end_date") }}'
+        tests:
+          - not_null
+
+      - name: period_end_date_key
+        data_type: int64
+        description: '{{ doc("col_period_end_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+              where: "is_period_complete"
+
+      - name: cohort_size
+        data_type: int64
+        description: '{{ doc("col_cohort_size") }}'
+        tests:
+          - not_null
+
+      - name: retained_count
+        data_type: int64
+        description: '{{ doc("col_retained_count") }}'
+        tests:
+          - not_null
+
+      - name: retention_rate
+        data_type: float64
+        description: '{{ doc("col_retention_rate") }}'
+        tests:
+          - not_null
+
+      - name: is_period_complete
+        data_type: boolean
+        description: '{{ doc("col_is_period_complete") }}'
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - cohort_week_start_date
+            - retention_period

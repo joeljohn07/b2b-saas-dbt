@@ -91,7 +91,7 @@ models:
               min_value: 24
 
   - name: int_experiment_metadata
-    description: Passthrough of experiment seed definitions into the intermediate layer.
+    description: '{{ doc("int_experiment_metadata") }}'
     config:
       tags:
         - intermediate
