@@ -60,9 +60,10 @@ user_activity as (
             and e.event_time < coalesce(
                 i.valid_to, timestamp('9999-12-31')
             )
-    where coalesce(e.user_id, i.user_id) is not null
+    where
+        coalesce(e.user_id, i.user_id) is not null
         and coalesce(e.user_id, i.user_id) in (
-            select user_id from activated_users
+            select activated_users.user_id from activated_users
         )
 
 ),
