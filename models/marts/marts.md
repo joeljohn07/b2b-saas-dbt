@@ -98,3 +98,11 @@ row per user x experiment. Extends bridge_user_experiments with conversion
 metrics (converted, conversion_at) and exposure duration. Composite PK
 (user_key + experiment_key).
 {% enddocs %}
+
+{% docs fct_retention_cohorts %}
+Pre-computed retention cohort fact sourced from attribution and normalized
+event data. Grain: one row per activation-week cohort x retention period.
+Eight retention periods (W1-W4, M2, M3, M6, M12) measured as 7-day activity
+windows at fixed day offsets from the cohort week start date (always a
+Monday). Only activated users are included in cohorts.
+{% enddocs %}

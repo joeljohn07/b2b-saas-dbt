@@ -40,3 +40,4 @@ scripts/synthetic_data/
 
 # Local tool config
 .claude/settings.local.json
+.envrc

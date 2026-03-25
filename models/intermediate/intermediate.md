@@ -57,6 +57,10 @@ User-level experiment exposure and conversion data. Parses experiment_flags
 JSON. Enforces 24-hour minimum exposure duration.
 {% enddocs %}
 
+{% docs int_experiment_metadata %}
+Passthrough of experiment seed definitions into the intermediate layer.
+{% enddocs %}
+
 ---
 
 ## Cross-domain

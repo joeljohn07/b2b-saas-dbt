@@ -680,6 +680,11 @@ concatenation of account ID and subscription event ID.
 Surrogate key for the invoice fact. farm_fingerprint hash of the invoice ID.
 {% enddocs %}
 
+{% docs col_retention_cohort_key %}
+Surrogate key for the retention cohort fact. farm_fingerprint hash of the
+concatenation of cohort week start date and retention period.
+{% enddocs %}
+
 ---
 
 ## Date dimension columns
@@ -793,6 +798,14 @@ Foreign key to dim_date for the marketing spend date.
 Foreign key to dim_date for the experiment first-exposure date.
 {% enddocs %}
 
+{% docs col_cohort_week_date_key %}
+Foreign key to dim_date for the cohort week start date (always a Monday).
+{% enddocs %}
+
+{% docs col_period_end_date_key %}
+Foreign key to dim_date for the retention period end date.
+{% enddocs %}
+
 ---
 
 ## Marts dimension columns
@@ -837,4 +850,48 @@ Number of currently active members in the account.
 
 {% docs col_usage_at %}
 Timestamp when the feature usage event occurred.
+{% enddocs %}
+
+---
+
+## Retention columns
+
+{% docs col_cohort_week_start_date %}
+Monday of the ISO week in which users activated. Defines the retention
+cohort boundary.
+{% enddocs %}
+
+{% docs col_retention_period %}
+Retention measurement period label. Eight fixed periods: W1 through W4
+(weekly), M2, M3, M6, M12 (monthly milestones measured as 7-day windows).
+{% enddocs %}
+
+{% docs col_period_offset_days %}
+Number of days from the cohort week start date to the beginning of the
+7-day retention measurement window.
+{% enddocs %}
+
+{% docs col_period_end_date %}
+Last date of the 7-day retention measurement window. Equals
+cohort_week_start_date plus period_offset_days plus 6.
+{% enddocs %}
+
+{% docs col_cohort_size %}
+Number of users who activated during the cohort week.
+{% enddocs %}
+
+{% docs col_retained_count %}
+Number of cohort users who had at least one event during the retention
+measurement window. Always less than or equal to cohort_size.
+{% enddocs %}
+
+{% docs col_retention_rate %}
+Fraction of cohort users retained in the measurement window. Equals
+retained_count divided by cohort_size, bounded between 0 and 1.
+{% enddocs %}
+
+{% docs col_is_period_complete %}
+Whether the retention measurement window has fully elapsed plus a 7-day
+buffer for late-arriving events. False for recent periods where data may
+still be incomplete.
 {% enddocs %}
