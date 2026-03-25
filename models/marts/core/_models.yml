@@ -192,3 +192,192 @@ models:
                   - churned
                   - reactivated
                   - unknown
+
+  - name: fct_signups
+    description: '{{ doc("fct_signups") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: signup_key
+        data_type: int64
+        description: '{{ doc("col_signup_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: event_id
+        data_type: string
+        description: '{{ doc("col_event_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: signup_date_key
+        data_type: int64
+        description: '{{ doc("col_signup_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: signup_at
+        data_type: timestamp
+        description: '{{ doc("col_signup_at") }}'
+        tests:
+          - not_null
+
+      - name: signup_method
+        data_type: string
+        description: '{{ doc("col_signup_method") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - email
+                  - github
+                  - google
+
+      - name: channel
+        data_type: string
+        description: '{{ doc("col_channel") }}'
+        tests:
+          - not_null
+
+      - name: channel_key
+        data_type: int64
+        description: '{{ doc("col_channel_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+
+      - name: platform
+        data_type: string
+        description: '{{ doc("col_platform") }}'
+
+      - name: device_type
+        data_type: string
+        description: '{{ doc("col_device_type") }}'
+
+      - name: browser
+        data_type: string
+        description: '{{ doc("col_browser") }}'
+
+      - name: utm_source
+        data_type: string
+        description: '{{ doc("col_utm_source") }}'
+
+      - name: utm_medium
+        data_type: string
+        description: '{{ doc("col_utm_medium") }}'
+
+      - name: utm_campaign
+        data_type: string
+        description: '{{ doc("col_utm_campaign") }}'
+
+  - name: fct_activations
+    description: '{{ doc("fct_activations") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: activation_key
+        data_type: int64
+        description: '{{ doc("col_activation_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: activation_date_key
+        data_type: int64
+        description: '{{ doc("col_activation_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: activation_at
+        data_type: timestamp
+        description: '{{ doc("col_activation_at") }}'
+        tests:
+          - not_null
+
+      - name: first_touch_channel_key
+        data_type: int64
+        description: '{{ doc("col_first_touch_channel_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+
+      - name: last_touch_channel_key
+        data_type: int64
+        description: '{{ doc("col_last_touch_channel_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+
+      - name: first_touch_channel
+        data_type: string
+        description: '{{ doc("col_first_touch_channel") }}'
+        tests:
+          - not_null
+
+      - name: last_touch_channel
+        data_type: string
+        description: '{{ doc("col_last_touch_channel") }}'
+        tests:
+          - not_null

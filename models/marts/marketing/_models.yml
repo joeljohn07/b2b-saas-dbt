@@ -1,0 +1,83 @@
+version: 2
+
+models:
+  - name: fct_marketing_spend
+    description: '{{ doc("fct_marketing_spend") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 2
+    columns:
+      - name: spend_key
+        data_type: int64
+        description: '{{ doc("col_spend_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: spend_id
+        data_type: string
+        description: '{{ doc("col_spend_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: spend_date_key
+        data_type: int64
+        description: '{{ doc("col_spend_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: channel
+        data_type: string
+        description: '{{ doc("col_channel") }}'
+        tests:
+          - not_null
+
+      - name: channel_key
+        data_type: int64
+        description: '{{ doc("col_channel_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_channels')
+              field: channel_key
+
+      - name: campaign_id
+        data_type: string
+        description: '{{ doc("col_campaign_id") }}'
+        tests:
+          - not_null
+
+      - name: campaign_name
+        data_type: string
+        description: '{{ doc("col_campaign_name") }}'
+
+      - name: spend_amount
+        data_type: numeric
+        description: '{{ doc("col_spend_amount") }}'
+        tests:
+          - not_null
+
+      - name: currency
+        data_type: string
+        description: '{{ doc("col_currency") }}'
+        tests:
+          - not_null
+
+      - name: impressions
+        data_type: int64
+        description: '{{ doc("col_impressions") }}'
+
+      - name: clicks
+        data_type: int64
+        description: '{{ doc("col_clicks") }}'

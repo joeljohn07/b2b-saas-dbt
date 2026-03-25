@@ -186,3 +186,210 @@ models:
           combination_of_columns:
             - user_key
             - experiment_key
+
+  - name: fct_feature_usage
+    description: '{{ doc("fct_feature_usage") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 2
+    columns:
+      - name: feature_usage_key
+        data_type: int64
+        description: '{{ doc("col_feature_usage_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: event_id
+        data_type: string
+        description: '{{ doc("col_event_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+
+      - name: account_key
+        data_type: int64
+        description: '{{ doc("col_account_key") }}'
+        tests:
+          - relationships:
+              to: ref('dim_accounts')
+              field: account_key
+              where: "account_key is not null"
+
+      - name: usage_date_key
+        data_type: int64
+        description: '{{ doc("col_usage_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: usage_at
+        data_type: timestamp
+        description: '{{ doc("col_usage_at") }}'
+        tests:
+          - not_null
+
+      - name: feature_name
+        data_type: string
+        description: '{{ doc("col_feature_name") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - alert_create
+                  - api_call
+                  - chart_edit
+                  - dashboard_view
+                  - data_export
+                  - filter_apply
+                  - integration_setup
+                  - report_create
+                  - share_report
+                  - template_use
+
+      - name: feature_duration_seconds
+        data_type: int64
+        description: '{{ doc("col_feature_duration_seconds") }}'
+
+      - name: platform
+        data_type: string
+        description: '{{ doc("col_platform") }}'
+
+      - name: device_type
+        data_type: string
+        description: '{{ doc("col_device_type") }}'
+
+  - name: fct_sessions
+    description: '{{ doc("fct_sessions") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 2
+    columns:
+      - name: session_key
+        data_type: int64
+        description: '{{ doc("col_session_key") }}'
+        tests:
+          - unique
+          - not_null
+          - relationships:
+              to: ref('dim_sessions')
+              field: session_key
+
+      - name: session_id
+        data_type: string
+        description: '{{ doc("col_session_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: session_date_key
+        data_type: int64
+        description: '{{ doc("col_session_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: session_start_at
+        data_type: timestamp
+        description: '{{ doc("col_session_start_at") }}'
+        tests:
+          - not_null
+
+      - name: session_end_at
+        data_type: timestamp
+        description: '{{ doc("col_session_end_at") }}'
+        tests:
+          - not_null
+
+      - name: session_duration_seconds
+        data_type: int64
+        description: '{{ doc("col_session_duration_seconds") }}'
+        tests:
+          - not_null
+
+      - name: event_count
+        data_type: int64
+        description: '{{ doc("col_event_count") }}'
+        tests:
+          - not_null
+
+      - name: page_view_count
+        data_type: int64
+        description: '{{ doc("col_page_view_count") }}'
+
+      - name: platform
+        data_type: string
+        description: '{{ doc("col_platform") }}'
+
+      - name: device_type
+        data_type: string
+        description: '{{ doc("col_device_type") }}'
+
+      - name: browser
+        data_type: string
+        description: '{{ doc("col_browser") }}'
+
+      - name: utm_source
+        data_type: string
+        description: '{{ doc("col_utm_source") }}'
+
+      - name: utm_medium
+        data_type: string
+        description: '{{ doc("col_utm_medium") }}'
+
+      - name: utm_campaign
+        data_type: string
+        description: '{{ doc("col_utm_campaign") }}'
