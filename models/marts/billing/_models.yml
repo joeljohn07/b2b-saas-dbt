@@ -1,0 +1,390 @@
+version: 2
+
+models:
+  - name: fct_subscriptions
+    description: '{{ doc("fct_subscriptions") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: subscription_event_key
+        data_type: int64
+        description: '{{ doc("col_subscription_event_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_event_id
+        data_type: string
+        description: '{{ doc("col_subscription_event_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_id
+        data_type: string
+        description: '{{ doc("col_subscription_id") }}'
+        tests:
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: account_key
+        data_type: int64
+        description: '{{ doc("col_account_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_accounts')
+              field: account_key
+
+      - name: event_date_key
+        data_type: int64
+        description: '{{ doc("col_event_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: event_time
+        data_type: timestamp
+        description: '{{ doc("col_event_time") }}'
+        tests:
+          - not_null
+
+      - name: event_type
+        data_type: string
+        description: '{{ doc("col_event_type") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - cancellation
+                  - downgrade
+                  - reactivation
+                  - renewal
+                  - subscription_start
+                  - trial_end
+                  - trial_start
+                  - upgrade
+
+      - name: plan
+        data_type: string
+        description: '{{ doc("col_plan") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - enterprise
+                  - free
+                  - pro
+                  - starter
+
+      - name: previous_plan
+        data_type: string
+        description: '{{ doc("col_previous_plan") }}'
+
+      - name: billing_cycle
+        data_type: string
+        description: '{{ doc("col_billing_cycle") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - annual
+                  - monthly
+
+      - name: mrr_amount
+        data_type: numeric
+        description: '{{ doc("col_mrr_amount") }}'
+        tests:
+          - not_null
+
+      - name: currency
+        data_type: string
+        description: '{{ doc("col_currency") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - EUR
+                  - USD
+
+      - name: cancel_reason
+        data_type: string
+        description: '{{ doc("col_cancel_reason") }}'
+
+      - name: is_voluntary
+        data_type: boolean
+        description: '{{ doc("col_is_voluntary") }}'
+
+      - name: is_active
+        data_type: boolean
+        description: '{{ doc("col_is_active") }}'
+        tests:
+          - not_null
+
+      - name: days_since_previous_event
+        data_type: int64
+        description: '{{ doc("col_days_since_previous_event") }}'
+
+  - name: fct_mrr_movements
+    description: '{{ doc("fct_mrr_movements") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: mrr_movement_key
+        data_type: int64
+        description: '{{ doc("col_mrr_movement_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: account_key
+        data_type: int64
+        description: '{{ doc("col_account_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_accounts')
+              field: account_key
+
+      - name: subscription_event_id
+        data_type: string
+        description: '{{ doc("col_subscription_event_id") }}'
+        tests:
+          - not_null
+
+      - name: subscription_id
+        data_type: string
+        description: '{{ doc("col_subscription_id") }}'
+        tests:
+          - not_null
+
+      - name: movement_date_key
+        data_type: int64
+        description: '{{ doc("col_movement_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: movement_date
+        data_type: date
+        description: '{{ doc("col_movement_date") }}'
+        tests:
+          - not_null
+
+      - name: movement_type
+        data_type: string
+        description: '{{ doc("col_movement_type") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - churn
+                  - contraction
+                  - expansion
+                  - new
+                  - reactivation
+
+      - name: mrr_before
+        data_type: numeric
+        description: '{{ doc("col_mrr_before") }}'
+        tests:
+          - not_null
+
+      - name: mrr_after
+        data_type: numeric
+        description: '{{ doc("col_mrr_after") }}'
+        tests:
+          - not_null
+
+      - name: mrr_delta
+        data_type: numeric
+        description: '{{ doc("col_mrr_delta") }}'
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - account_id
+            - subscription_event_id
+
+  - name: fct_invoices
+    description: '{{ doc("fct_invoices") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 1
+    columns:
+      - name: invoice_key
+        data_type: int64
+        description: '{{ doc("col_invoice_key") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: invoice_id
+        data_type: string
+        description: '{{ doc("col_invoice_id") }}'
+        tests:
+          - unique
+          - not_null
+
+      - name: subscription_id
+        data_type: string
+        description: '{{ doc("col_subscription_id") }}'
+        tests:
+          - not_null
+
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: account_id
+        data_type: string
+        description: '{{ doc("col_account_id") }}'
+        tests:
+          - not_null
+
+      - name: account_key
+        data_type: int64
+        description: '{{ doc("col_account_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_accounts')
+              field: account_key
+
+      - name: issued_date_key
+        data_type: int64
+        description: '{{ doc("col_issued_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: issued_at
+        data_type: timestamp
+        description: '{{ doc("col_issued_at") }}'
+        tests:
+          - not_null
+
+      - name: paid_at
+        data_type: timestamp
+        description: '{{ doc("col_paid_at") }}'
+
+      - name: amount
+        data_type: numeric
+        description: '{{ doc("col_amount") }}'
+        tests:
+          - not_null
+
+      - name: currency
+        data_type: string
+        description: '{{ doc("col_currency") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - EUR
+                  - USD
+
+      - name: status
+        data_type: string
+        description: '{{ doc("col_invoice_status") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - failed
+                  - paid
+                  - pending
+                  - refunded
+
+      - name: refund_amount
+        data_type: numeric
+        description: '{{ doc("col_refund_amount") }}'
+        tests:
+          - not_null
+
+      - name: net_amount
+        data_type: numeric
+        description: '{{ doc("col_net_amount") }}'
+        tests:
+          - not_null
+
+      - name: is_paid
+        data_type: boolean
+        description: '{{ doc("col_is_paid") }}'
+        tests:
+          - not_null

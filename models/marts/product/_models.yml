@@ -393,3 +393,94 @@ models:
       - name: utm_campaign
         data_type: string
         description: '{{ doc("col_utm_campaign") }}'
+
+  - name: fct_experiment_exposures
+    description: '{{ doc("fct_experiment_exposures") }}'
+    config:
+      contract:
+        enforced: true
+      tags:
+        - marts
+      meta:
+        owner: analytics
+        pii: false
+        sla: daily
+        tier: 2
+    columns:
+      - name: user_id
+        data_type: string
+        description: '{{ doc("col_user_id") }}'
+        tests:
+          - not_null
+
+      - name: user_key
+        data_type: int64
+        description: '{{ doc("col_user_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_users')
+              field: user_key
+
+      - name: experiment_id
+        data_type: string
+        description: '{{ doc("col_experiment_id") }}'
+        tests:
+          - not_null
+
+      - name: experiment_key
+        data_type: int64
+        description: '{{ doc("col_experiment_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_experiments')
+              field: experiment_key
+
+      - name: variant
+        data_type: string
+        description: '{{ doc("col_variant") }}'
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - control
+                  - treatment
+
+      - name: first_exposure_at
+        data_type: timestamp
+        description: '{{ doc("col_first_exposure_at") }}'
+        tests:
+          - not_null
+
+      - name: exposure_date_key
+        data_type: int64
+        description: '{{ doc("col_exposure_date_key") }}'
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+
+      - name: converted
+        data_type: boolean
+        description: '{{ doc("col_converted") }}'
+        tests:
+          - not_null
+
+      - name: conversion_at
+        data_type: timestamp
+        description: '{{ doc("col_conversion_at") }}'
+
+      - name: exposure_duration_hours
+        data_type: int64
+        description: '{{ doc("col_exposure_duration_hours") }}'
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - user_key
+            - experiment_key

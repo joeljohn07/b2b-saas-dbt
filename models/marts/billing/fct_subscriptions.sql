@@ -1,0 +1,21 @@
+select
+    farm_fingerprint(subscription_event_id) as subscription_event_key,
+    subscription_event_id,
+    subscription_id,
+    user_id,
+    farm_fingerprint(user_id) as user_key,
+    account_id,
+    farm_fingerprint(account_id) as account_key,
+    cast(format_date('%Y%m%d', date(event_time)) as int64) as event_date_key,
+    event_time,
+    event_type,
+    plan,
+    previous_plan,
+    billing_cycle,
+    mrr_amount,
+    currency,
+    cancel_reason,
+    is_voluntary,
+    is_active,
+    days_since_previous_event
+from {{ ref('int_subscription_lifecycle') }}
