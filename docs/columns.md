@@ -227,7 +227,7 @@ Reason for cancellation. Null for non-cancellation events.
 
 {% docs col_is_voluntary %}
 Whether the cancellation was initiated by the customer (true) or by the
-system (false). False for non-cancellation events.
+system (false). Null for non-cancellation events.
 {% enddocs %}
 
 ---
