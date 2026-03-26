@@ -76,7 +76,8 @@ models:
         description: '{{ doc("col_days_since_previous_event") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
+              arguments:
+                min_value: 0
               config:
                 where: "days_since_previous_event is not null"
 
@@ -87,9 +88,10 @@ models:
         - intermediate
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - account_id
-            - subscription_event_id
+          arguments:
+            combination_of_columns:
+              - account_id
+              - subscription_event_id
     columns:
       - name: account_id
         description: '{{ doc("col_account_id") }}'
@@ -116,12 +118,13 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values:
-                - new
-                - expansion
-                - contraction
-                - churn
-                - reactivation
+              arguments:
+                values:
+                  - new
+                  - expansion
+                  - contraction
+                  - churn
+                  - reactivation
 
       - name: mrr_before
         description: '{{ doc("col_mrr_before") }}'

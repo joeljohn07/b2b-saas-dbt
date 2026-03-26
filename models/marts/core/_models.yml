@@ -72,8 +72,9 @@ models:
         description: '{{ doc("col_first_touch_channel_key") }}'
         tests:
           - relationships:
-              to: ref('dim_channels')
-              field: channel_key
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
               where: "first_touch_channel_key is not null"
 
       - name: last_touch_channel_key
@@ -81,8 +82,9 @@ models:
         description: '{{ doc("col_last_touch_channel_key") }}'
         tests:
           - relationships:
-              to: ref('dim_channels')
-              field: channel_key
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
               where: "last_touch_channel_key is not null"
 
       - name: engagement_state
@@ -172,8 +174,9 @@ models:
         description: '{{ doc("col_acquisition_channel_key") }}'
         tests:
           - relationships:
-              to: ref('dim_channels')
-              field: channel_key
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
               where: "acquisition_channel_key is not null"
 
       - name: acquisition_date
@@ -232,8 +235,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_key
+              arguments:
+                to: ref('dim_users')
+                field: user_key
 
       - name: signup_date_key
         data_type: int64
@@ -241,8 +245,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
 
       - name: signup_at
         data_type: timestamp
@@ -274,8 +279,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_channels')
-              field: channel_key
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
 
       - name: platform
         data_type: string
@@ -334,8 +340,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_key
+              arguments:
+                to: ref('dim_users')
+                field: user_key
 
       - name: activation_date_key
         data_type: int64
@@ -343,8 +350,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
 
       - name: activation_at
         data_type: timestamp
@@ -358,8 +366,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_channels')
-              field: channel_key
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
 
       - name: last_touch_channel_key
         data_type: int64
@@ -367,8 +376,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_channels')
-              field: channel_key
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
 
       - name: first_touch_channel
         data_type: string
@@ -414,8 +424,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
 
       - name: retention_period
         data_type: string
@@ -452,8 +463,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
               where: "is_period_complete"
 
       - name: cohort_size
@@ -482,6 +494,7 @@ models:
 
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - cohort_week_start_date
-            - retention_period
+          arguments:
+            combination_of_columns:
+              - cohort_week_start_date
+              - retention_period

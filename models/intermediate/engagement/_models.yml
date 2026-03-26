@@ -8,9 +8,10 @@ models:
         - intermediate
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - user_id
-            - snapshot_week_start
+          arguments:
+            combination_of_columns:
+              - user_id
+              - snapshot_week_start
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
@@ -27,11 +28,12 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values:
-                - pre_active
-                - active
-                - dormant
-                - disengaged
+              arguments:
+                values:
+                  - pre_active
+                  - active
+                  - dormant
+                  - disengaged
 
       - name: is_re_engaged
         description: '{{ doc("col_is_re_engaged") }}'
@@ -51,9 +53,10 @@ models:
         - intermediate
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - user_id
-            - experiment_id
+          arguments:
+            combination_of_columns:
+              - user_id
+              - experiment_id
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
@@ -88,7 +91,8 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 24
+              arguments:
+                min_value: 24
 
   - name: int_experiment_metadata
     description: '{{ doc("int_experiment_metadata") }}'

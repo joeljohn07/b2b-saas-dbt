@@ -40,8 +40,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_key
+              arguments:
+                to: ref('dim_users')
+                field: user_key
 
       - name: account_id
         data_type: string
@@ -55,8 +56,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_accounts')
-              field: account_key
+              arguments:
+                to: ref('dim_accounts')
+                field: account_key
 
       - name: created_date_key
         data_type: int64
@@ -64,8 +66,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
 
       - name: created_at
         data_type: timestamp

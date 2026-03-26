@@ -46,8 +46,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_key
+              arguments:
+                to: ref('dim_users')
+                field: user_key
 
       - name: account_id
         data_type: string
@@ -61,8 +62,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_accounts')
-              field: account_key
+              arguments:
+                to: ref('dim_accounts')
+                field: account_key
 
       - name: event_date_key
         data_type: int64
@@ -70,8 +72,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
 
       - name: event_time
         data_type: timestamp
@@ -191,8 +194,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_accounts')
-              field: account_key
+              arguments:
+                to: ref('dim_accounts')
+                field: account_key
 
       - name: subscription_event_id
         data_type: string
@@ -212,8 +216,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
 
       - name: movement_date
         data_type: date
@@ -255,9 +260,10 @@ models:
 
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - account_id
-            - subscription_event_id
+          arguments:
+            combination_of_columns:
+              - account_id
+              - subscription_event_id
 
   - name: fct_invoices
     description: '{{ doc("fct_invoices") }}'
@@ -304,8 +310,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_users')
-              field: user_key
+              arguments:
+                to: ref('dim_users')
+                field: user_key
 
       - name: account_id
         data_type: string
@@ -319,8 +326,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_accounts')
-              field: account_key
+              arguments:
+                to: ref('dim_accounts')
+                field: account_key
 
       - name: issued_date_key
         data_type: int64
@@ -328,8 +336,9 @@ models:
         tests:
           - not_null
           - relationships:
-              to: ref('dim_date')
-              field: date_key
+              arguments:
+                to: ref('dim_date')
+                field: date_key
 
       - name: issued_at
         data_type: timestamp
