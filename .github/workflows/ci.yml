@@ -44,6 +44,9 @@ jobs:
       - name: Lint model names
         run: scripts/lint-model-names.sh
 
+      - name: Lint doc blocks
+        run: bash scripts/lint-doc-blocks.sh
+
   build-and-validate:
     name: Build & Validate
     needs: lint
