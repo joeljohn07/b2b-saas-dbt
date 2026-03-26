@@ -44,15 +44,15 @@ intervals as (
         transition_time,
         lead(transition_time) over (
             partition by anon_id
-            order by transition_time
+            order by transition_time, user_id
         ) as next_transition_time,
         lag(transition_time) over (
             partition by anon_id
-            order by transition_time
+            order by transition_time, user_id
         ) as prev_transition_time,
         row_number() over (
             partition by anon_id
-            order by transition_time desc
+            order by transition_time desc, user_id desc
         ) as recency_rank
     from transition_starts
 

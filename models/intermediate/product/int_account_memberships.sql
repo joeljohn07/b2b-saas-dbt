@@ -22,10 +22,6 @@ with_next_event as (
         event_type,
         event_time,
         role,
-        lead(event_type) over (
-            partition by user_id, account_id
-            order by event_time
-        ) as next_event_type,
         lead(event_time) over (
             partition by user_id, account_id
             order by event_time
@@ -41,9 +37,7 @@ joined_only as (
         account_id,
         role,
         event_time as valid_from,
-        case
-            when next_event_type = 'member_removed' then next_event_time
-        end as valid_to
+        next_event_time as valid_to
     from with_next_event
     where event_type = 'member_joined'
 

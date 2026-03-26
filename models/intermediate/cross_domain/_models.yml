@@ -272,7 +272,7 @@ models:
         description: '{{ doc("col_account_id") }}'
 
       - name: checkout_at
-        description: '{{ doc("col_event_time") }}'
+        description: '{{ doc("col_checkout_at") }}'
         tests:
           - not_null
 
