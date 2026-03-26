@@ -25,6 +25,9 @@ Enforced by `scripts/lint-doc-blocks.sh` (pre-commit hook) and CI.
 | Shared columns | `col_{column}` | `col_user_id`, `col_currency`, `col__loaded_at` |
 | Domain-qualified columns | `col_{domain}_{column}` | `col_invoice_status`, `col_ticket_status` |
 | Model descriptions | `{model_name}` | `stg_funnel__events`, `int_events_normalized` |
+| Source descriptions | `src_{source}` | `src_billing` |
+| Source table descriptions | `src_{source}_{table}` | `src_billing_subscriptions` |
+| Seed descriptions | `seed_{seed_name}` | `seed_experiment_metadata` |
 
 ## Reuse Rules
 
@@ -36,8 +39,8 @@ Enforced by `scripts/lint-doc-blocks.sh` (pre-commit hook) and CI.
 
 | File | Contents |
 |------|----------|
-| `docs/columns.md` | Shared column doc blocks |
-| `models/staging/staging.md` | Staging model descriptions |
+| `docs/columns.md` | Shared column doc blocks and seed descriptions |
+| `models/staging/staging.md` | Staging model and source descriptions |
 | `models/intermediate/intermediate.md` | Intermediate model descriptions (create when building int layer) |
 | `models/marts/marts.md` | Marts model descriptions (create when building marts layer) |
 

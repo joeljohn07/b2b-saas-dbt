@@ -30,7 +30,7 @@ Apply the layer-specific section based on which files changed.
 ## Intermediate
 
 - [ ] Model name: `int_{concept}` (optional `_prep` or `_unioned` suffix; subdirectory provides domain context)
-- [ ] Only `ref()` — no `source()` references
+- [ ] Only `ref()` — no `source()` references (seeds allowed for static reference data)
 - [ ] No `contract.enforced` (intermediate is internal)
 - [ ] Materialized as view (exception: `int_events_normalized` is incremental)
 - [ ] Correct subdirectory: product/, billing/, engagement/, or cross_domain/
