@@ -106,3 +106,205 @@ Eight retention periods (W1-W4, M2, M3, M6, M12) measured as 7-day activity
 windows at fixed day offsets from the cohort week start date (always a
 Monday). Only activated users are included in cohorts.
 {% enddocs %}
+
+---
+
+## Column descriptions
+
+### Surrogate key columns
+
+{% docs col_account_key %}
+Surrogate key for the account dimension. farm_fingerprint hash of the
+account ID.
+{% enddocs %}
+
+{% docs col_activation_key %}
+Surrogate key for the activation fact. farm_fingerprint hash of the user ID.
+{% enddocs %}
+
+{% docs col_channel_key %}
+Surrogate key for the channel dimension. farm_fingerprint hash of the
+channel string.
+{% enddocs %}
+
+{% docs col_experiment_key %}
+Surrogate key for the experiment dimension. farm_fingerprint hash of
+the experiment ID.
+{% enddocs %}
+
+{% docs col_feature_usage_key %}
+Surrogate key for the feature usage fact. farm_fingerprint hash of the
+event ID.
+{% enddocs %}
+
+{% docs col_invoice_key %}
+Surrogate key for the invoice fact. farm_fingerprint hash of the invoice ID.
+{% enddocs %}
+
+{% docs col_mrr_movement_key %}
+Surrogate key for the MRR movement fact. farm_fingerprint hash of the
+concatenation of account ID and subscription event ID.
+{% enddocs %}
+
+{% docs col_retention_cohort_key %}
+Surrogate key for the retention cohort fact. farm_fingerprint hash of the
+concatenation of cohort week start date and retention period.
+{% enddocs %}
+
+{% docs col_session_key %}
+Surrogate key for the session dimension. farm_fingerprint hash of the
+session ID.
+{% enddocs %}
+
+{% docs col_signup_key %}
+Surrogate key for the signup fact. farm_fingerprint hash of the event ID.
+{% enddocs %}
+
+{% docs col_spend_key %}
+Surrogate key for the marketing spend fact. farm_fingerprint hash of the
+spend ID.
+{% enddocs %}
+
+{% docs col_subscription_event_key %}
+Surrogate key for the subscription event fact. farm_fingerprint hash of the
+subscription event ID.
+{% enddocs %}
+
+{% docs col_ticket_key %}
+Surrogate key for the support ticket fact. farm_fingerprint hash of the
+ticket ID.
+{% enddocs %}
+
+{% docs col_user_key %}
+Surrogate key for the user dimension. farm_fingerprint hash of the
+user ID.
+{% enddocs %}
+
+### Role-playing foreign key columns
+
+{% docs col_acquisition_channel_key %}
+Foreign key to dim_channels for the account acquisition channel, derived
+from the first activated user's first-touch channel.
+{% enddocs %}
+
+{% docs col_activation_date_key %}
+Foreign key to dim_date for the activation event date.
+{% enddocs %}
+
+{% docs col_cohort_week_date_key %}
+Foreign key to dim_date for the cohort week start date (always a Monday).
+{% enddocs %}
+
+{% docs col_created_date_key %}
+Foreign key to dim_date for the ticket creation date.
+{% enddocs %}
+
+{% docs col_event_date_key %}
+Foreign key to dim_date for the subscription event date.
+{% enddocs %}
+
+{% docs col_exposure_date_key %}
+Foreign key to dim_date for the experiment first-exposure date.
+{% enddocs %}
+
+{% docs col_first_touch_channel_key %}
+Foreign key to dim_channels for the first attribution touchpoint channel.
+{% enddocs %}
+
+{% docs col_issued_date_key %}
+Foreign key to dim_date for the invoice issue date.
+{% enddocs %}
+
+{% docs col_last_touch_channel_key %}
+Foreign key to dim_channels for the last attribution touchpoint channel.
+{% enddocs %}
+
+{% docs col_movement_date_key %}
+Foreign key to dim_date for the MRR movement date.
+{% enddocs %}
+
+{% docs col_period_end_date_key %}
+Foreign key to dim_date for the retention period end date.
+{% enddocs %}
+
+{% docs col_session_date_key %}
+Foreign key to dim_date for the session start date.
+{% enddocs %}
+
+{% docs col_signup_date_key %}
+Foreign key to dim_date for the signup event date.
+{% enddocs %}
+
+{% docs col_spend_date_key %}
+Foreign key to dim_date for the marketing spend date.
+{% enddocs %}
+
+{% docs col_usage_date_key %}
+Foreign key to dim_date for the feature usage event date.
+{% enddocs %}
+
+### Marts dimension columns
+
+{% docs col_acquisition_date %}
+Date when the account was acquired, based on the first activated user's
+activation timestamp.
+{% enddocs %}
+
+{% docs col_lifecycle_stage %}
+Account lifecycle stage derived from the latest subscription event
+(trial, active, churned, reactivated).
+{% enddocs %}
+
+{% docs col_signup_at %}
+Timestamp of the user's first signup event.
+{% enddocs %}
+
+{% docs col_usage_at %}
+Timestamp when the feature usage event occurred.
+{% enddocs %}
+
+{% docs col_user_count %}
+Number of currently active members in the account.
+{% enddocs %}
+
+### Retention columns
+
+{% docs col_cohort_size %}
+Number of users who activated during the cohort week.
+{% enddocs %}
+
+{% docs col_cohort_week_start_date %}
+Monday of the ISO week in which users activated. Defines the retention
+cohort boundary.
+{% enddocs %}
+
+{% docs col_is_period_complete %}
+Whether the retention measurement window has fully elapsed plus a 7-day
+buffer for late-arriving events. False for recent periods where data may
+still be incomplete.
+{% enddocs %}
+
+{% docs col_period_end_date %}
+Last date of the 7-day retention measurement window. Equals
+cohort_week_start_date plus period_offset_days plus 6.
+{% enddocs %}
+
+{% docs col_period_offset_days %}
+Number of days from the cohort week start date to the beginning of the
+7-day retention measurement window.
+{% enddocs %}
+
+{% docs col_retained_count %}
+Number of cohort users who had at least one event during the retention
+measurement window. Always less than or equal to cohort_size.
+{% enddocs %}
+
+{% docs col_retention_period %}
+Retention measurement period label. Eight fixed periods: W1 through W4
+(weekly), M2, M3, M6, M12 (monthly milestones measured as 7-day windows).
+{% enddocs %}
+
+{% docs col_retention_rate %}
+Fraction of cohort users retained in the measurement window. Equals
+retained_count divided by cohort_size, bounded between 0 and 1.
+{% enddocs %}
