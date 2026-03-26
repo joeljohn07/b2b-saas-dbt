@@ -24,7 +24,7 @@ with_next_event as (
         role,
         lead(event_time) over (
             partition by user_id, account_id
-            order by event_time
+            order by event_time, event_type
         ) as next_event_time
     from membership_events
 
