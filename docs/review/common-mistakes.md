@@ -27,7 +27,7 @@ Anti-patterns to catch during review and audit. Ordered by frequency.
 
 ## Naming
 
-15. **Wrong prefix** — staging: `stg_`, intermediate: `int_`, marts: `fct_`/`dim_`/`bridge_`/`agg_`/`rpt_`/`mart_`.
+15. **Wrong prefix** — staging: `stg_{source}__{entity}`, intermediate: `int_{concept}` (subdirectory provides domain context), marts: `fct_`/`dim_`/`bridge_`/`agg_`/`rpt_`/`mart_`.
 16. **Single underscore in staging** — Must be double: `stg_{source}__{entity}`.
 17. **Column name drift** — Same concept must use same column name everywhere.
 

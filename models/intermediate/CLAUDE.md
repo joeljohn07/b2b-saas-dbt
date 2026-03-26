@@ -6,8 +6,8 @@ All business logic lives here. Dedup, sessionization, identity stitching, attrib
 ## Conventions
 - Materialized: view (default). Use table only if query is too heavy for downstream.
 - Exception: `int_events_normalized` is incremental (merge on event_id, 36h lookback)
-- Naming: `int_{domain}_{concept}` (suffixes: `_prep` for source-specific prep, `_unioned` for multi-source union)
-- `ref()` staging or other intermediate models only — never `source()`
+- Naming: `int_{concept}` (suffixes: `_prep` for source-specific prep, `_unioned` for multi-source union; subdirectory provides domain context)
+- `ref()` staging or other intermediate models only — never `source()`. Exception: seeds containing static reference data (e.g., `experiment_metadata`) are allowed as refs.
 - No `contract.enforced` (intermediate is internal)
 - No inline descriptions — all descriptions must use `{{ doc() }}` blocks
 

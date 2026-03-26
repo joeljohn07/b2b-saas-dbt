@@ -25,7 +25,7 @@ Rules and conventions for each layer of the dbt project.
 ### Transformations
 - Column renaming and type casting to canonical types (TIMESTAMP, DATE, STRING, INT64, NUMERIC)
 - JSON shredding (properties → flat columns, experiment_flags passed through for downstream unnesting)
-- Exception: `line_items` on invoices passed through as raw JSON — shredded in int_invoices_prep
+- Exception: `line_items` on invoices passed through as raw JSON — not shredded at any layer (variable-length structure consumed directly by downstream tools)
 - Null handling for optional fields
 
 ---
@@ -37,14 +37,14 @@ All business logic lives here. Dedup, sessionization, identity stitching, attrib
 
 ### Rules
 - Materialized: `view` (default). Exception: `int_events_normalized` is incremental (merge on event_id, 36h lookback)
-- `ref()` staging or other intermediate models only — never `source()`
+- `ref()` staging or other intermediate models only — never `source()`. Exception: seeds containing static reference data (e.g., `experiment_metadata`) are allowed as refs.
 - No `contract.enforced` (intermediate is internal)
 
 ### Naming
-- Pattern: `int_{domain}_{concept}`
+- Pattern: `int_{concept}` (subdirectory provides domain context)
 - Optional suffixes:
-  - `_prep` — source-specific business rules applied before joining/unioning (e.g., `int_billing_subscriptions_prep`)
-  - `_unioned` — union of multiple sources into one entity (e.g., `int_product_events_unioned`)
+  - `_prep` — source-specific business rules applied before joining/unioning (e.g., `int_invoices_prep`)
+  - `_unioned` — union of multiple sources into one entity (e.g., `int_events_unioned`)
 
 ### File Organization
 - Subdirectories by domain: `product/`, `billing/`, `engagement/`, `cross_domain/`

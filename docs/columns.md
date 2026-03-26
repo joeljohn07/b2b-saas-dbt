@@ -6,6 +6,14 @@ columns and `col_{domain}_{column}` for domain-qualified columns.
 
 ---
 
+## Seed descriptions
+
+{% docs seed_experiment_metadata %}
+Experiment definitions for the experiment dimension.
+{% enddocs %}
+
+---
+
 ## Identifiers
 
 {% docs col_event_id %}

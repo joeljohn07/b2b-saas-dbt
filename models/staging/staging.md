@@ -1,3 +1,49 @@
+## Source descriptions
+
+{% docs src_billing %}
+Billing system data — subscriptions and invoices.
+{% enddocs %}
+
+{% docs src_billing_subscriptions %}
+Subscription lifecycle events: trial starts/ends, subscription starts,
+upgrades, downgrades, renewals, cancellations, and reactivations.
+{% enddocs %}
+
+{% docs src_billing_invoices %}
+Invoices generated from subscriptions. Includes payment status,
+amounts, and line item details.
+{% enddocs %}
+
+{% docs src_support %}
+Customer support ticket data.
+{% enddocs %}
+
+{% docs src_support_tickets %}
+Support tickets with category, priority, resolution status,
+CSAT scores, and response times.
+{% enddocs %}
+
+{% docs src_funnel %}
+Product analytics event stream.
+{% enddocs %}
+
+{% docs src_funnel_events %}
+Raw product events covering the full user lifecycle: page views,
+signups, activations, feature usage, paywall views, checkout starts,
+upgrade clicks, and team member management.
+{% enddocs %}
+
+{% docs src_marketing %}
+Marketing spend data by channel and campaign.
+{% enddocs %}
+
+{% docs src_marketing_spend %}
+Daily marketing spend by channel and campaign, including impressions
+and clicks.
+{% enddocs %}
+
+---
+
 ## stg_funnel__events
 
 {% docs stg_funnel__events %}
@@ -21,8 +67,8 @@ renewals, cancellations, and reactivations.
 ## stg_billing__invoices
 
 {% docs stg_billing__invoices %}
-Staged invoices. Pass-through with line_items kept as raw JSON string for
-downstream processing in int_invoices_prep.
+Staged invoices. Pass-through with line_items kept as raw JSON string — not
+shredded at any layer.
 {% enddocs %}
 
 ---

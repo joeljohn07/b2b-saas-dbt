@@ -11,7 +11,7 @@ Five source domains: product events, billing subscriptions, billing invoices, ma
 
 ## Naming
 - Staging: `stg_{source}__{entity}` (double underscore)
-- Intermediate: `int_{domain}_{concept}` (suffixes: `_prep` for source-specific prep, `_unioned` for multi-source union)
+- Intermediate: `int_{concept}` (suffixes: `_prep` for source-specific prep, `_unioned` for multi-source union; subdirectory provides domain context)
 - Facts: `fct_{entity}`, Dimensions: `dim_{entity}`, Bridges: `bridge_{m2m}`
 - Aggregations: `agg_{entity}_{grain}`, Reports: `rpt_{topic}`, Marts: `mart_{entity}`
 

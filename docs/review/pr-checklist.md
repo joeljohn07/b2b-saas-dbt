@@ -29,7 +29,7 @@ Apply the layer-specific section based on which files changed.
 
 ## Intermediate
 
-- [ ] Model name: `int_{domain}_{concept}` (optional `_prep` or `_unioned` suffix)
+- [ ] Model name: `int_{concept}` (optional `_prep` or `_unioned` suffix; subdirectory provides domain context)
 - [ ] Only `ref()` — no `source()` references
 - [ ] No `contract.enforced` (intermediate is internal)
 - [ ] Materialized as view (exception: `int_events_normalized` is incremental)
