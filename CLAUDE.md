@@ -62,3 +62,6 @@ Workflow instructions in `docs/skills/`. Read the relevant file before executing
 - `dbt-pr-review` — structured PR review with audit pass
 - `dbt-scaffold` — generate model + YAML + test stubs
 - `dbt-audit` — deep compliance audit (test coverage, layer compliance, docs)
+
+## Agent entry point
+`docs/agent/INDEX.md` — canonical index of all agent operating docs, skills, and review references
