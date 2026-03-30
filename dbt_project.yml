@@ -41,6 +41,16 @@ seeds:
       +column_types:
         start_date: date
         end_date: date
+    fixtures:
+      +schema: fixtures
+      +tags: ['fixture']
+      +column_types:
+        event_time: timestamp
+        ingest_time: timestamp
+        _loaded_at: timestamp
+        event_date: date
+        time_to_activate_hours: float64
+        feature_duration_seconds: int64
 
 models:
   b2b_saas_dbt:

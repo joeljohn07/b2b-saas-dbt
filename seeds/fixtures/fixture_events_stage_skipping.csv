@@ -1,0 +1,4 @@
+event_id,user_id,anon_id,account_id,event_time,ingest_time,_loaded_at,event_date,event_type,platform,channel,plan_context,utm_source,utm_medium,utm_campaign,utm_term,utm_content,device_type,browser,os,user_agent,page_url,referrer,signup_method,activation_action,time_to_activate_hours,feature_name,feature_duration_seconds,source_page,target_plan,billing_cycle,member_role,member_reason,experiment_flags
+evt_skip_001,user_009,anon_010,acct_006,2024-01-15 08:00:00,2024-01-15 08:00:01,2024-01-15 08:05:00,2024-01-15,page_view,web,paid_search,,google,cpc,q1,,,,chrome,windows,,,,,,,,,,,,,
+evt_skip_002,user_009,anon_010,acct_006,2024-01-15 08:05:00,2024-01-15 08:05:01,2024-01-15 08:10:00,2024-01-15,signup,web,paid_search,,google,cpc,q1,,,,chrome,windows,,,,,email,,,,,,,,
+evt_skip_003,user_009,anon_010,acct_006,2024-01-15 08:10:00,2024-01-15 08:10:01,2024-01-15 08:15:00,2024-01-15,feature_use,web,,,,,,,,,chrome,windows,,,,,,,,dashboard,,,,,

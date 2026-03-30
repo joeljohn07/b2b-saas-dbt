@@ -1,0 +1,51 @@
+version: 2
+
+seeds:
+  - name: fixture_events_late_arrivals
+    description: >
+      Edge-case fixture: same event_id loaded twice, with _loaded_at 48 hours apart.
+      Tests that the dedup step in int_events_normalized retains only the earliest
+      _loaded_at row and produces no duplicate event_ids.
+
+  - name: fixture_events_duplicates
+    description: >
+      Edge-case fixture: same event_id loaded twice within the 36-hour incremental
+      lookback window. Tests that deduplication resolves within-window duplicates
+      and produces no duplicate event_ids.
+
+  - name: fixture_events_out_of_order
+    description: >
+      Edge-case fixture: events with event_time significantly earlier than _loaded_at
+      (backfill of historical events). Tests that the incremental model's _loaded_at
+      lookback correctly captures these late-loaded historical events.
+
+  - name: fixture_events_backfill_replay
+    description: >
+      Edge-case fixture: same event_id resent in a replay (e.g. pipeline re-run or
+      source correction). Tests that the latest _loaded_at row wins in deduplication.
+
+  - name: fixture_events_multi_device
+    description: >
+      Edge-case fixture: same user_id with two different anon_ids (cross-device session).
+      Tests that deduplication handles the case where the same user appears under
+      multiple anonymous identifiers without producing duplicate event_ids.
+
+  - name: fixture_events_session_boundary
+    description: >
+      Edge-case fixture: two pairs of events at the 1800-second inactivity threshold.
+      anon_008 has events exactly 1800 seconds apart (same session boundary — expect
+      1 session). anon_009 has events 1801 seconds apart (exceeds threshold — expect
+      2 sessions). Tests the sessionization threshold in int_sessions.
+
+  - name: fixture_events_stage_skipping
+    description: >
+      Edge-case fixture: user progresses page_view → signup → feature_use, skipping
+      activation. Tests that stage skipping is handled gracefully — the funnel model
+      should not require contiguous stages.
+
+  - name: fixture_events_stage_regression
+    description: >
+      Edge-case fixture: user reaches checkout_start then generates a new page_view
+      event at a later timestamp. Tests that a time-regression in event_type does
+      not cause a monotonicity violation — stage_reached_at is set to the FIRST
+      occurrence of each stage, so the later page_view does not change stage_ordinal 1.
