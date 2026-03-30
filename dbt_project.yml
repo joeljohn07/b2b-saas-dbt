@@ -26,6 +26,9 @@ vars:
 
 seeds:
   b2b_saas_dbt:
+    +persist_docs:
+      relation: true
+      columns: true
     +schema: marts
     dim_date:
       +column_types:
@@ -41,6 +44,9 @@ seeds:
 
 models:
   b2b_saas_dbt:
+    +persist_docs:
+      relation: true
+      columns: true
     staging:
       +materialized: view
       +schema: staging
