@@ -91,7 +91,7 @@ jobs:
         continue-on-error: true  # synthetic data is always stale; documents pattern without blocking CI
 
       - name: Build staging layer
-        run: dbt build --select tag:staging --target ci --full-refresh
+        run: dbt build --select models/staging/ --target ci --full-refresh
 
       - name: Build all models and run tests
         run: dbt build --target ci --full-refresh
