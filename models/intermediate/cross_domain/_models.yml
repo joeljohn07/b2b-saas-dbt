@@ -53,7 +53,8 @@ models:
         description: '{{ doc("col_resolution_time_hours") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
+              arguments:
+                min_value: 0
               config:
                 where: "resolution_time_hours is not null"
 
@@ -61,7 +62,8 @@ models:
         description: '{{ doc("col_first_response_hours") }}'
         tests:
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
+              arguments:
+                min_value: 0
               config:
                 where: "first_response_hours is not null"
 
@@ -294,7 +296,8 @@ models:
         description: '{{ doc("col_time_to_conversion_days") }}'
         tests:
           - dbt_utils.expression_is_true:
-              expression: "<= 30 or time_to_conversion_days is null"
+              arguments:
+                expression: "<= 30 or time_to_conversion_days is null"
 
   - name: int_account_health
     description: '{{ doc("int_account_health") }}'
@@ -313,32 +316,36 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 100
+              arguments:
+                min_value: 0
+                max_value: 100
 
       - name: activity_score
         description: '{{ doc("col_activity_score") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 100
+              arguments:
+                min_value: 0
+                max_value: 100
 
       - name: billing_score
         description: '{{ doc("col_billing_score") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 100
+              arguments:
+                min_value: 0
+                max_value: 100
 
       - name: support_score
         description: '{{ doc("col_support_score") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
-              max_value: 100
+              arguments:
+                min_value: 0
+                max_value: 100
 
       - name: calculated_at
         description: '{{ doc("col_calculated_at") }}'

@@ -130,9 +130,10 @@ models:
         - intermediate
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - anon_id
-            - valid_from
+          arguments:
+            combination_of_columns:
+              - anon_id
+              - valid_from
     columns:
       - name: anon_id
         description: '{{ doc("col_anon_id") }}'
@@ -157,9 +158,10 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values:
-                - last_touch
-                - historical
+              arguments:
+                values:
+                  - last_touch
+                  - historical
 
   - name: int_account_memberships
     description: '{{ doc("int_account_memberships") }}'
@@ -168,10 +170,11 @@ models:
         - intermediate
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - user_id
-            - account_id
-            - valid_from
+          arguments:
+            combination_of_columns:
+              - user_id
+              - account_id
+              - valid_from
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
@@ -199,7 +202,8 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
+              arguments:
+                min_value: 0
 
   - name: int_sessions
     description: '{{ doc("int_sessions") }}'
@@ -236,14 +240,16 @@ models:
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 0
+              arguments:
+                min_value: 0
 
       - name: event_count
         description: '{{ doc("col_event_count") }}'
         tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
-              min_value: 1
+              arguments:
+                min_value: 1
 
       - name: page_view_count
         description: '{{ doc("col_page_view_count") }}'
@@ -278,9 +284,10 @@ models:
         - intermediate
     tests:
       - dbt_utils.unique_combination_of_columns:
-          combination_of_columns:
-            - user_id
-            - stage
+          arguments:
+            combination_of_columns:
+              - user_id
+              - stage
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
@@ -292,12 +299,13 @@ models:
         tests:
           - not_null
           - accepted_values:
-              values:
-                - page_view
-                - signup
-                - activation
-                - feature_use
-                - checkout_start
+              arguments:
+                values:
+                  - page_view
+                  - signup
+                  - activation
+                  - feature_use
+                  - checkout_start
 
       - name: stage_reached_at
         description: '{{ doc("col_stage_reached_at") }}'
