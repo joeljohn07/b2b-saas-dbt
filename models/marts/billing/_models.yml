@@ -115,6 +115,16 @@ models:
       - name: previous_plan
         data_type: string
         description: '{{ doc("col_previous_plan") }}'
+        data_tests:
+          - accepted_values:
+              arguments:
+                values:
+                  - free
+                  - starter
+                  - pro
+                  - enterprise
+              config:
+                where: "previous_plan is not null"
 
       - name: billing_cycle
         data_type: string
