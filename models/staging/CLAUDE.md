@@ -17,7 +17,7 @@
 ## What Belongs Here
 - Column renaming and type casting
 - JSON shredding (properties → flat columns, experiment_flags passed through as JSON string for downstream unnesting)
-- Exception: `line_items` on invoices is passed through as raw JSON — shredding deferred to int_invoices_prep because the line item structure is variable-length and better handled at the intermediate layer
+- Exception: `line_items` on invoices is passed through as raw JSON — not shredded at any layer (variable-length structure consumed directly by downstream tools)
 - Null handling for optional fields
 
 ## What Does Not Belong Here

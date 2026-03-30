@@ -4,12 +4,10 @@ sources:
   - name: billing
     database: "{{ env_var('GCP_PROJECT_ID') }}"
     schema: raw_billing
-    description: Billing system data — subscriptions and invoices
+    description: '{{ doc("src_billing") }}'
     tables:
       - name: subscriptions
-        description: >
-          Subscription lifecycle events: trial starts/ends, subscription starts,
-          upgrades, downgrades, renewals, cancellations, and reactivations.
+        description: '{{ doc("src_billing_subscriptions") }}'
         config:
           loaded_at_field: _loaded_at
           freshness:
@@ -26,9 +24,7 @@ sources:
             description: '{{ doc("col__loaded_at") }}'
 
       - name: invoices
-        description: >
-          Invoices generated from subscriptions. Includes payment status,
-          amounts, and line item details.
+        description: '{{ doc("src_billing_invoices") }}'
         config:
           loaded_at_field: _loaded_at
           freshness:

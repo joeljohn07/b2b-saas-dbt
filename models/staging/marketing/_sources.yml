@@ -4,12 +4,10 @@ sources:
   - name: marketing
     database: "{{ env_var('GCP_PROJECT_ID') }}"
     schema: raw_marketing
-    description: Marketing spend data by channel and campaign
+    description: '{{ doc("src_marketing") }}'
     tables:
       - name: spend
-        description: >
-          Daily marketing spend by channel and campaign, including impressions
-          and clicks.
+        description: '{{ doc("src_marketing_spend") }}'
         config:
           loaded_at_field: _loaded_at
           freshness:

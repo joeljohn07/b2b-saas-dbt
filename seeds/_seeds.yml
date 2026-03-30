@@ -85,7 +85,7 @@ seeds:
           - not_null
 
   - name: experiment_metadata
-    description: Experiment definitions for the experiment dimension.
+    description: '{{ doc("seed_experiment_metadata") }}'
     config:
       tags:
         - marts
