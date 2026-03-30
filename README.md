@@ -9,6 +9,7 @@ Full-company analytics platform for a B2B SaaS company — dbt on BigQuery, Kimb
 - **Incremental events pipeline** — `int_events_normalized` merges on `event_id` with a 36h `_loaded_at` lookback window, catching late arrivals without full-refresh cost
 - **CI isolation** — every PR gets its own BigQuery dataset (`analytics_ci_{PR_NUMBER}`); WIF keyless auth, no service account key files in CI secrets
 - **Enforced architecture** — `dbt-project-evaluator` blocks naming and DAG violations in CI; a custom doc-block linter blocks inline descriptions and orphaned `{{ doc() }}` references at pre-commit
+- **Agent-ready codebase** — tiered CLAUDE.md instruction contract (root + one per layer) with `docs/agent/INDEX.md` as the canonical entry point; skill files for validate, PR review, scaffold, and audit; fixture seeds with companion invariant tests for edge-case coverage; built for iterative AI-assisted development from the start
 
 ## Architecture
 
@@ -92,7 +93,7 @@ dbt build --exclude package:dbt_project_evaluator  # run models + tests
 │   ├── reconciliation/         # Cross-layer row/value checks
 │   ├── fanout/                 # Grain change detection
 │   └── contracts/              # Schema contract enforcement
-├── seeds/                      # Static reference data (dim_date)
+├── seeds/                      # Static reference data (dim_date) + edge-case fixtures
 ├── docs/                       # Extended documentation + skills
 ├── scripts/                    # lint-doc-blocks.sh, lint-model-names.sh
 └── .github/workflows/          # CI pipeline
