@@ -4,9 +4,17 @@ models:
   - name: int_events_normalized
     description: '{{ doc("int_events_normalized") }}'
     config:
-      materialized: view
+      materialized: incremental
+      unique_key: event_id
+      partition_by:
+        field: event_date
+        data_type: date
+        granularity: day
+      incremental_strategy: merge
+      on_schema_change: fail
       tags:
         - intermediate
+        - incremental
     columns:
       - name: event_id
         description: '{{ doc("col_event_id") }}'

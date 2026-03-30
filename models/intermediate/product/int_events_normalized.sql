@@ -1,6 +1,3 @@
--- TODO: convert to incremental materialization (issue #21)
-{{ config(materialized='view') }}
-
 with source as (
 
     select
@@ -43,6 +40,9 @@ with source as (
             order by _loaded_at asc, ingest_time asc
         ) as _dedup_row_num
     from {{ ref('stg_funnel__events') }}
+    {% if is_incremental() %}
+        where _loaded_at >= timestamp_sub(current_timestamp(), interval 36 hour)
+    {% endif %}
 
 )
 
