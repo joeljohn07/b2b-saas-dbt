@@ -1,11 +1,11 @@
--- Validates fct_mrr_movements row count does not exceed int_mrr_movements by more than 1%.
+-- Validates fct_mrr_movements row count exactly equals int_mrr_movements.
 -- int_mrr_movements excludes trial events (trial_start, trial_end), so mart and intermediate
--- counts should be equal. Any ratio > 1.01 indicates a bad join in mart assembly.
+-- counts must be equal. Any overage indicates a bad join in mart assembly.
 
 {{ config(
     severity='error',
     tags=['data_quality'],
-    description='Assert fct_mrr_movements count does not exceed int_mrr_movements by more than 1%'
+    description='Assert fct_mrr_movements count exactly equals int_mrr_movements (1:1 passthrough)'
 ) }}
 
 with counts as (
@@ -19,4 +19,4 @@ select
     intermediate_count,
     round(safe_divide(mart_count, intermediate_count), 4)              as fanout_ratio
 from counts
-where mart_count > intermediate_count * 1.01
+where mart_count > intermediate_count

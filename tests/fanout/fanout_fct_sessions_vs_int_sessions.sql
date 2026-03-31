@@ -1,11 +1,10 @@
--- Validates fct_sessions row count does not exceed int_sessions by more than 1%.
--- Detects accidental fan-out from a bad join in mart assembly.
--- fct_sessions is assembled 1:1 from int_sessions — any ratio > 1.01 indicates a bad join.
+-- Validates fct_sessions row count exactly equals int_sessions.
+-- fct_sessions is a 1:1 passthrough from int_sessions — any overage indicates a bad join.
 
 {{ config(
     severity='error',
     tags=['data_quality'],
-    description='Assert fct_sessions count does not exceed int_sessions by more than 1%'
+    description='Assert fct_sessions count exactly equals int_sessions (1:1 passthrough)'
 ) }}
 
 with counts as (
@@ -19,4 +18,4 @@ select
     intermediate_count,
     round(safe_divide(mart_count, intermediate_count), 4)          as fanout_ratio
 from counts
-where mart_count > intermediate_count * 1.01
+where mart_count > intermediate_count
