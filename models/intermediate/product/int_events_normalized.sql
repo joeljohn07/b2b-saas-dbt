@@ -41,7 +41,10 @@ with source as (
         ) as _dedup_row_num
     from {{ ref('stg_funnel__events') }}
     {% if is_incremental() %}
-        where _loaded_at >= timestamp_sub(current_timestamp(), interval 36 hour)
+        where _loaded_at >= timestamp_sub(
+            (select max(_loaded_at) from {{ this }}),
+            interval 36 hour
+        )
     {% endif %}
 
 )
