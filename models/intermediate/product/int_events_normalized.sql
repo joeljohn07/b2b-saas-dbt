@@ -39,9 +39,9 @@ with source as (
             partition by event_id
             order by _loaded_at asc, ingest_time asc
         ) as _dedup_row_num
-    from {{ ref('stg_funnel__events') }}
+    from {{ ref('stg_funnel__events') }} as stg
     {% if is_incremental() %}
-        where _loaded_at >= timestamp_sub(  -- noqa: RF02
+        where stg._loaded_at >= timestamp_sub(
             (select max(_loaded_at) from {{ this }}),
             interval 36 hour
         )
