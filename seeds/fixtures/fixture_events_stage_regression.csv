@@ -1,6 +1,6 @@
 event_id,user_id,anon_id,account_id,event_time,ingest_time,_loaded_at,event_date,event_type,platform,channel,plan_context,utm_source,utm_medium,utm_campaign,utm_term,utm_content,device_type,browser,os,user_agent,page_url,referrer,signup_method,activation_action,time_to_activate_hours,feature_name,feature_duration_seconds,source_page,target_plan,billing_cycle,member_role,member_reason,experiment_flags
 evt_reg_001,user_010,anon_011,acct_007,2024-01-15 08:00:00,2024-01-15 08:00:01,2024-01-15 08:05:00,2024-01-15,page_view,web,organic,,,,,,,,chrome,macos,,,,,,,,,,,,,,
 evt_reg_002,user_010,anon_011,acct_007,2024-01-15 08:05:00,2024-01-15 08:05:01,2024-01-15 08:10:00,2024-01-15,signup,web,organic,,,,,,,,chrome,macos,,,,,email,,,,,,,,,
-evt_reg_003,user_010,anon_011,acct_007,2024-01-15 08:10:00,2024-01-15 08:10:01,2024-01-15 08:15:00,2024-01-15,activation,web,organic,,,,,,,,chrome,macos,,,,,,email,0.17,,,,,,,
-evt_reg_004,user_010,anon_011,acct_007,2024-01-15 08:15:00,2024-01-15 08:15:01,2024-01-15 08:20:00,2024-01-15,checkout_start,web,,,,,,,,,chrome,macos,,,,,,,,,pro,monthly,,,,
+evt_reg_003,user_010,anon_011,acct_007,2024-01-15 08:10:00,2024-01-15 08:10:01,2024-01-15 08:15:00,2024-01-15,activation,web,organic,,,,,,,,chrome,macos,,,,,email,0.17,,,,,,,,
+evt_reg_004,user_010,anon_011,acct_007,2024-01-15 08:15:00,2024-01-15 08:15:01,2024-01-15 08:20:00,2024-01-15,checkout_start,web,,,,,,,,,chrome,macos,,,,,,,,,,pro,monthly,,,
 evt_reg_005,user_010,anon_011,acct_007,2024-01-15 09:00:00,2024-01-15 09:00:01,2024-01-15 09:05:00,2024-01-15,page_view,web,organic,,,,,,,,chrome,macos,,,,,,,,,,,,,,
