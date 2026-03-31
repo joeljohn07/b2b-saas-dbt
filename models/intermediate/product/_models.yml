@@ -315,6 +315,11 @@ models:
                   - feature_use
                   - checkout_start
 
+      - name: stage_ordinal
+        description: '{{ doc("col_stage_ordinal") }}'
+        tests:
+          - not_null
+
       - name: stage_reached_at
         description: '{{ doc("col_stage_reached_at") }}'
         tests:

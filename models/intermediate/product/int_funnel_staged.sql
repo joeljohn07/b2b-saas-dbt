@@ -69,6 +69,7 @@ stages_reached as (
 select
     user_id,
     stage,
+    stage_ordinal,
     stage_reached_at,
     stage_ordinal = max_stage_ordinal as is_current_stage
 from stages_reached

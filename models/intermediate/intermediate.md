@@ -100,6 +100,11 @@ Funnel stage name (page_view, signup, activation, feature_use,
 checkout_start).
 {% enddocs %}
 
+{% docs col_stage_ordinal %}
+Numeric rank of the funnel stage (1=page_view, 2=signup, 3=activation,
+4=feature_use, 5=checkout_start). Used to validate monotonic stage progression.
+{% enddocs %}
+
 {% docs col_stage_reached_at %}
 Timestamp when this funnel stage was first reached.
 {% enddocs %}
