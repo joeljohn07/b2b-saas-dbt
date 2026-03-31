@@ -42,7 +42,7 @@ with source as (
     from {{ ref('stg_funnel__events') }} as stg
     {% if is_incremental() %}
         where stg._loaded_at >= timestamp_sub(
-            (select max(_loaded_at) from {{ this }}),
+            (select max(t._loaded_at) from {{ this }} as t),
             interval 36 hour
         )
     {% endif %}
