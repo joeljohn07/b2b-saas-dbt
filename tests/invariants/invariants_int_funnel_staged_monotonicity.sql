@@ -1,14 +1,12 @@
--- Validates funnel stage_reached_at increases monotonically with stage_ordinal per user.
--- A user cannot reach a higher stage ordinal before a lower one in time — stage regression
--- indicates bad event ordering or a logic error in int_funnel_staged.
---
--- Users with only one funnel stage produce a NULL prev_stage_reached_at (lag over a single row)
--- and are excluded by the IS NOT NULL guard — they cannot violate monotonicity.
+-- Surfaces users where stage_reached_at is not monotonically increasing with stage_ordinal.
+-- This is a soft constraint — users can legitimately have page_views after signup (ordinal 1
+-- reached after ordinal 2), so violations do not indicate a model bug. Useful for spotting
+-- unusual funnel patterns or data pipeline anomalies.
 
 {{ config(
-    severity='error',
+    severity='warn',
     tags=['data_quality'],
-    description='Assert stage_reached_at is monotonically increasing with stage_ordinal in int_funnel_staged'
+    description='Warn when stage_reached_at is not monotonically increasing with stage_ordinal (soft constraint)'
 ) }}
 
 with lagged as (
