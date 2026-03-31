@@ -1,11 +1,11 @@
--- Fixture test: within-window duplicates (same event_id, two _loaded_at within 36h).
--- Verifies dedup keeps the earliest _loaded_at row — not just that one row exists.
+-- Fixture test: replayed event (same event_id, later _loaded_at).
+-- Verifies dedup retains the earliest _loaded_at row (first-seen wins, replay discarded).
 -- Returns rows where the wrong row was kept (i.e. kept _loaded_at != min _loaded_at).
 
 {{ config(
     severity='error',
     tags=['fixture', 'data_quality'],
-    description='Assert dedup retains the earliest _loaded_at row for duplicate event_ids'
+    description='Assert dedup retains the earliest _loaded_at row when an event is replayed'
 ) }}
 
 with deduped as (
@@ -17,7 +17,7 @@ with deduped as (
             partition by event_id
             order by _loaded_at asc, ingest_time asc
         ) as _dedup_row_num
-    from {{ ref('fixture_events_duplicates') }}
+    from {{ ref('fixture_events_backfill_replay') }}
 
 ),
 
@@ -32,7 +32,7 @@ kept as (
 expected as (
 
     select event_id, min(_loaded_at) as earliest_loaded_at
-    from {{ ref('fixture_events_duplicates') }}
+    from {{ ref('fixture_events_backfill_replay') }}
     group by event_id
 
 )
