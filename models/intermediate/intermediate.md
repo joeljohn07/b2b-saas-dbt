@@ -3,7 +3,9 @@
 {% docs int_events_normalized %}
 Canonical dedup on event_id. Keeps the earliest row by _loaded_at when
 duplicates exist (~0.5% of source events). Single source of truth for all
-downstream event consumption.
+downstream event consumption. Incremental merge on event_id with a 36-hour
+lookback from the last processed _loaded_at, catching late arrivals without
+a full-refresh.
 {% enddocs %}
 
 ---
