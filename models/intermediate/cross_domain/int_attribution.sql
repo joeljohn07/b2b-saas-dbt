@@ -48,7 +48,7 @@ attribution_window as (
         e.event_time < a.activation_at
         -- Locked: 30-day pre-activation window (see decisions.md PR #35)
         and e.event_time >= timestamp_sub(
-            a.activation_at, interval 30 day
+            a.activation_at, interval {{ var('attribution_lookback_days') }} day
         )
 
 ),
