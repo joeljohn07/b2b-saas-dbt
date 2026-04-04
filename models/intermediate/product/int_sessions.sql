@@ -36,6 +36,7 @@ session_boundaries as (
             case
                 when prev_event_time is null
                     then 1
+                -- Locked: 30-min inactivity = new session (see decisions.md PR #35)
                 when
                     timestamp_diff(
                         event_time, prev_event_time, second

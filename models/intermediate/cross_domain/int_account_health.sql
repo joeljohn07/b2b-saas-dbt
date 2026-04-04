@@ -13,6 +13,7 @@ with activity as (
                 m.valid_to, timestamp('9999-12-31')
             )
     where
+        -- 28-day trailing activity window for health score
         s.session_start_at >= timestamp_sub(
             current_timestamp(), interval 28 day
         )
@@ -106,6 +107,7 @@ select
     account_id,
     greatest(0, least(
         100,
+        -- Locked: health weights 0.4/0.3/0.3 activity/billing/support (see decisions.md)
         0.4 * activity_score + 0.3 * billing_score + 0.3 * support_score
     )) as health_score,
     activity_score,
