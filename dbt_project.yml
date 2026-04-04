@@ -92,8 +92,8 @@ models:
           +severity: warn
       governance:
         fct_public_models_without_contract:
-          +enabled: false
+          +enabled: false  # disabled: all public models use access:protected; no public access configured yet
         fct_undocumented_public_models:
-          +enabled: false
+          +enabled: false  # disabled: same reason as above — no public access layer
         fct_exposures_dependent_on_private_models:
-          +enabled: false
+          +enabled: false  # disabled: no exposures defined yet

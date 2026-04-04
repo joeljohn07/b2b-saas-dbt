@@ -29,7 +29,7 @@ for file in $STAGED; do
     done
 done
 
-_SECRET_CORE='\b(api_key|secret_key|password|token|sessionid|private_key|client_secret)\s*[=:]\s*'
+_SECRET_CORE='(api_key|secret_key|password|token|sessionid|private_key|client_secret)[[:space:]]*[=:][[:space:]]*'
 if git diff --cached -U0 | grep -iE "${_SECRET_CORE}[\"'][A-Za-z0-9+/=_.-]{8,}" >/dev/null 2>&1; then
     echo "BLOCKED: staged diff contains potential secret"
     exit 1
