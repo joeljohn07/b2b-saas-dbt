@@ -17,7 +17,7 @@ set -euo pipefail
 #   bash scripts/lint-doc-blocks.sh           # warnings for sources/seeds inline
 #   bash scripts/lint-doc-blocks.sh --strict  # all checks are errors
 #
-# Enable --strict once PR #51 lands (fixes inline descriptions in sources/seeds).
+# --strict is now enabled in CI and pre-commit (PR #51 landed, inline descriptions fixed).
 
 STRICT=false
 for arg in "$@"; do
