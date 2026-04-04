@@ -5,14 +5,22 @@
 {{ config(
     severity='error',
     tags=['data_quality'],
-    description='Validates dedup removed ~0.5% duplicate events, not more than 1%'
+    description='Validates dedup removed ~0.5% of events (not >1%) within the last 30 days. Historical dedup beyond this window is not tested — accepted trade-off for CI scan cost.'
 ) }}
 
 with counts as (
 
     select
-        (select count(*) from {{ ref('stg_funnel__events') }}) as staging_count,
-        (select count(*) from {{ ref('int_events_normalized') }}) as normalized_count
+        (
+            select count(*)
+            from {{ ref('stg_funnel__events') }}
+            where _loaded_at >= timestamp_sub(current_timestamp(), interval 30 day)
+        ) as staging_count,
+        (
+            select count(*)
+            from {{ ref('int_events_normalized') }}
+            where _loaded_at >= timestamp_sub(current_timestamp(), interval 30 day)
+        ) as normalized_count
 
 )
 
