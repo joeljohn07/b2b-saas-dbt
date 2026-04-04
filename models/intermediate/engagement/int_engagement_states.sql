@@ -103,13 +103,13 @@ classified as (
                 la.last_activity_at is not null
                 and date_diff(
                     la.snapshot_week_start, date(la.last_activity_at), day
-                ) <= 14
+                ) <= {{ var('engagement_active_threshold_days') }}
                 then 'active'
             when
                 la.last_activity_at is not null
                 and date_diff(
                     la.snapshot_week_start, date(la.last_activity_at), day
-                ) <= 42
+                ) <= {{ var('engagement_dormant_threshold_days') }}
                 then 'dormant'
             else 'disengaged'
         end as engagement_state,
@@ -127,7 +127,7 @@ classified as (
                         la.snapshot_week_start,
                         date(la.last_activity_at),
                         day
-                    ) <= 14
+                    ) <= {{ var('engagement_active_threshold_days') }}
                     then 'active'
                 when
                     la.last_activity_at is not null
@@ -135,7 +135,7 @@ classified as (
                         la.snapshot_week_start,
                         date(la.last_activity_at),
                         day
-                    ) <= 42
+                    ) <= {{ var('engagement_dormant_threshold_days') }}
                     then 'dormant'
                 else 'disengaged'
             end
