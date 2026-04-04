@@ -18,6 +18,8 @@ gh api repos/"$REPO" \
   --silent
 
 echo "Configuring branch protection on main..."
+# Break-glass: if CI is broken and you need to push a fix, temporarily
+# re-run this script with "enforce_admins": false, push the fix, then re-run with true.
 gh api repos/"$REPO"/branches/main/protection \
   --method PUT \
   --input - <<'JSON'
@@ -26,7 +28,7 @@ gh api repos/"$REPO"/branches/main/protection \
     "strict": false,
     "contexts": ["Lint", "Build & Validate"]
   },
-  "enforce_admins": false,
+  "enforce_admins": true,
   "required_pull_request_reviews": {
     "required_approving_review_count": 0
   },
