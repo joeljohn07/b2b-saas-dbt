@@ -1,21 +1,24 @@
--- Validates fct_sessions row count exactly equals int_sessions.
--- fct_sessions is a 1:1 passthrough from int_sessions — any overage indicates a bad join.
+-- Fail if fct_sessions and int_sessions have different row counts.
+-- fct_sessions is a 1:1 projection of int_sessions with no filters —
+-- any mismatch indicates an upstream join multiplied or dropped rows.
 
 {{ config(
     severity='error',
     tags=['data_quality'],
-    description='Assert fct_sessions count exactly equals int_sessions (1:1 passthrough)'
+    description='fct_sessions row count must equal int_sessions — no rows added or dropped'
 ) }}
 
 with counts as (
+
     select
-        (select count(*) from {{ ref('fct_sessions') }})           as mart_count,
-        (select count(*) from {{ ref('int_sessions') }})           as intermediate_count
+        (select count(*) from {{ ref('fct_sessions') }}) as mart_count,
+        (select count(*) from {{ ref('int_sessions') }}) as source_count
+
 )
 
 select
     mart_count,
-    intermediate_count,
-    round(safe_divide(mart_count, intermediate_count), 4)          as fanout_ratio
+    source_count,
+    mart_count - source_count as row_delta
 from counts
-where mart_count > intermediate_count
+where mart_count != source_count
