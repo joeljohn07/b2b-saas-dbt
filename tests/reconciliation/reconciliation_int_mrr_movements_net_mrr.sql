@@ -44,11 +44,16 @@ latest_mrr_per_account as (
 )
 
 select
-    m.account_id,
+    coalesce(m.account_id, l.account_id) as account_id,
     m.total_mrr_delta,
     l.final_mrr,
-    abs(m.total_mrr_delta - l.final_mrr) as difference
+    abs(coalesce(m.total_mrr_delta, 0) - coalesce(l.final_mrr, 0)) as difference
 from movements_total as m
-inner join latest_mrr_per_account as l
+full outer join latest_mrr_per_account as l
     on m.account_id = l.account_id
-where abs(m.total_mrr_delta - l.final_mrr) > 0.01
+where
+    abs(coalesce(m.total_mrr_delta, 0) - coalesce(l.final_mrr, 0)) > 0.01
+    -- accounts in lifecycle but no movements (e.g. trial-only with no MRR events)
+    or (m.account_id is null and l.final_mrr > 0)
+    -- accounts with movements but no lifecycle row (e.g. fully churned); zero delta is acceptable
+    or (l.account_id is null and coalesce(m.total_mrr_delta, 0) <> 0)
