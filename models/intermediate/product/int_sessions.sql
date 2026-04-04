@@ -40,7 +40,7 @@ session_boundaries as (
                 when
                     timestamp_diff(
                         event_time, prev_event_time, second
-                    ) > 1800
+                    ) > {{ var('session_timeout_seconds') }}
                     then 1
                 else 0
             end

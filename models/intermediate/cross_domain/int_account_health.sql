@@ -15,7 +15,7 @@ with activity as (
     where
         -- 28-day trailing activity window for health score
         s.session_start_at >= timestamp_sub(
-            current_timestamp(), interval 28 day
+            current_timestamp(), interval {{ var('account_health_trailing_days') }} day
         )
     group by all
 
@@ -31,7 +31,7 @@ billing as (
     where
         -- 28-day trailing billing window for health score
         event_time >= timestamp_sub(
-            current_timestamp(), interval 28 day
+            current_timestamp(), interval {{ var('account_health_trailing_days') }} day
         )
     group by all
 
@@ -52,7 +52,7 @@ support as (
     where
         -- 28-day trailing support window for health score
         created_at >= timestamp_sub(
-            current_timestamp(), interval 28 day
+            current_timestamp(), interval {{ var('account_health_trailing_days') }} day
         )
     group by all
 
@@ -116,5 +116,5 @@ select
     billing_score,
     support_score,
     current_timestamp() as calculated_at,
-    28 as trailing_window_days
+    {{ var('account_health_trailing_days') }} as trailing_window_days
 from scored
