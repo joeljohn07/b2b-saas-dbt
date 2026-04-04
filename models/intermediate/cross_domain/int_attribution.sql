@@ -46,6 +46,7 @@ attribution_window as (
         on e.resolved_user_id = a.resolved_user_id
     where
         e.event_time < a.activation_at
+        -- Locked: 30-day pre-activation window (see decisions.md PR #35)
         and e.event_time >= timestamp_sub(
             a.activation_at, interval 30 day
         )

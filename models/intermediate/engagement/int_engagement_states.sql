@@ -83,6 +83,7 @@ classified as (
         la.last_activity_at,
         a.activation_at,
         case
+            -- Sentinel: users with no activity are measured from project start (2024-01-01)
             when la.last_activity_at is null
                 then date_diff(
                     la.snapshot_week_start, date('2024-01-01'), day
