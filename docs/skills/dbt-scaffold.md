@@ -14,9 +14,9 @@ Generate a new model with all conventions applied. Do ALL steps automatically wi
    | Subdirectory | Models belong here when they deal with... |
    |---|---|
    | `product/` | event normalization, sessions, identity stitching, funnel staging, account memberships |
-   | `billing/` | subscription lifecycle, MRR movements, invoice prep |
+   | `billing/` | subscription lifecycle, MRR movements |
    | `engagement/` | engagement states, experiment results, experiment metadata |
-   | `cross_domain/` | attribution, checkout conversion, ticket metrics, account health |
+   | `cross_domain/` | attribution, checkout conversion, ticket metrics, account health, invoice prep, marketing spend prep |
 
    If the new model's domain is ambiguous, ask the user which subdirectory before generating.
 
