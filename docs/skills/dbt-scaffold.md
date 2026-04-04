@@ -8,7 +8,34 @@ Generate a new model with all conventions applied. Do ALL steps automatically wi
 2. **Validate:**
    - Layer must be staging, intermediate, or marts
    - Model name must match naming convention for that layer (run through `scripts/lint-model-names.sh` pattern)
-   - Infer subdirectory from model name (e.g., `int_billing_*` → `models/intermediate/billing/`)
+   - Determine subdirectory using the lookup below (do not infer from name):
+
+   **Intermediate subdirectory lookup** (subdirectory provides domain context — names are not prefixed):
+   | Subdirectory | Models belong here when they deal with... |
+   |---|---|
+   | `product/` | event normalization, sessions, identity stitching, funnel staging, account memberships |
+   | `billing/` | subscription lifecycle, MRR movements, invoice prep |
+   | `engagement/` | engagement states, experiment results, experiment metadata |
+   | `cross_domain/` | attribution, checkout conversion, ticket metrics, account health |
+
+   If the new model's domain is ambiguous, ask the user which subdirectory before generating.
+
+   **Staging subdirectory lookup:**
+   | Subdirectory | Source system |
+   |---|---|
+   | `funnel/` | product events |
+   | `billing/` | subscriptions + invoices |
+   | `marketing/` | marketing spend |
+   | `support/` | support tickets |
+
+   **Marts subdirectory lookup:**
+   | Subdirectory | Models belong here when... |
+   |---|---|
+   | `core/` | conformed dimensions + cross-domain facts (retention) |
+   | `product/` | product analytics facts + session/experiment dims |
+   | `billing/` | billing facts |
+   | `marketing/` | channel spend facts |
+   | `support/` | support ticket facts |
 
 3. **Read layer rules:**
    - Read the layer's CLAUDE.md (e.g., `models/intermediate/CLAUDE.md`)
