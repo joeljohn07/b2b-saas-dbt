@@ -27,7 +27,7 @@ session_flags as (
                 event_time,
                 lag(event_time) over (partition by anon_id order by event_time),
                 second
-            ) > 1800 then 1
+            ) > {{ var('session_timeout_seconds') }} then 1
             else 0
         end as is_session_start
     from events
