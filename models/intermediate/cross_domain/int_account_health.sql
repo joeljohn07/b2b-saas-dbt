@@ -29,6 +29,7 @@ billing as (
         max(event_time) as last_billing_event
     from {{ ref('int_subscription_lifecycle') }}
     where
+        -- 28-day trailing billing window for health score
         event_time >= timestamp_sub(
             current_timestamp(), interval 28 day
         )
@@ -49,6 +50,7 @@ support as (
         ) as avg_resolution_hours
     from {{ ref('int_ticket_metrics') }}
     where
+        -- 28-day trailing support window for health score
         created_at >= timestamp_sub(
             current_timestamp(), interval 28 day
         )
@@ -107,7 +109,7 @@ select
     account_id,
     greatest(0, least(
         100,
-        -- Locked: health weights 0.4/0.3/0.3 activity/billing/support (see decisions.md)
+        -- Locked: health weights 0.4/0.3/0.3 activity/billing/support (see decisions.md PR #37)
         0.4 * activity_score + 0.3 * billing_score + 0.3 * support_score
     )) as health_score,
     activity_score,
