@@ -5,27 +5,31 @@
 {{ config(
     severity='error',
     tags=['data_quality'],
-    description='Validates dedup removed ~0.5% of events (not >1%) within the reconciliation window. Historical dedup beyond this window is not tested — accepted trade-off for CI scan cost. Fails loudly when the window is empty so an idle dataset cannot false-green.'
+    description='Validates dedup removed ~0.5% of events (not >1%) within the reconciliation window. The window is anchored to max(_loaded_at) in staging so the test scans the actual data range rather than wall-clock time — CI datasets built from fixtures with frozen timestamps still exercise the check. Historical dedup beyond the window is not tested — accepted trade-off for CI scan cost. Fails loudly when the window is empty so an idle dataset cannot false-green.'
 ) }}
 
-with counts as (
+with window_anchor as (
+
+    select timestamp_sub(
+        max(_loaded_at),
+        interval {{ var('reconciliation_dedup_test_window_days') }} day
+    ) as cutoff
+    from {{ ref('stg_funnel__events') }}
+
+),
+
+counts as (
 
     select
         (
             select count(*)
             from {{ ref('stg_funnel__events') }}
-            where _loaded_at >= timestamp_sub(
-                current_timestamp(),
-                interval {{ var('reconciliation_dedup_test_window_days') }} day
-            )
+            where _loaded_at >= (select cutoff from window_anchor)
         ) as staging_count,
         (
             select count(*)
             from {{ ref('int_events_normalized') }}
-            where _loaded_at >= timestamp_sub(
-                current_timestamp(),
-                interval {{ var('reconciliation_dedup_test_window_days') }} day
-            )
+            where _loaded_at >= (select cutoff from window_anchor)
         ) as normalized_count
 
 )
