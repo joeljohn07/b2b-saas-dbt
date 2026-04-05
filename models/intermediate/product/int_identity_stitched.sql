@@ -64,7 +64,10 @@ with_lookback as (
         anon_id,
         user_id,
         greatest(
-            timestamp_sub(transition_time, interval 90 day),
+            timestamp_sub(
+                transition_time,
+                interval {{ var('identity_stitching_lookback_days') }} day
+            ),
             coalesce(prev_transition_time, timestamp('1970-01-01'))
         ) as valid_from,
         next_transition_time as valid_to,

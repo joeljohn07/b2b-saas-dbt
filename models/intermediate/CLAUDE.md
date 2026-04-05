@@ -5,7 +5,7 @@ All business logic lives here. Dedup, sessionization, identity stitching, attrib
 
 ## Conventions
 - Materialized: view (default). Use table only if query is too heavy for downstream.
-- Exception: `int_events_normalized` is incremental (merge on event_id, 36h lookback anchored to max(_loaded_at) of last run — not current_timestamp)
+- Exception: `int_events_normalized` is incremental (merge on event_id, lookback from `var('events_incremental_lookback_hours')` anchored to max(_loaded_at) of last run — not current_timestamp)
 - Naming: `int_{concept}` (suffixes: `_prep` for source-specific prep, `_unioned` for multi-source union; subdirectory provides domain context)
 - `ref()` staging or other intermediate models only — never `source()`. Exception: seeds containing static reference data (e.g., `experiment_metadata`) are allowed as refs.
 - No `contract.enforced` (intermediate is internal)

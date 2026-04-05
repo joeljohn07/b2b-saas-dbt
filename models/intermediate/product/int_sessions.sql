@@ -119,6 +119,10 @@ sessions_enriched as (
 
 ),
 
+-- Left join emits null stitched_user_id for anonymous sessions (by design —
+-- anon_id with no authenticated event in the stitching window). The downstream
+-- mart fct_sessions relaxes its not_null contract on user_id/user_key to allow
+-- these rows through; see the contract notes in models/marts/product/_models.yml.
 with_identity as (
 
     select

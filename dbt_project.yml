@@ -30,6 +30,8 @@ vars:
   account_health_trailing_days: 28     # trailing window for health score calculation
   engagement_active_threshold_days: 14  # days since activity = active state
   engagement_dormant_threshold_days: 42 # days since activity = dormant state
+  events_incremental_lookback_hours: 36  # late-arrival dedup window for int_events_normalized
+  identity_stitching_lookback_days: 90   # bounded anon→user stitch window for int_identity_stitched
 
   # Reconciliation window for the staging→intermediate dedup rate check.
   # Distinct from the model's incremental lookback (late-arrival dedup): this

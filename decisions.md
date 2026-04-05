@@ -152,3 +152,12 @@
 - CI now installs from `requirements-ci.txt`, caches off `package-lock.yml`, tears down the `_fixtures` dataset, and drops the duplicate staging build.
 - `secret-scan.sh` and `tdd-gate.sh` switched to `--diff-filter=ACMR` and NUL-safe line iteration.
 - Added shell test harness under `scripts/tests/` wired into CI.
+
+## 2026-04-05: Product-layer lookback windows moved to vars
+**PR:** #81-linked
+**Why:** The incremental lookback in `int_events_normalized` (36h) and the stitch window in `int_identity_stitched` (90d) were hardcoded intervals scattered across the SQL. Both are business-policy levers — the 36h window reflects the late-arrival SLA for the event pipeline, and the 90d window is the documented bound on anon→user stitching. Having the constants inline meant changing them required a model edit rather than a config edit, and the rationale only lived in commit history.
+**What changed:**
+- Added `events_incremental_lookback_hours: 36` and `identity_stitching_lookback_days: 90` to `dbt_project.yml` under the locked business-rule vars.
+- `int_events_normalized.sql` and `int_identity_stitched.sql` now reference the vars instead of literal intervals.
+- Added boundary fixtures `fixture_events_late_arrivals_extreme` and `fixture_identity_stitch_window_edge` with matching invariant tests that exercise the var-driven cutoff expressions — tripwires fire if the vars change without the tests being updated.
+- `int_sessions.sql` received a doc comment flagging that anonymous sessions emit null `stitched_user_id` by design and will require a contract relaxation in the downstream mart.
