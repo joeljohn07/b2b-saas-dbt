@@ -41,8 +41,6 @@ while read -r LOCAL_REF LOCAL_SHA REMOTE_REF REMOTE_SHA; do
         echo "  git checkout -b feat/your-description" >&2
         echo "  git push -u origin HEAD" >&2
         echo "  gh pr create" >&2
-        echo "" >&2
-        echo "See: ~/Agentic/frameworks/engineering/GIT_BRANCH_WORKFLOW.md" >&2
         exit 1
     fi
 done

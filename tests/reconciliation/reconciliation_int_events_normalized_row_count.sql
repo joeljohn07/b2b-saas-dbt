@@ -5,7 +5,7 @@
 {{ config(
     severity='error',
     tags=['data_quality'],
-    description='Validates dedup removed ~0.5% of events (not >1%) within the last 30 days. Historical dedup beyond this window is not tested — accepted trade-off for CI scan cost.'
+    description='Validates dedup removed ~0.5% of events (not >1%) within the reconciliation window. Historical dedup beyond this window is not tested — accepted trade-off for CI scan cost. Fails loudly when the window is empty so an idle dataset cannot false-green.'
 ) }}
 
 with counts as (
@@ -14,12 +14,18 @@ with counts as (
         (
             select count(*)
             from {{ ref('stg_funnel__events') }}
-            where _loaded_at >= timestamp_sub(current_timestamp(), interval 30 day)
+            where _loaded_at >= timestamp_sub(
+                current_timestamp(),
+                interval {{ var('reconciliation_dedup_test_window_days') }} day
+            )
         ) as staging_count,
         (
             select count(*)
             from {{ ref('int_events_normalized') }}
-            where _loaded_at >= timestamp_sub(current_timestamp(), interval 30 day)
+            where _loaded_at >= timestamp_sub(
+                current_timestamp(),
+                interval {{ var('reconciliation_dedup_test_window_days') }} day
+            )
         ) as normalized_count
 
 )
@@ -31,5 +37,6 @@ select
         as dedup_rate
 from counts
 where
-    1.0 - (cast(normalized_count as float64) / nullif(staging_count, 0)) > 0.01
+    staging_count = 0
+    or 1.0 - (cast(normalized_count as float64) / nullif(staging_count, 0)) > 0.01
     or normalized_count > staging_count

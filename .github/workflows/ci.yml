@@ -35,8 +35,8 @@ jobs:
           cache: 'pip'
           cache-dependency-path: requirements-ci.txt
 
-      - name: Install sqlfluff
-        run: pip install sqlfluff
+      - name: Install Python dependencies
+        run: pip install -r requirements-ci.txt
 
       - name: SQLFluff lint
         run: sqlfluff lint models/ --templater jinja
@@ -46,6 +46,13 @@ jobs:
 
       - name: Lint doc blocks
         run: bash scripts/lint-doc-blocks.sh --strict
+
+      - name: Shell script tests
+        run: |
+          for t in scripts/tests/*.sh; do
+            echo "--- $t ---"
+            bash "$t"
+          done
 
   build-and-validate:
     name: Build & Validate
@@ -63,14 +70,14 @@ jobs:
           cache: 'pip'
           cache-dependency-path: requirements-ci.txt
 
-      - name: Install dbt
-        run: pip install dbt-core dbt-bigquery
+      - name: Install Python dependencies
+        run: pip install -r requirements-ci.txt
 
       - name: Cache dbt packages
         uses: actions/cache@v4
         with:
           path: dbt_packages
-          key: dbt-packages-${{ hashFiles('packages.yml') }}
+          key: dbt-packages-${{ hashFiles('package-lock.yml') }}
 
       - name: Install dbt packages
         run: dbt deps
@@ -89,9 +96,6 @@ jobs:
       - name: Check source freshness
         run: dbt source freshness --target ci
         continue-on-error: true  # synthetic data is always stale; documents pattern without blocking CI
-
-      - name: Build staging layer
-        run: dbt build --select models/staging/ --exclude test_type:singular --target ci --full-refresh
 
       - name: Build all models and run tests
         run: dbt build --target ci --full-refresh
@@ -120,6 +124,7 @@ jobs:
             "analytics_ci_${PR_NUMBER}" \
             "analytics_ci_${PR_NUMBER}_staging" \
             "analytics_ci_${PR_NUMBER}_intermediate" \
-            "analytics_ci_${PR_NUMBER}_marts"; do
+            "analytics_ci_${PR_NUMBER}_marts" \
+            "analytics_ci_${PR_NUMBER}_fixtures"; do
             bq rm -r -f --project_id="${GCP_PROJECT_ID}" "${dataset}" || true
           done

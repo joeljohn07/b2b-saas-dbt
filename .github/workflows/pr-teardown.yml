@@ -32,7 +32,8 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
 
       # Dataset list must stay in sync with dbt_project.yml +schema values
-      # (staging, intermediate, marts) plus the base dataset (evaluator tables).
+      # (staging, intermediate, marts, fixtures) plus the base dataset
+      # (evaluator tables).
       - name: Drop CI datasets for this PR
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
@@ -41,7 +42,8 @@ jobs:
             "analytics_ci_${PR_NUMBER}" \
             "analytics_ci_${PR_NUMBER}_staging" \
             "analytics_ci_${PR_NUMBER}_intermediate" \
-            "analytics_ci_${PR_NUMBER}_marts"; do
+            "analytics_ci_${PR_NUMBER}_marts" \
+            "analytics_ci_${PR_NUMBER}_fixtures"; do
             echo "Dropping ${dataset} (if exists)..."
             bq rm -r -f --project_id="${GCP_PROJECT_ID}" "${dataset}" || true
           done

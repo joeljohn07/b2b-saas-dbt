@@ -13,10 +13,7 @@ with deduped as (
     select
         event_id,
         _loaded_at,
-        row_number() over (
-            partition by event_id
-            order by _loaded_at asc, ingest_time asc
-        ) as _dedup_row_num
+        {{ dedup_events_row_number() }} as _dedup_row_num
     from {{ ref('fixture_events_backfill_replay') }}
 
 ),
