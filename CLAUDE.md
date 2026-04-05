@@ -1,5 +1,4 @@
 # b2b-saas-dbt — Architecture Contract
-<!-- CLAUDE.md and AGENTS.md must stay in sync — update both files together -->
 
 ## Project
 Full-company analytics platform for a B2B SaaS company. dbt on BigQuery, Kimball star schema.
