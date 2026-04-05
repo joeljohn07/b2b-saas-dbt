@@ -31,6 +31,11 @@ vars:
   engagement_active_threshold_days: 14  # days since activity = active state
   engagement_dormant_threshold_days: 42 # days since activity = dormant state
 
+  # Reconciliation window for the staging→intermediate dedup rate check.
+  # Distinct from the model's incremental lookback (late-arrival dedup): this
+  # is only the slice of history the CI reconciliation test scans.
+  reconciliation_dedup_test_window_days: 30
+
 seeds:
   b2b_saas_dbt:
     +persist_docs:

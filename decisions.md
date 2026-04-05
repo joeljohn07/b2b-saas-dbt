@@ -141,3 +141,14 @@
 **PR:** #57
 **Why:** CI was not alerting on stale source data or complete data drops in staging
 **What changed:** `dbt source freshness` added as a CI step; `assert_staging_events_min_volume` singular test guards against empty staging loads
+
+## 2026-04-05: Test-harness repair + CI guardrails
+**PR:** #79-linked
+**Why:** Several safety nets did not test what they claimed. The reconciliation dedup-rate test false-greened on an empty sample window (divide-by-zero → null → dropped by WHERE). Fixture dedup tests re-implemented `int_events_normalized`'s partition/order expression inline, so a change to the real model's dedup logic would not be caught. CI was not tearing down the `_fixtures` dataset, cache key referenced the wrong packages file, and pip installs were not using the pinned requirements file. Shell gates used `--diff-filter=ACM`, missing rename-based bypasses, and word-split on filenames with spaces.
+**What changed:**
+- Reconciliation test now fails when `staging_count = 0` and uses a dedicated `reconciliation_dedup_test_window_days` var (separate from the model's 36h incremental lookback).
+- Added `dedup_events_row_number()` macro — `int_events_normalized` and all fixture dedup tests now share a single canonical expression.
+- Added `invariants_stg_billing_cancellation_mrr_zero` to encode the hidden assumption that `int_mrr_movements` churn math depends on.
+- CI now installs from `requirements-ci.txt`, caches off `package-lock.yml`, tears down the `_fixtures` dataset, and drops the duplicate staging build.
+- `secret-scan.sh` and `tdd-gate.sh` switched to `--diff-filter=ACMR` and NUL-safe line iteration.
+- Added shell test harness under `scripts/tests/` wired into CI.

@@ -1,5 +1,7 @@
 -- Fixture test: late-arriving duplicate (same event_id, _loaded_at 48h apart).
--- Applies the dedup logic from int_events_normalized inline.
+-- Applies the canonical dedup expression from the dedup_events_row_number
+-- macro (also used by int_events_normalized) so this test stays in sync
+-- with the real model's partition/order when the dedup logic evolves.
 -- Expects 0 rows: no event_id should have more than 1 row after deduplication.
 
 {{ config(
@@ -11,10 +13,7 @@
 with deduped as (
     select
         event_id,
-        row_number() over (
-            partition by event_id
-            order by _loaded_at asc, ingest_time asc
-        ) as _dedup_row_num
+        {{ dedup_events_row_number() }} as _dedup_row_num
     from {{ ref('fixture_events_late_arrivals') }}
 )
 

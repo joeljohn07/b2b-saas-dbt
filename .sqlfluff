@@ -8,6 +8,9 @@ indent_unit = space
 # RF04: keywords as identifiers — BigQuery has many reserved-word identifiers
 exclude_rules = AM04, ST06, RF04
 
+[sqlfluff:templater:jinja]
+load_macros_from_path = macros
+
 [sqlfluff:indentation]
 tab_space_size = 4
 
