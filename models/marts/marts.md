@@ -345,6 +345,23 @@ Carries resolution time, first response time, CSAT score, and resolution
 status.
 {% enddocs %}
 
+{% docs col_is_product_user %}
+Whether this user has at least one event in the product event stream
+(int_events_normalized). False for billing-only or support-only users.
+{% enddocs %}
+
+{% docs col_is_billing_user %}
+Whether this user appears in the subscription lifecycle data
+(int_subscription_lifecycle). False for users known only from product
+events or support tickets.
+{% enddocs %}
+
+{% docs col_is_support_user %}
+Whether this user has at least one support ticket in the ticket metrics
+(int_ticket_metrics). False for users known only from product events or
+billing data.
+{% enddocs %}
+
 {% docs col_ticket_key %}
 Surrogate key for the support ticket fact. farm_fingerprint hash of the
 ticket ID.

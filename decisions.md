@@ -173,3 +173,15 @@
 - `int_account_health`: split the billing CTE into `billing_latest` (all-time, for `has_active_sub`) and `billing_recent` (28-day window, for `last_billing_event`), so annual subscriptions are no longer dropped from the active-sub flag.
 - Documented `is_paid` semantics: option B (false for refunded invoices = recognized revenue, not payment history); updated `col_is_paid` doc block.
 - Added 5 model-level invariant tests and 1 `is_paid` consistency test.
+
+## 2026-04-08: Mart grain, contract alignment, and cross-field invariants
+**PR:** #86 (issue #85)
+**Why:** Mart-layer models had grain bugs, FK/contract mismatches against upstream SQL nullability, and missing cross-field invariants — surfaced during a structured review pass.
+**What changed:**
+- `fct_activations`: PK changed from `farm_fingerprint(user_id)` to `farm_fingerprint(concat(user_id, '|', date))` so the surrogate key is distinct from the FK `user_key`.
+- `fct_sessions`: relaxed `not_null` on `user_id`/`user_key` to allow anonymous sessions through. FK test scoped to non-null keys only.
+- `fct_feature_usage`: added `where user_id is not null` filter — anonymous feature events are low-signal and the contract requires not_null.
+- `dim_accounts`: added support tickets to the account union; filtered acquisition attribution by `valid_from` to exclude pre-membership activations.
+- `dim_users`: extended to include billing + support user_ids. Added `is_product_user`, `is_billing_user`, `is_support_user` boolean columns for downstream source-aware filtering.
+- `fct_retention_cohorts`: replaced hardcoded 7-day maturity guard with `retention_maturity_guard_days` var.
+- Added 5 cross-field mart invariant tests: MRR delta arithmetic, refund-implies-amount, resolved-has-time, dim_users source coverage, dim_accounts source coverage.

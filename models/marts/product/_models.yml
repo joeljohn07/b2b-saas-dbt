@@ -329,18 +329,16 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
-          - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              where: "user_key is not null"
 
       - name: session_date_key
         data_type: int64
