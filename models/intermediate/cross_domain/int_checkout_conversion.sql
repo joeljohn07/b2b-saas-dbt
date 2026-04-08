@@ -7,7 +7,9 @@ with checkouts as (
         event_time as checkout_at,
         target_plan
     from {{ ref('int_events_normalized') }}
-    where event_type = 'checkout_start'
+    where
+        event_type = 'checkout_start'
+        and user_id is not null
 
 ),
 
@@ -15,6 +17,7 @@ subscriptions as (
 
     select
         subscription_event_id,
+        user_id,
         account_id,
         event_time as subscription_at
     from {{ ref('int_subscription_lifecycle') }}
@@ -40,9 +43,11 @@ candidates as (
     inner join subscriptions as s
         on
             c.account_id = s.account_id
+            and c.user_id = s.user_id
             and c.checkout_at <= s.subscription_at
             and s.subscription_at <= timestamp_add(
-                c.checkout_at, interval 30 day
+                c.checkout_at,
+                interval {{ var('checkout_conversion_window_days') }} day
             )
 
 ),

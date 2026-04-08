@@ -32,6 +32,7 @@ vars:
   engagement_dormant_threshold_days: 42 # days since activity = dormant state
   events_incremental_lookback_hours: 36  # late-arrival dedup window for int_events_normalized
   identity_stitching_lookback_days: 90   # bounded anon→user stitch window for int_identity_stitched
+  checkout_conversion_window_days: 30    # checkout → subscription conversion window
 
   # Reconciliation window for the staging→intermediate dedup rate check.
   # Distinct from the model's incremental lookback (late-arrival dedup): this

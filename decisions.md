@@ -161,3 +161,15 @@
 - `int_events_normalized.sql` and `int_identity_stitched.sql` now reference the vars instead of literal intervals.
 - Added boundary fixtures `fixture_events_late_arrivals_extreme` and `fixture_identity_stitch_window_edge` with matching invariant tests that exercise the var-driven cutoff expressions — tripwires fire if the vars change without the tests being updated.
 - `int_sessions.sql` received a doc comment flagging that anonymous sessions emit null `stitched_user_id` by design and will require a contract relaxation in the downstream mart.
+
+## 2026-04-08: Cross-domain correctness fixes
+**PR:** #84 (issue #83)
+**Why:** Five intermediate models had correctness bugs affecting join grain, filter predicates, and window anchoring — surfaced during a structured review pass.
+**What changed:**
+- `int_subscription_lifecycle`: added `subscription_id` to the `lag()` PARTITION BY to prevent cross-subscription day-gap pollution on multi-sub accounts.
+- `int_checkout_conversion`: joined on `(account_id, user_id)` instead of `account_id` alone to eliminate multi-user fanout; filtered null `user_id` checkout events; replaced hardcoded `interval 30 day` with `checkout_conversion_window_days` var.
+- `int_experiment_results`: moved `experiment_flags is not null` filter from the base CTE to the unnest-only CTE, so activation events without flag payloads are found by the conversion join.
+- `int_engagement_states`: anchored `days_since_last_activity` and threshold comparisons to `snapshot_week_end` (week_start + 6) instead of `snapshot_week_start`, fixing a negative-delta bug for mid/late-week activity.
+- `int_account_health`: split the billing CTE into `billing_latest` (all-time, for `has_active_sub`) and `billing_recent` (28-day window, for `last_billing_event`), so annual subscriptions are no longer dropped from the active-sub flag.
+- Documented `is_paid` semantics: option B (false for refunded invoices = recognized revenue, not payment history); updated `col_is_paid` doc block.
+- Added 5 model-level invariant tests and 1 `is_paid` consistency test.

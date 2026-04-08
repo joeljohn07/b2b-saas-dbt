@@ -297,7 +297,7 @@ models:
         tests:
           - dbt_utils.expression_is_true:
               arguments:
-                expression: "<= 30 or time_to_conversion_days is null"
+                expression: "<= {{ var('checkout_conversion_window_days') }} or time_to_conversion_days is null"
 
   - name: int_account_health
     description: '{{ doc("int_account_health") }}'
