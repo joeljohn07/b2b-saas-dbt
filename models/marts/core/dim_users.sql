@@ -5,11 +5,13 @@ with product_users as (
 ),
 
 billing_users as (
+    -- user_id not_null enforced by int_subscription_lifecycle contract
     select distinct user_id
     from {{ ref('int_subscription_lifecycle') }}
 ),
 
 support_users as (
+    -- user_id not_null enforced by int_ticket_metrics contract
     select distinct user_id
     from {{ ref('int_ticket_metrics') }}
 ),

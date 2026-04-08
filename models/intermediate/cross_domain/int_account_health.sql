@@ -96,6 +96,8 @@ scored as (
                     day
                 ) <= 90
                 then 100
+            -- No recent billing row (br is null): date_diff returns null,
+            -- falls through to this branch → score 70 for active-but-stale.
             when bl.has_active_sub = 1 then 70
             when bl.has_active_sub = 0 then 20
             else 0
