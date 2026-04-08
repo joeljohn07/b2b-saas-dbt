@@ -63,6 +63,7 @@ account_acquisition as (
     inner join {{ ref('int_attribution') }} as a
         on
             m.user_id = a.user_id
+            -- Inclusive: same-timestamp membership + activation is valid
             and m.valid_from <= a.activation_at
 )
 

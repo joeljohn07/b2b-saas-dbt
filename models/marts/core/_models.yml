@@ -349,6 +349,10 @@ models:
         data_type: string
         description: '{{ doc("col_user_id") }}'
         tests:
+          # unique is correct: int_attribution produces exactly one row per user
+          # (one-activation-per-user is the business invariant). activation_key
+          # uses concat(user_id, date) to distinguish the surrogate PK from
+          # this FK, not to allow multiple activations per user.
           - unique
           - not_null
 
