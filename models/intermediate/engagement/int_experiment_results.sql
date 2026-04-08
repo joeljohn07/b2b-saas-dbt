@@ -1,4 +1,4 @@
-with events_with_flags as (
+with resolved_events as (
 
     select
         coalesce(e.user_id, i.user_id) as resolved_user_id,
@@ -13,9 +13,7 @@ with events_with_flags as (
             and e.event_time < coalesce(
                 i.valid_to, timestamp('9999-12-31')
             )
-    where
-        e.experiment_flags is not null
-        and coalesce(e.user_id, i.user_id) is not null
+    where coalesce(e.user_id, i.user_id) is not null
 
 ),
 
@@ -27,10 +25,12 @@ unnested as (
         e.event_type,
         json_extract_scalar(flag, '$.experiment_id') as experiment_id,
         json_extract_scalar(flag, '$.variant') as variant
-    from events_with_flags as e
-    cross join unnest(
-        json_extract_array(e.experiment_flags, '$')
-    ) as flag
+    from resolved_events as e
+    cross join
+        unnest(
+            json_extract_array(e.experiment_flags, '$')
+        ) as flag
+    where e.experiment_flags is not null
 
 ),
 
@@ -54,7 +54,7 @@ conversions as (
         f.experiment_id,
         min(e.event_time) as conversion_at
     from first_exposure as f
-    inner join events_with_flags as e
+    inner join resolved_events as e
         on
             f.resolved_user_id = e.resolved_user_id
             and e.event_type = 'activation'

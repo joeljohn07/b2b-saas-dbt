@@ -264,7 +264,9 @@ calculation so marts can reference intermediate instead of staging.
 {% enddocs %}
 
 {% docs col_is_paid %}
-Whether the invoice has been paid.
+Whether the invoice is currently in paid status. False for refunded invoices
+even when originally paid — `is_paid` reflects recognized revenue, not payment
+history. Use `status = 'refunded'` to identify previously-paid invoices.
 {% enddocs %}
 
 {% docs col_net_amount %}

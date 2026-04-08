@@ -21,15 +21,28 @@ with activity as (
 
 ),
 
-billing as (
+billing_latest as (
 
+    -- All-time latest subscription state per account (no time window).
+    -- Annual subscriptions may have no billing event within the trailing
+    -- window but still have an active subscription.
     select
         account_id,
-        max(case when is_active then 1 else 0 end) as has_active_sub,
+        max(case when is_active then 1 else 0 end) as has_active_sub
+    from {{ ref('int_subscription_lifecycle') }}
+    group by all
+
+),
+
+billing_recent as (
+
+    -- Recent billing activity within the trailing window, used for
+    -- recency-based scoring.
+    select
+        account_id,
         max(event_time) as last_billing_event
     from {{ ref('int_subscription_lifecycle') }}
     where
-        -- 28-day trailing billing window for health score
         event_time >= timestamp_sub(
             current_timestamp(), interval {{ var('account_health_trailing_days') }} day
         )
@@ -73,16 +86,18 @@ scored as (
             coalesce(a.session_count, 0) / 10.0 * 100, 100
         ) as activity_score,
         case
+            -- 90-day recency: active sub with recent billing event = full score.
+            -- This is a scoring tier threshold (not the trailing activity window).
             when
-                b.has_active_sub = 1
+                bl.has_active_sub = 1
                 and date_diff(
                     current_date(),
-                    date(b.last_billing_event),
+                    date(br.last_billing_event),
                     day
                 ) <= 90
                 then 100
-            when b.has_active_sub = 1 then 70
-            when b.has_active_sub = 0 then 20
+            when bl.has_active_sub = 1 then 70
+            when bl.has_active_sub = 0 then 20
             else 0
         end as billing_score,
         case
@@ -100,7 +115,8 @@ scored as (
         end as support_score
     from accounts as acc
     left join activity as a on acc.account_id = a.account_id
-    left join billing as b on acc.account_id = b.account_id
+    left join billing_latest as bl on acc.account_id = bl.account_id
+    left join billing_recent as br on acc.account_id = br.account_id
     left join support as s on acc.account_id = s.account_id
 
 )

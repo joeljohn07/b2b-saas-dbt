@@ -52,7 +52,8 @@ user_weeks as (
 
     select
         u.resolved_user_id as user_id,
-        w.week_start as snapshot_week_start
+        w.week_start as snapshot_week_start,
+        date_add(w.week_start, interval 6 day) as snapshot_week_end
     from users as u
     cross join week_spine as w
 
@@ -63,14 +64,13 @@ last_activity as (
     select
         uw.user_id,
         uw.snapshot_week_start,
+        uw.snapshot_week_end,
         max(e.event_time) as last_activity_at
     from user_weeks as uw
     left join events as e
         on
             uw.user_id = e.resolved_user_id
-            and date(e.event_time) <= date_add(
-                uw.snapshot_week_start, interval 6 day
-            )
+            and date(e.event_time) <= uw.snapshot_week_end
     group by all
 
 ),
@@ -86,29 +86,27 @@ classified as (
             -- Sentinel: users with no activity are measured from project start (2024-01-01)
             when la.last_activity_at is null
                 then date_diff(
-                    la.snapshot_week_start, date('2024-01-01'), day
+                    la.snapshot_week_end, date('2024-01-01'), day
                 )
             else date_diff(
-                la.snapshot_week_start, date(la.last_activity_at), day
+                la.snapshot_week_end, date(la.last_activity_at), day
             )
         end as days_since_last_activity,
         case
             when
                 a.activation_at is null
-                or a.activation_at > timestamp(
-                    date_add(la.snapshot_week_start, interval 6 day)
-                )
+                or a.activation_at > timestamp(la.snapshot_week_end)
                 then 'pre_active'
             when
                 la.last_activity_at is not null
                 and date_diff(
-                    la.snapshot_week_start, date(la.last_activity_at), day
+                    la.snapshot_week_end, date(la.last_activity_at), day
                 ) <= {{ var('engagement_active_threshold_days') }}
                 then 'active'
             when
                 la.last_activity_at is not null
                 and date_diff(
-                    la.snapshot_week_start, date(la.last_activity_at), day
+                    la.snapshot_week_end, date(la.last_activity_at), day
                 ) <= {{ var('engagement_dormant_threshold_days') }}
                 then 'dormant'
             else 'disengaged'
@@ -117,14 +115,12 @@ classified as (
             case
                 when
                     a.activation_at is null
-                    or a.activation_at > timestamp(
-                        date_add(la.snapshot_week_start, interval 6 day)
-                    )
+                    or a.activation_at > timestamp(la.snapshot_week_end)
                     then 'pre_active'
                 when
                     la.last_activity_at is not null
                     and date_diff(
-                        la.snapshot_week_start,
+                        la.snapshot_week_end,
                         date(la.last_activity_at),
                         day
                     ) <= {{ var('engagement_active_threshold_days') }}
@@ -132,7 +128,7 @@ classified as (
                 when
                     la.last_activity_at is not null
                     and date_diff(
-                        la.snapshot_week_start,
+                        la.snapshot_week_end,
                         date(la.last_activity_at),
                         day
                     ) <= {{ var('engagement_dormant_threshold_days') }}

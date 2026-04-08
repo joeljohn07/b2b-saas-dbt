@@ -44,7 +44,7 @@ enriched as (
         date_diff(
             date(event_time),
             date(lag(event_time) over (
-                partition by account_id
+                partition by account_id, subscription_id
                 order by event_time
             )),
             day
