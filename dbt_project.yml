@@ -112,4 +112,4 @@ models:
         fct_undocumented_public_models:
           +enabled: false  # disabled: same reason as above — no public access layer
         fct_exposures_dependent_on_private_models:
-          +enabled: false  # disabled: no exposures defined yet
+          +enabled: false  # disabled: no public access layer configured yet
