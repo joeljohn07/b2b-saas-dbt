@@ -11,6 +11,11 @@ with accounts as (
 
     select distinct account_id
     from {{ ref('int_account_health') }}
+
+    union distinct
+
+    select distinct account_id
+    from {{ ref('int_ticket_metrics') }}
 ),
 
 current_sub as (
@@ -55,7 +60,10 @@ account_acquisition as (
             order by a.activation_at asc, a.user_id asc
         ) as rn
     from {{ ref('int_account_memberships') }} as m
-    inner join {{ ref('int_attribution') }} as a on m.user_id = a.user_id
+    inner join {{ ref('int_attribution') }} as a
+        on
+            m.user_id = a.user_id
+            and m.valid_from <= a.activation_at
 )
 
 select

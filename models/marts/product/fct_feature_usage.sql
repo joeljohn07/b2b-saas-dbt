@@ -11,7 +11,9 @@ with feature_events as (
         platform,
         device_type
     from {{ ref('int_events_normalized') }}
-    where event_type = 'feature_use'
+    where
+        event_type = 'feature_use'
+        and user_id is not null
 
 )
 

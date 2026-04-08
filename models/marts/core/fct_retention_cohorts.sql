@@ -110,6 +110,7 @@ select
     cohort_size,
     retained_count,
     safe_divide(retained_count, cohort_size) as retention_rate,
-    date_add(period_end_date, interval 7 day) <= current_date()
-        as is_period_complete
+    date_add(
+        period_end_date, interval {{ var('retention_maturity_guard_days') }} day
+    ) <= current_date() as is_period_complete
 from retention_measured

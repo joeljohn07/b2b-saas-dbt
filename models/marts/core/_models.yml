@@ -106,6 +106,24 @@ models:
         tests:
           - not_null
 
+      - name: is_product_user
+        data_type: boolean
+        description: '{{ doc("col_is_product_user") }}'
+        tests:
+          - not_null
+
+      - name: is_billing_user
+        data_type: boolean
+        description: '{{ doc("col_is_billing_user") }}'
+        tests:
+          - not_null
+
+      - name: is_support_user
+        data_type: boolean
+        description: '{{ doc("col_is_support_user") }}'
+        tests:
+          - not_null
+
   - name: dim_accounts
     description: '{{ doc("dim_accounts") }}'
     config:

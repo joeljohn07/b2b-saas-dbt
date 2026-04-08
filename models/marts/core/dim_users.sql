@@ -1,4 +1,28 @@
-with latest_engagement as (
+with product_users as (
+    select distinct user_id
+    from {{ ref('int_events_normalized') }}
+    where user_id is not null
+),
+
+billing_users as (
+    select distinct user_id
+    from {{ ref('int_subscription_lifecycle') }}
+),
+
+support_users as (
+    select distinct user_id
+    from {{ ref('int_ticket_metrics') }}
+),
+
+all_users as (
+    select user_id from product_users
+    union distinct
+    select user_id from billing_users
+    union distinct
+    select user_id from support_users
+),
+
+latest_engagement as (
     select
         user_id,
         engagement_state,
@@ -37,12 +61,6 @@ signups as (
         event_type = 'signup'
         and user_id is not null
     group by all
-),
-
-users as (
-    select distinct user_id
-    from {{ ref('int_events_normalized') }}
-    where user_id is not null
 )
 
 select
@@ -54,8 +72,14 @@ select
     farm_fingerprint(a.first_touch_channel) as first_touch_channel_key,
     farm_fingerprint(a.last_touch_channel) as last_touch_channel_key,
     coalesce(e.engagement_state, 'pre_active') as engagement_state,
-    coalesce(e.is_re_engaged, false) as is_re_engaged
-from users as u
+    coalesce(e.is_re_engaged, false) as is_re_engaged,
+    pu.user_id is not null as is_product_user,
+    bu.user_id is not null as is_billing_user,
+    su.user_id is not null as is_support_user
+from all_users as u
+left join product_users as pu on u.user_id = pu.user_id
+left join billing_users as bu on u.user_id = bu.user_id
+left join support_users as su on u.user_id = su.user_id
 left join signups as s on u.user_id = s.user_id
 left join current_membership as cm on u.user_id = cm.user_id
 left join attribution as a on u.user_id = a.user_id
