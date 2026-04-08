@@ -154,7 +154,7 @@
 - Added shell test harness under `scripts/tests/` wired into CI.
 
 ## 2026-04-05: Product-layer lookback windows moved to vars
-**PR:** #81-linked
+**PR:** #82 (issue #81)
 **Why:** The incremental lookback in `int_events_normalized` (36h) and the stitch window in `int_identity_stitched` (90d) were hardcoded intervals scattered across the SQL. Both are business-policy levers — the 36h window reflects the late-arrival SLA for the event pipeline, and the 90d window is the documented bound on anon→user stitching. Having the constants inline meant changing them required a model edit rather than a config edit, and the rationale only lived in commit history.
 **What changed:**
 - Added `events_incremental_lookback_hours: 36` and `identity_stitching_lookback_days: 90` to `dbt_project.yml` under the locked business-rule vars.

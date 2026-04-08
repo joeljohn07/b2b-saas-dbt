@@ -1,7 +1,7 @@
 -- Fixture test: incremental lookback is driven by events_incremental_lookback_hours var.
 -- Fixture rows sit at 0h, 24h, 48h, and 100h before the anchor _loaded_at.
--- With the current var value (36h) the 24h row is inside the window and the
--- 48h + 100h rows are outside. If the var is intentionally changed, update the
+-- With the current var value (36h) the anchor and 24h rows are inside the
+-- window and the 48h + 100h rows are outside. If the var is changed, update the
 -- fixture offsets and the expected counts below — this tripwire is deliberate.
 
 {{ config(
