@@ -3,6 +3,8 @@
 -- out activation events (e.g. via an experiment_flags is not null
 -- predicate that excludes activations without flag payloads).
 
+-- severity=warn because small or fixture-only datasets may legitimately
+-- have zero conversions; the test is a canary, not a hard gate.
 {{ config(
     severity='warn',
     tags=['data_quality'],

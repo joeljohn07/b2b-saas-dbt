@@ -86,6 +86,8 @@ scored as (
             coalesce(a.session_count, 0) / 10.0 * 100, 100
         ) as activity_score,
         case
+            -- 90-day recency: active sub with recent billing event = full score.
+            -- This is a scoring tier threshold (not the trailing activity window).
             when
                 bl.has_active_sub = 1
                 and date_diff(
