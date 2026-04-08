@@ -22,7 +22,7 @@ seeds:
   - name: fixture_events_backfill_replay
     description: >
       Edge-case fixture: same event_id resent in a replay (e.g. pipeline re-run or
-      source correction). Tests that the latest _loaded_at row wins in deduplication.
+      source correction). Tests that the earliest _loaded_at row wins in deduplication.
 
   - name: fixture_events_multi_device
     description: >

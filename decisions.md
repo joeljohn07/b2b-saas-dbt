@@ -90,7 +90,7 @@
 ## 2026-03-25: Marts dimension models, seeds, bridge table
 **PR:** #41
 **Why:** Conformed dimensions are the spine of the star schema — needed before any fact tables
-**What changed:** `dim_users` (SCD Type 1 — latest membership wins), `dim_accounts`, `dim_date`, `dim_channels`, `dim_experiments`; `dim_date` as static seed (2024–2029) rather than a spine macro (simpler, no macro dependency); `bridge_account_users`; `farm_fingerprint()` used for all surrogate keys throughout (BQ-native INT64, no UUID overhead)
+**What changed:** `dim_users` (SCD Type 1 — latest membership wins), `dim_accounts`, `dim_date`, `dim_channels`, `dim_experiments`; `dim_date` as static seed (2024–2029) rather than a spine macro (simpler, no macro dependency); `bridge_user_experiments`; `farm_fingerprint()` used for all surrogate keys throughout (BQ-native INT64, no UUID overhead). Note: `bridge_account_users` was originally scoped but dropped in favour of the membership spine in `int_account_memberships`
 
 ## 2026-03-25: Simple fact tables
 **PR:** #42
@@ -130,7 +130,7 @@
 ## 2026-03-30: Generic test deprecation warnings (63 warnings resolved)
 **PR:** #55
 **Why:** dbt 1.11 deprecated the `tests:` key in favour of `data_tests:` — 63 warnings were cluttering CI output
-**What changed:** Migrated all `tests:` blocks to `data_tests:` across all _models.yml files
+**What changed:** Partial migration of `tests:` to `data_tests:` in _models.yml files — 63 deprecation warnings resolved but ~311 `tests:` blocks remain across 13 files. Full migration tracked separately
 
 ## 2026-03-30: int_events_normalized incremental
 **PR:** #56
@@ -185,3 +185,16 @@
 - `dim_users`: extended to include billing + support user_ids. Added `is_product_user`, `is_billing_user`, `is_support_user` boolean columns for downstream source-aware filtering.
 - `fct_retention_cohorts`: replaced hardcoded 7-day maturity guard with `retention_maturity_guard_days` var.
 - Added 5 cross-field mart invariant tests: MRR delta arithmetic, refund-implies-amount, resolved-has-time, dim_users source coverage, dim_accounts source coverage.
+
+## 2026-04-09: Documentation drift and config corrections
+**PR:** #88
+**Why:** README, decisions.md, fixture descriptions, and package declarations had drifted from the actual codebase state
+**What changed:**
+- README: marts count 19→17 (seeds are not mart models), Python version 3.10→3.12 (matches CI), clarified dim_date/experiment_metadata as seeds
+- `fixture_events_backfill_replay` description corrected: "latest wins" → "earliest wins" (matches code and test)
+- `packages.yml`: added missing `dbt_date` dependency (present in `package-lock.yml` but absent from manifest)
+- `decisions.md` PR #41: corrected `bridge_account_users` → `bridge_user_experiments` (bridge_account_users was scoped but never built)
+- `decisions.md` PR #55: corrected `tests:` → `data_tests:` migration claim (partial, not complete)
+- `retention_rate` doc block: added null case for zero-denominator cohorts
+- Created `assets/` directory (referenced by `asset-paths` in dbt_project.yml)
+- Removed empty `macros/governance/` directory

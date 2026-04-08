@@ -163,7 +163,8 @@ measurement window. Always less than or equal to cohort_size.
 
 {% docs col_retention_rate %}
 Fraction of cohort users retained in the measurement window. Equals
-retained_count divided by cohort_size, bounded between 0 and 1.
+retained_count divided by cohort_size, bounded between 0 and 1, or null
+when cohort_size is zero.
 {% enddocs %}
 
 {% docs col_is_period_complete %}
