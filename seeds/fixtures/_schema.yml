@@ -49,3 +49,19 @@ seeds:
       event at a later timestamp. Tests that a time-regression in event_type does
       not cause a monotonicity violation — stage_reached_at is set to the FIRST
       occurrence of each stage, so the later page_view does not change stage_ordinal 1.
+
+  - name: fixture_events_late_arrivals_extreme
+    description: >
+      Boundary fixture for the events_incremental_lookback_hours var. Rows sit at
+      0h, 24h, 48h, and 100h before the anchor _loaded_at. With the current var
+      value (36h), the first two are inside the window and the last two are outside.
+      Tests that the incremental lookback cutoff in int_events_normalized is driven
+      by the var rather than a hardcoded interval.
+
+  - name: fixture_identity_stitch_window_edge
+    description: >
+      Boundary fixture for the identity_stitching_lookback_days var. Contains a
+      single authenticated event at 2024-07-19 so the window lower bound can be
+      computed as transition_time minus var days. With the current var value
+      (90 days) the expected valid_from is 2024-04-20. Tests that the stitch
+      window in int_identity_stitched is driven by the var.

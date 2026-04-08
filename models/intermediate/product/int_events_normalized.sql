@@ -40,7 +40,7 @@ with source as (
     {% if is_incremental() %}
         where stg._loaded_at >= timestamp_sub(
             (select max(t._loaded_at) from {{ this }} as t),
-            interval 36 hour
+            interval {{ var('events_incremental_lookback_hours') }} hour
         )
     {% endif %}
 
