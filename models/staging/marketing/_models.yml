@@ -12,20 +12,20 @@ models:
       - name: spend_id
         data_type: string
         description: '{{ doc("col_spend_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: spend_date
         data_type: date
         description: '{{ doc("col_spend_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: channel
         data_type: string
         description: '{{ doc("col_channel") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -40,7 +40,7 @@ models:
       - name: campaign_id
         data_type: string
         description: '{{ doc("col_campaign_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: campaign_name
@@ -58,7 +58,7 @@ models:
       - name: spend_amount
         data_type: numeric
         description: '{{ doc("col_spend_amount") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -67,11 +67,11 @@ models:
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: _loaded_at
         data_type: timestamp
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null

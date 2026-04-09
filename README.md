@@ -30,7 +30,7 @@ raw_support    ───►  stg_*__tickets   ───► int_account_health   
 |-------|--------|-----------------|
 | Staging | 5 | view |
 | Intermediate | 16 | view (1 incremental) |
-| Marts | 17 | table |
+| Marts | 17 + 2 seeds | table |
 | **Total** | **38** | |
 
 Mart types: `fct_` (measurable events), `dim_` (conformed dimensions), `bridge_` (M:M), `fct_retention_cohorts` (cross-domain). `dim_date` and `experiment_metadata` are seeds materialized in the marts schema.

@@ -17,21 +17,21 @@ models:
       - name: session_key
         data_type: int64
         description: '{{ doc("col_session_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: session_id
         data_type: string
         description: '{{ doc("col_session_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: session_date_key
         data_type: int64
         description: '{{ doc("col_session_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -90,27 +90,27 @@ models:
       - name: experiment_key
         data_type: int64
         description: '{{ doc("col_experiment_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: experiment_id
         data_type: string
         description: '{{ doc("col_experiment_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: experiment_name
         data_type: string
         description: '{{ doc("col_experiment_name") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: status
         data_type: string
         description: '{{ doc("col_experiment_status") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -122,7 +122,7 @@ models:
       - name: start_date
         data_type: date
         description: '{{ doc("col_experiment_start_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: end_date
@@ -149,7 +149,7 @@ models:
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -159,13 +159,13 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: experiment_key
         data_type: int64
         description: '{{ doc("col_experiment_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -175,16 +175,16 @@ models:
       - name: variant
         data_type: string
         description: '{{ doc("col_variant") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: first_exposure_at
         data_type: timestamp
         description: '{{ doc("col_first_exposure_at") }}'
-        tests:
+        data_tests:
           - not_null
 
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -207,27 +207,27 @@ models:
       - name: feature_usage_key
         data_type: int64
         description: '{{ doc("col_feature_usage_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: event_id
         data_type: string
         description: '{{ doc("col_event_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -241,7 +241,7 @@ models:
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        tests:
+        data_tests:
           - relationships:
               arguments:
                 to: ref('dim_accounts')
@@ -251,7 +251,7 @@ models:
       - name: usage_date_key
         data_type: int64
         description: '{{ doc("col_usage_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -261,13 +261,13 @@ models:
       - name: usage_at
         data_type: timestamp
         description: '{{ doc("col_usage_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: feature_name
         data_type: string
         description: '{{ doc("col_feature_name") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -311,7 +311,7 @@ models:
       - name: session_key
         data_type: int64
         description: '{{ doc("col_session_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
           - relationships:
@@ -322,7 +322,7 @@ models:
       - name: session_id
         data_type: string
         description: '{{ doc("col_session_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
@@ -333,7 +333,7 @@ models:
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        tests:
+        data_tests:
           - relationships:
               arguments:
                 to: ref('dim_users')
@@ -343,7 +343,7 @@ models:
       - name: session_date_key
         data_type: int64
         description: '{{ doc("col_session_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -353,25 +353,25 @@ models:
       - name: session_start_at
         data_type: timestamp
         description: '{{ doc("col_session_start_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: session_end_at
         data_type: timestamp
         description: '{{ doc("col_session_end_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: session_duration_seconds
         data_type: int64
         description: '{{ doc("col_session_duration_seconds") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_count
         data_type: int64
         description: '{{ doc("col_event_count") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: page_view_count
@@ -418,13 +418,13 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -434,13 +434,13 @@ models:
       - name: experiment_id
         data_type: string
         description: '{{ doc("col_experiment_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: experiment_key
         data_type: int64
         description: '{{ doc("col_experiment_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -450,7 +450,7 @@ models:
       - name: variant
         data_type: string
         description: '{{ doc("col_variant") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -461,13 +461,13 @@ models:
       - name: first_exposure_at
         data_type: timestamp
         description: '{{ doc("col_first_exposure_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: exposure_date_key
         data_type: int64
         description: '{{ doc("col_exposure_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -477,7 +477,7 @@ models:
       - name: converted
         data_type: boolean
         description: '{{ doc("col_converted") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: conversion_at
@@ -487,10 +487,10 @@ models:
       - name: exposure_duration_hours
         data_type: int64
         description: '{{ doc("col_exposure_duration_hours") }}'
-        tests:
+        data_tests:
           - not_null
 
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:

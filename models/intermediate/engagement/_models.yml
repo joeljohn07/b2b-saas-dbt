@@ -6,7 +6,7 @@ models:
     config:
       tags:
         - intermediate
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -15,17 +15,17 @@ models:
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: snapshot_week_start
         description: '{{ doc("col_snapshot_week_start") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: engagement_state
         description: '{{ doc("col_engagement_state") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -37,7 +37,7 @@ models:
 
       - name: is_re_engaged
         description: '{{ doc("col_is_re_engaged") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: days_since_last_activity
@@ -51,7 +51,7 @@ models:
     config:
       tags:
         - intermediate
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -60,27 +60,27 @@ models:
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: experiment_id
         description: '{{ doc("col_experiment_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: variant
         description: '{{ doc("col_variant") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: first_exposure_at
         description: '{{ doc("col_first_exposure_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: converted
         description: '{{ doc("col_converted") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: conversion_at
@@ -88,7 +88,7 @@ models:
 
       - name: exposure_duration_hours
         description: '{{ doc("col_exposure_duration_hours") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -102,23 +102,23 @@ models:
     columns:
       - name: experiment_id
         description: '{{ doc("col_experiment_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: experiment_name
         description: '{{ doc("col_experiment_name") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: status
         description: '{{ doc("col_experiment_status") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: start_date
         description: '{{ doc("col_experiment_start_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: end_date

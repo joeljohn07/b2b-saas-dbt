@@ -9,23 +9,23 @@ models:
     columns:
       - name: ticket_id
         description: '{{ doc("col_ticket_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: created_at
         description: '{{ doc("col_created_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: resolved_at
@@ -33,17 +33,17 @@ models:
 
       - name: category
         description: '{{ doc("col_category") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: priority
         description: '{{ doc("col_priority") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: status
         description: '{{ doc("col_ticket_status") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: csat_score
@@ -51,7 +51,7 @@ models:
 
       - name: resolution_time_hours
         description: '{{ doc("col_resolution_time_hours") }}'
-        tests:
+        data_tests:
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
                 min_value: 0
@@ -60,7 +60,7 @@ models:
 
       - name: first_response_hours
         description: '{{ doc("col_first_response_hours") }}'
-        tests:
+        data_tests:
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
                 min_value: 0
@@ -69,7 +69,7 @@ models:
 
       - name: is_resolved
         description: '{{ doc("col_is_resolved") }}'
-        tests:
+        data_tests:
           - not_null
 
   - name: int_invoices_prep
@@ -80,28 +80,28 @@ models:
     columns:
       - name: invoice_id
         description: '{{ doc("col_invoice_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: subscription_id
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: issued_at
         description: '{{ doc("col_issued_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: paid_at
@@ -109,27 +109,27 @@ models:
 
       - name: _loaded_at
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: amount
         description: '{{ doc("col_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: currency
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: status
         description: '{{ doc("col_invoice_status") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: refund_amount
         description: '{{ doc("col_refund_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: line_items
@@ -137,12 +137,12 @@ models:
 
       - name: is_paid
         description: '{{ doc("col_is_paid") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: net_amount
         description: '{{ doc("col_net_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
   - name: int_marketing_spend_prep
@@ -153,23 +153,23 @@ models:
     columns:
       - name: spend_id
         description: '{{ doc("col_spend_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: spend_date
         description: '{{ doc("col_spend_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: channel
         description: '{{ doc("col_channel") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: campaign_id
         description: '{{ doc("col_campaign_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: campaign_name
@@ -183,17 +183,23 @@ models:
 
       - name: spend_amount
         description: '{{ doc("col_spend_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: currency
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
+
+      - name: cost_per_click
+        description: '{{ doc("col_cost_per_click") }}'
+
+      - name: click_through_rate
+        description: '{{ doc("col_click_through_rate") }}'
 
       - name: _loaded_at
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null
 
   - name: int_attribution
@@ -204,13 +210,13 @@ models:
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: first_touch_channel
         description: '{{ doc("col_first_touch_channel") }}'
-        tests:
+        data_tests:
           - not_null:
               config:
                 where: "activation_at is not null"
@@ -226,12 +232,12 @@ models:
 
       - name: first_touch_at
         description: '{{ doc("col_first_touch_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: last_touch_channel
         description: '{{ doc("col_last_touch_channel") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: last_touch_source
@@ -245,12 +251,12 @@ models:
 
       - name: last_touch_at
         description: '{{ doc("col_last_touch_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: activation_at
         description: '{{ doc("col_activation_at") }}'
-        tests:
+        data_tests:
           - not_null
 
   - name: int_checkout_conversion
@@ -261,13 +267,13 @@ models:
     columns:
       - name: checkout_event_id
         description: '{{ doc("col_checkout_event_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
@@ -275,7 +281,7 @@ models:
 
       - name: checkout_at
         description: '{{ doc("col_checkout_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: target_plan
@@ -289,12 +295,12 @@ models:
 
       - name: converted
         description: '{{ doc("col_converted") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: time_to_conversion_days
         description: '{{ doc("col_time_to_conversion_days") }}'
-        tests:
+        data_tests:
           - dbt_utils.expression_is_true:
               arguments:
                 expression: "<= {{ var('checkout_conversion_window_days') }} or time_to_conversion_days is null"
@@ -307,13 +313,13 @@ models:
     columns:
       - name: account_id
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: health_score
         description: '{{ doc("col_health_score") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -322,7 +328,7 @@ models:
 
       - name: activity_score
         description: '{{ doc("col_activity_score") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -331,7 +337,7 @@ models:
 
       - name: billing_score
         description: '{{ doc("col_billing_score") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -340,7 +346,7 @@ models:
 
       - name: support_score
         description: '{{ doc("col_support_score") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -349,10 +355,10 @@ models:
 
       - name: calculated_at
         description: '{{ doc("col_calculated_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: trailing_window_days
         description: '{{ doc("col_trailing_window_days") }}'
-        tests:
+        data_tests:
           - not_null

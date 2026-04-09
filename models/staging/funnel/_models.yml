@@ -13,7 +13,7 @@ models:
       - name: event_id
         data_type: string
         description: '{{ doc("col_event_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
@@ -23,7 +23,7 @@ models:
       - name: anon_id
         data_type: string
         description: '{{ doc("col_anon_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
@@ -34,7 +34,7 @@ models:
       - name: event_time
         data_type: timestamp
         description: '{{ doc("col_event_time") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: ingest_time
@@ -44,20 +44,20 @@ models:
       - name: _loaded_at
         data_type: timestamp
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_date
         data_type: date
         description: '{{ doc("col_event_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       # --- event classification ---
       - name: event_type
         data_type: string
         description: '{{ doc("col_event_type") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -76,7 +76,7 @@ models:
       - name: platform
         data_type: string
         description: '{{ doc("col_platform") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -88,7 +88,7 @@ models:
       - name: channel
         data_type: string
         description: '{{ doc("col_channel") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -103,7 +103,7 @@ models:
       - name: plan_context
         data_type: string
         description: '{{ doc("col_plan_context") }}'
-        tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values:
@@ -139,7 +139,7 @@ models:
       - name: device_type
         data_type: string
         description: '{{ doc("col_device_type") }}'
-        tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values:
@@ -171,7 +171,7 @@ models:
       - name: signup_method
         data_type: string
         description: '{{ doc("col_signup_method") }}'
-        tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values:
@@ -208,7 +208,7 @@ models:
       - name: billing_cycle
         data_type: string
         description: '{{ doc("col_billing_cycle") }}'
-        tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values:

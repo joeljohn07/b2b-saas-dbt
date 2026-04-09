@@ -50,6 +50,9 @@ intervals as (
             partition by anon_id
             order by transition_time, user_id
         ) as prev_transition_time,
+        -- Deterministic last-touch: most-recent transition wins; user_id desc
+        -- as stable tie-breaker (string sort) when two users collide in the
+        -- same second. Validated by invariants_int_identity_stitched_deterministic_ordering.
         row_number() over (
             partition by anon_id
             order by transition_time desc, user_id desc
