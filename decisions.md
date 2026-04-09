@@ -204,7 +204,7 @@
 **What changed:**
 - Migrated all 308 `tests:` → `data_tests:` across 13 _models.yml files (dbt 1.11 deprecation)
 - Fixed `coalesce(avg_csat, 5)` giving accounts with no support data a perfect score → neutral (70) instead
-- Replaced `to_hex(md5(...))` session_id with `cast(farm_fingerprint(...) as string)` for surrogate key consistency
+- Replaced `to_hex(md5(...))` session_id with `cast(farm_fingerprint(...) as string)` for surrogate key consistency (breaking change: all session_id/session_key values change; safe for synthetic data with full-refresh)
 - Parameterised hardcoded `date('2024-01-01')` sentinel → `var('project_start_date')`
 - Added `cost_per_click` and `click_through_rate` to `int_marketing_spend_prep` (was a pure passthrough)
 - Fixed README mart count (17 models + 2 seeds, not "19")
