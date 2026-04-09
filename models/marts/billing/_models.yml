@@ -17,33 +17,33 @@ models:
       - name: subscription_event_key
         data_type: int64
         description: '{{ doc("col_subscription_event_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: subscription_event_id
         data_type: string
         description: '{{ doc("col_subscription_event_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -53,13 +53,13 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -69,7 +69,7 @@ models:
       - name: event_date_key
         data_type: int64
         description: '{{ doc("col_event_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -79,13 +79,13 @@ models:
       - name: event_time
         data_type: timestamp
         description: '{{ doc("col_event_time") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_type
         data_type: string
         description: '{{ doc("col_event_type") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -102,7 +102,7 @@ models:
       - name: plan
         data_type: string
         description: '{{ doc("col_plan") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -129,7 +129,7 @@ models:
       - name: billing_cycle
         data_type: string
         description: '{{ doc("col_billing_cycle") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -140,13 +140,13 @@ models:
       - name: mrr_amount
         data_type: numeric
         description: '{{ doc("col_mrr_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -165,7 +165,7 @@ models:
       - name: is_active
         data_type: boolean
         description: '{{ doc("col_is_active") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: days_since_previous_event
@@ -188,20 +188,20 @@ models:
       - name: mrr_movement_key
         data_type: int64
         description: '{{ doc("col_mrr_movement_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -211,19 +211,19 @@ models:
       - name: subscription_event_id
         data_type: string
         description: '{{ doc("col_subscription_event_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: movement_date_key
         data_type: int64
         description: '{{ doc("col_movement_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -233,13 +233,13 @@ models:
       - name: movement_date
         data_type: date
         description: '{{ doc("col_movement_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: movement_type
         data_type: string
         description: '{{ doc("col_movement_type") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -253,22 +253,22 @@ models:
       - name: mrr_before
         data_type: numeric
         description: '{{ doc("col_mrr_before") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: mrr_after
         data_type: numeric
         description: '{{ doc("col_mrr_after") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: mrr_delta
         data_type: numeric
         description: '{{ doc("col_mrr_delta") }}'
-        tests:
+        data_tests:
           - not_null
 
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -291,33 +291,33 @@ models:
       - name: invoice_key
         data_type: int64
         description: '{{ doc("col_invoice_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: invoice_id
         data_type: string
         description: '{{ doc("col_invoice_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -327,13 +327,13 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -343,7 +343,7 @@ models:
       - name: issued_date_key
         data_type: int64
         description: '{{ doc("col_issued_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -353,7 +353,7 @@ models:
       - name: issued_at
         data_type: timestamp
         description: '{{ doc("col_issued_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: paid_at
@@ -363,13 +363,13 @@ models:
       - name: amount
         data_type: numeric
         description: '{{ doc("col_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -380,7 +380,7 @@ models:
       - name: status
         data_type: string
         description: '{{ doc("col_invoice_status") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -393,17 +393,17 @@ models:
       - name: refund_amount
         data_type: numeric
         description: '{{ doc("col_refund_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: net_amount
         data_type: numeric
         description: '{{ doc("col_net_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: is_paid
         data_type: boolean
         description: '{{ doc("col_is_paid") }}'
-        tests:
+        data_tests:
           - not_null

@@ -103,9 +103,11 @@ scored as (
             else 0
         end as billing_score,
         case
+            when s.avg_csat is null and coalesce(s.open_tickets, 0) = 0
+                then 70  -- no support interactions: neutral, not perfect
             when
                 coalesce(s.open_tickets, 0) = 0
-                and coalesce(s.avg_csat, 5) >= 4
+                and s.avg_csat >= 4
                 then 100
             when
                 coalesce(s.open_tickets, 0) <= 2

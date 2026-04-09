@@ -50,11 +50,15 @@ member_count as (
     group by all
 ),
 
+-- Acquisition channel: pick the earliest-activated member's attribution.
+-- Assumes 1:1 user→account in synthetic data; for multi-account users the
+-- row_number partitioned by account_id resolves to one row per account.
 account_acquisition as (
     select
         m.account_id,
         a.first_touch_channel,
         a.activation_at,
+        a.user_id,
         row_number() over (
             partition by m.account_id
             order by a.activation_at asc, a.user_id asc

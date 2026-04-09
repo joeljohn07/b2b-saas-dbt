@@ -127,10 +127,10 @@
 **Why:** Linter was only catching inline descriptions in _models.yml; orphaned doc blocks in docs.md files and broken doc() references were going undetected
 **What changed:** `scripts/lint-doc-blocks.sh` extended with orphan detection and broken reference checking; integrated into CI
 
-## 2026-03-30: Generic test deprecation warnings (63 warnings resolved)
+## 2026-03-30: Generic test argument syntax deprecation (63 warnings resolved)
 **PR:** #55
-**Why:** dbt 1.11 deprecated the `tests:` key in favour of `data_tests:` — 63 warnings were cluttering CI output
-**What changed:** Partial migration of `tests:` to `data_tests:` in _models.yml files — 63 deprecation warnings resolved but ~311 `tests:` blocks remain across 13 files. Full migration tracked separately
+**Why:** dbt 1.11 deprecated the implicit arguments syntax in generic tests — 63 `MissingArgumentsPropertyInGenericTestDeprecation` warnings were cluttering CI output
+**What changed:** Nested `relationships`, `accepted_values`, `dbt_utils.unique_combination_of_columns`, `dbt_expectations.expect_column_values_to_be_between`, and `dbt_utils.expression_is_true` arguments under the `arguments:` property across all _models.yml files
 
 ## 2026-03-30: int_events_normalized incremental
 **PR:** #56
@@ -198,3 +198,16 @@
 - `retention_rate` doc block: added null case for zero-denominator cohorts
 - Created `assets/` directory (referenced by `asset-paths` in dbt_project.yml)
 - Removed empty `macros/governance/` directory
+
+## 2026-04-09: Deep review — correctness, convention, and portfolio hygiene fixes
+**Why:** Full 8-perspective codebase review before portfolio use; found 3 critical and 8 warning-level issues
+**What changed:**
+- Migrated all 308 `tests:` → `data_tests:` across 13 _models.yml files (dbt 1.11 deprecation)
+- Fixed `coalesce(avg_csat, 5)` giving accounts with no support data a perfect score → neutral (70) instead
+- Replaced `to_hex(md5(...))` session_id with `cast(farm_fingerprint(...) as string)` for surrogate key consistency (breaking change: all session_id/session_key values change; safe for synthetic data with full-refresh)
+- Parameterised hardcoded `date('2024-01-01')` sentinel → `var('project_start_date')`
+- Added `cost_per_click` and `click_through_rate` to `int_marketing_spend_prep` (was a pure passthrough)
+- Fixed README mart count (17 models + 2 seeds, not "19")
+- Added determinism comments on identity stitching and account acquisition join
+- Corrected decisions.md PR #55 entry (was about `arguments:` deprecation, not `tests:` → `data_tests:`)
+- Cleaned 14 stale git worktrees

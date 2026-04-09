@@ -94,10 +94,10 @@ session_agg as (
 sessions_enriched as (
 
     select
-        to_hex(md5(concat(
+        cast(farm_fingerprint(concat(
             a.anon_id,
             f.first_event_id
-        ))) as session_id,
+        )) as string) as session_id,
         a.anon_id,
         a.session_start_at,
         a.session_end_at,

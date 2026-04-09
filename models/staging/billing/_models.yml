@@ -12,32 +12,32 @@ models:
       - name: subscription_event_id
         data_type: string
         description: '{{ doc("col_subscription_event_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_type
         data_type: string
         description: '{{ doc("col_subscription_event_type") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -54,19 +54,19 @@ models:
       - name: event_time
         data_type: timestamp
         description: '{{ doc("col_event_time") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: _loaded_at
         data_type: timestamp
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: plan
         data_type: string
         description: '{{ doc("col_plan") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -79,7 +79,7 @@ models:
       - name: previous_plan
         data_type: string
         description: '{{ doc("col_previous_plan") }}'
-        tests:
+        data_tests:
           - accepted_values:
               arguments:
                 values:
@@ -93,7 +93,7 @@ models:
       - name: billing_cycle
         data_type: string
         description: '{{ doc("col_billing_cycle") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -104,7 +104,7 @@ models:
       - name: mrr_amount
         data_type: numeric
         description: '{{ doc("col_mrr_amount") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -113,7 +113,7 @@ models:
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: cancel_reason
@@ -135,32 +135,32 @@ models:
       - name: invoice_id
         data_type: string
         description: '{{ doc("col_invoice_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: issued_at
         data_type: timestamp
         description: '{{ doc("col_issued_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: paid_at
@@ -170,13 +170,13 @@ models:
       - name: _loaded_at
         data_type: timestamp
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: amount
         data_type: numeric
         description: '{{ doc("col_amount") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -185,13 +185,13 @@ models:
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: status
         data_type: string
         description: '{{ doc("col_invoice_status") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -204,7 +204,7 @@ models:
       - name: refund_amount
         data_type: numeric
         description: '{{ doc("col_refund_amount") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:

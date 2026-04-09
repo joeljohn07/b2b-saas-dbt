@@ -9,38 +9,38 @@ models:
     columns:
       - name: subscription_event_id
         description: '{{ doc("col_subscription_event_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: subscription_id
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_type
         description: '{{ doc("col_subscription_event_type") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_time
         description: '{{ doc("col_event_time") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: plan
         description: '{{ doc("col_plan") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: previous_plan
@@ -48,17 +48,17 @@ models:
 
       - name: billing_cycle
         description: '{{ doc("col_billing_cycle") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: mrr_amount
         description: '{{ doc("col_mrr_amount") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: currency
         description: '{{ doc("col_currency") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: cancel_reason
@@ -69,12 +69,12 @@ models:
 
       - name: is_active
         description: '{{ doc("col_is_active") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: days_since_previous_event
         description: '{{ doc("col_days_since_previous_event") }}'
-        tests:
+        data_tests:
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
                 min_value: 0
@@ -86,7 +86,7 @@ models:
     config:
       tags:
         - intermediate
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -95,27 +95,27 @@ models:
     columns:
       - name: account_id
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: subscription_event_id
         description: '{{ doc("col_subscription_event_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: subscription_id
         description: '{{ doc("col_subscription_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: movement_date
         description: '{{ doc("col_movement_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: movement_type
         description: '{{ doc("col_movement_type") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -128,15 +128,15 @@ models:
 
       - name: mrr_before
         description: '{{ doc("col_mrr_before") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: mrr_after
         description: '{{ doc("col_mrr_after") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: mrr_delta
         description: '{{ doc("col_mrr_delta") }}'
-        tests:
+        data_tests:
           - not_null

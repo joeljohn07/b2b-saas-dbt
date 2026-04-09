@@ -17,27 +17,27 @@ models:
       - name: ticket_key
         data_type: int64
         description: '{{ doc("col_ticket_key") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: ticket_id
         data_type: string
         description: '{{ doc("col_ticket_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -47,13 +47,13 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -63,7 +63,7 @@ models:
       - name: created_date_key
         data_type: int64
         description: '{{ doc("col_created_date_key") }}'
-        tests:
+        data_tests:
           - not_null
           - relationships:
               arguments:
@@ -73,7 +73,7 @@ models:
       - name: created_at
         data_type: timestamp
         description: '{{ doc("col_created_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: resolved_at
@@ -83,7 +83,7 @@ models:
       - name: category
         data_type: string
         description: '{{ doc("col_category") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -97,7 +97,7 @@ models:
       - name: priority
         data_type: string
         description: '{{ doc("col_priority") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -110,7 +110,7 @@ models:
       - name: status
         data_type: string
         description: '{{ doc("col_ticket_status") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -135,5 +135,5 @@ models:
       - name: is_resolved
         data_type: boolean
         description: '{{ doc("col_is_resolved") }}'
-        tests:
+        data_tests:
           - not_null

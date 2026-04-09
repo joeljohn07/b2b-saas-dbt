@@ -12,26 +12,26 @@ models:
       - name: ticket_id
         data_type: string
         description: '{{ doc("col_ticket_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: created_at
         data_type: timestamp
         description: '{{ doc("col_created_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: resolved_at
@@ -41,13 +41,13 @@ models:
       - name: _loaded_at
         data_type: timestamp
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: category
         data_type: string
         description: '{{ doc("col_category") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -61,7 +61,7 @@ models:
       - name: priority
         data_type: string
         description: '{{ doc("col_priority") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -74,7 +74,7 @@ models:
       - name: status
         data_type: string
         description: '{{ doc("col_ticket_status") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -87,7 +87,7 @@ models:
       - name: csat_score
         data_type: int64
         description: '{{ doc("col_csat_score") }}'
-        tests:
+        data_tests:
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
                 min_value: 1

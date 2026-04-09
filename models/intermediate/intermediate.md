@@ -278,8 +278,16 @@ Invoice amount minus refund amount.
 ## int_marketing_spend_prep
 
 {% docs int_marketing_spend_prep %}
-Thin intermediate prep model for marketing spend. Pass-through so marts can
-reference intermediate instead of staging.
+Marketing spend prep with derived efficiency metrics (CPC, CTR).
+Enforces the three-layer contract so marts never reference staging directly.
+{% enddocs %}
+
+{% docs col_cost_per_click %}
+Spend divided by clicks. Null when clicks is zero.
+{% enddocs %}
+
+{% docs col_click_through_rate %}
+Clicks divided by impressions. Null when impressions is zero.
 {% enddocs %}
 
 ---

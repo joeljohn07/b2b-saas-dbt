@@ -18,7 +18,7 @@ models:
     columns:
       - name: event_id
         description: '{{ doc("col_event_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
@@ -27,7 +27,7 @@ models:
 
       - name: anon_id
         description: '{{ doc("col_anon_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
@@ -35,7 +35,7 @@ models:
 
       - name: event_time
         description: '{{ doc("col_event_time") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: ingest_time
@@ -43,17 +43,17 @@ models:
 
       - name: _loaded_at
         description: '{{ doc("col__loaded_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_date
         description: '{{ doc("col_event_date") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: event_type
         description: '{{ doc("col_event_type") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: platform
@@ -136,7 +136,7 @@ models:
     config:
       tags:
         - intermediate
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -145,17 +145,17 @@ models:
     columns:
       - name: anon_id
         description: '{{ doc("col_anon_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: valid_from
         description: '{{ doc("col_valid_from") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: valid_to
@@ -163,7 +163,7 @@ models:
 
       - name: stitch_source
         description: '{{ doc("col_stitch_source") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -176,7 +176,7 @@ models:
     config:
       tags:
         - intermediate
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -186,12 +186,12 @@ models:
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: account_id
         description: '{{ doc("col_account_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: role
@@ -199,7 +199,7 @@ models:
 
       - name: valid_from
         description: '{{ doc("col_valid_from") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: valid_to
@@ -207,7 +207,7 @@ models:
 
       - name: membership_duration_days
         description: '{{ doc("col_membership_duration_days") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -221,13 +221,13 @@ models:
     columns:
       - name: session_id
         description: '{{ doc("col_session_id") }}'
-        tests:
+        data_tests:
           - unique
           - not_null
 
       - name: anon_id
         description: '{{ doc("col_anon_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: stitched_user_id
@@ -235,17 +235,17 @@ models:
 
       - name: session_start_at
         description: '{{ doc("col_session_start_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: session_end_at
         description: '{{ doc("col_session_end_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: session_duration_seconds
         description: '{{ doc("col_session_duration_seconds") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -253,7 +253,7 @@ models:
 
       - name: event_count
         description: '{{ doc("col_event_count") }}'
-        tests:
+        data_tests:
           - not_null
           - dbt_expectations.expect_column_values_to_be_between:
               arguments:
@@ -282,7 +282,7 @@ models:
 
       - name: session_date
         description: '{{ doc("col_session_date") }}'
-        tests:
+        data_tests:
           - not_null
 
   - name: int_funnel_staged
@@ -290,7 +290,7 @@ models:
     config:
       tags:
         - intermediate
-    tests:
+    data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
@@ -299,12 +299,12 @@ models:
     columns:
       - name: user_id
         description: '{{ doc("col_user_id") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: stage
         description: '{{ doc("col_stage") }}'
-        tests:
+        data_tests:
           - not_null
           - accepted_values:
               arguments:
@@ -317,15 +317,15 @@ models:
 
       - name: stage_ordinal
         description: '{{ doc("col_stage_ordinal") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: stage_reached_at
         description: '{{ doc("col_stage_reached_at") }}'
-        tests:
+        data_tests:
           - not_null
 
       - name: is_current_stage
         description: '{{ doc("col_is_current_stage") }}'
-        tests:
+        data_tests:
           - not_null
