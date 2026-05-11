@@ -37,6 +37,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: platform
         data_type: string
@@ -155,6 +159,10 @@ models:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: user_id
         data_type: string
@@ -171,6 +179,10 @@ models:
               arguments:
                 to: ref('dim_experiments')
                 field: experiment_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: variant
         data_type: string
@@ -233,6 +245,10 @@ models:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: account_id
         data_type: string
@@ -246,6 +262,10 @@ models:
               arguments:
                 to: ref('dim_accounts')
                 field: account_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
               where: "account_key is not null"
 
       - name: usage_date_key
@@ -257,6 +277,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: usage_at
         data_type: timestamp
@@ -318,6 +342,10 @@ models:
               arguments:
                 to: ref('dim_sessions')
                 field: session_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: session_id
         data_type: string
@@ -338,6 +366,10 @@ models:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
               where: "user_key is not null"
 
       - name: session_date_key
@@ -349,6 +381,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: session_start_at
         data_type: timestamp
@@ -430,6 +466,10 @@ models:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: experiment_id
         data_type: string
@@ -446,6 +486,10 @@ models:
               arguments:
                 to: ref('dim_experiments')
                 field: experiment_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: variant
         data_type: string
@@ -473,6 +517,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: converted
         data_type: boolean

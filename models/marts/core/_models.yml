@@ -75,6 +75,10 @@ models:
               arguments:
                 to: ref('dim_channels')
                 field: channel_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
               where: "first_touch_channel_key is not null"
 
       - name: last_touch_channel_key
@@ -85,6 +89,10 @@ models:
               arguments:
                 to: ref('dim_channels')
                 field: channel_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
               where: "last_touch_channel_key is not null"
 
       - name: engagement_state
@@ -195,6 +203,10 @@ models:
               arguments:
                 to: ref('dim_channels')
                 field: channel_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
               where: "acquisition_channel_key is not null"
 
       - name: acquisition_date
@@ -256,6 +268,10 @@ models:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: signup_date_key
         data_type: int64
@@ -266,6 +282,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: signup_at
         data_type: timestamp
@@ -300,6 +320,10 @@ models:
               arguments:
                 to: ref('dim_channels')
                 field: channel_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: platform
         data_type: string
@@ -365,6 +389,10 @@ models:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: activation_date_key
         data_type: int64
@@ -375,6 +403,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: activation_at
         data_type: timestamp
@@ -391,6 +423,10 @@ models:
               arguments:
                 to: ref('dim_channels')
                 field: channel_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: last_touch_channel_key
         data_type: int64
@@ -401,6 +437,10 @@ models:
               arguments:
                 to: ref('dim_channels')
                 field: channel_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: first_touch_channel
         data_type: string
@@ -449,6 +489,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: retention_period
         data_type: string
@@ -488,6 +532,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
               where: "is_period_complete"
 
       - name: cohort_size
