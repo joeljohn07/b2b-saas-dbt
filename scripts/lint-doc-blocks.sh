@@ -49,10 +49,14 @@ check_inline_descriptions() {
                 echo "      $line_content"
                 WARN_COUNT=$((WARN_COUNT + 1))
             fi
-        done < <(grep -nE '^\s+description:\s' "$file" \
+        # Only flag description: lines at model-level (4-space indent) or column-level
+        # (8-space indent). Deeper indents (12+ spaces) sit inside nested config blocks
+        # like `meta.metric.description` and are allowed — those are Lightdash metric
+        # descriptions, not column docs.
+        done < <(grep -nE '^( {4}|        )description:\s' "$file" \
             | grep -vE '\{\{.*doc\(' \
-            | grep -vE '^\s+description:\s*$' \
-            | grep -vE "^\s+description:\s*['\"]?\s*['\"]?\s*$" \
+            | grep -vE 'description:\s*$' \
+            | grep -vE "description:\s*['\"]?\s*['\"]?\s*$" \
             || true)
     done < <(find "$search_dir" -name "$pattern" -print0 2>/dev/null)
 }
