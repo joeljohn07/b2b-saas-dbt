@@ -211,3 +211,11 @@
 - Added determinism comments on identity stitching and account acquisition join
 - Corrected decisions.md PR #55 entry (was about `arguments:` deprecation, not `tests:` → `data_tests:`)
 - Cleaned 14 stale git worktrees
+
+## 2026-05-11: Severity graduation policy for FK relationships tests
+**Why:** All 37 `relationships:` tests across the marts inherited dbt's default severity (`error`), meaning a single orphan row would block merge. This is right for PKs and enums, but too strict for FKs — small referential gaps from late-arriving anonymous events are tolerable while large gaps signal real upstream breaks.
+**What changed:**
+- Added explicit `config: { severity: warn, warn_if: ">0", error_if: ">10" }` to all 37 `relationships:` tests in the five mart `_models.yml` files
+- Expanded `docs/quality-gates.md` into a formal severity-and-thresholds policy: per-category rationale, configuration-site reference, escalation paths, and explicit documentation of CI's interpretation of severity
+- Documented the source freshness deviation from the original orchestration spec (24h/48h vs 12h/24h): synthetic data is always stale; tightening freshness adds no signal
+- No changes to PK/enum/invariant/reconciliation/fanout/contract test severities — those remain `error` (documented as such, not changed)

@@ -43,6 +43,10 @@ models:
               arguments:
                 to: ref('dim_users')
                 field: user_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: account_id
         data_type: string
@@ -59,6 +63,10 @@ models:
               arguments:
                 to: ref('dim_accounts')
                 field: account_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: created_date_key
         data_type: int64
@@ -69,6 +77,10 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: date_key
+              config:
+                severity: warn
+                warn_if: ">0"
+                error_if: ">10"
 
       - name: created_at
         data_type: timestamp
