@@ -67,8 +67,12 @@ jobs:
           mkdir -p ~/.dbt
           cp profiles.yml.example ~/.dbt/profiles.yml
 
-      - name: Generate dbt docs (no compile — uses manifest, no catalog)
-        run: dbt docs generate --no-compile --target dev
+      - name: Generate dbt docs (no compile, empty catalog — no BQ connection)
+        # --no-compile   : skip query compilation (manifest already covers structure)
+        # --empty-catalog: skip the catalog query that requires a live BQ connection
+        # Net result: rendered site has model graph, descriptions, tests, and lineage,
+        # but no BQ-derived column types or row counts. Acceptable for a portfolio piece.
+        run: dbt docs generate --no-compile --empty-catalog --target dev
 
       - name: Stage docs site
         run: |
