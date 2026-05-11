@@ -5,6 +5,16 @@ Full-company analytics platform for a B2B SaaS company — dbt on BigQuery, Kimb
 
 **Live model docs:** [joeljohn07.github.io/b2b-saas-dbt](https://joeljohn07.github.io/b2b-saas-dbt/) — interactive lineage graph and column-level docs, auto-published from `main`.
 
+**Sibling repos in this stack:**
+
+| Repo | Role | Status |
+|---|---|---|
+| `b2b-saas-dbt` (this repo) | Data foundation — staging, intermediate, marts | **v0.1.0 shipped** |
+| [`b2b-saas-lightdash`](https://github.com/joeljohn07/b2b-saas-lightdash) | BI consumption — explores, dashboards, MCP surface | Scaffold |
+| `analytics-agent` (planned) | Agentic Q&A over BigQuery + dbt + Lightdash | Not yet started |
+
+Each repo is self-contained and independently adoptable. The dbt project does not require Lightdash to be useful; the Lightdash project consumes the dbt marts as a peer (siblings under one parent directory).
+
 ## What this demonstrates
 
 - **Frozen business logic** — 6 locked decisions (identity stitching, sessionization, engagement scoring, attribution, retention cohorts, canonical activation) are defined once in intermediate models and referenced everywhere; no per-model re-derivation
