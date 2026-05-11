@@ -219,3 +219,22 @@
 - Expanded `docs/quality-gates.md` into a formal severity-and-thresholds policy: per-category rationale, configuration-site reference, escalation paths, and explicit documentation of CI's interpretation of severity
 - Documented the source freshness deviation from the original orchestration spec (24h/48h vs 12h/24h): synthetic data is always stale; tightening freshness adds no signal
 - No changes to PK/enum/invariant/reconciliation/fanout/contract test severities — those remain `error` (documented as such, not changed)
+
+## 2026-05-11: Lightdash semantic annotations on mart models
+**Why:** Lightdash discovers explores by reading `meta.dimension` and `meta.metric` from each column's manifest entry. Without these, every mart shows up in Lightdash as an opaque table with no curated dimensions or metrics. This is the dbt-side half of agentic-hub#393.
+**What changed:**
+- Added column-level `meta.dimension` block to all 198 columns across the 17 mart models
+- Annotation rules applied programmatically by column name + data_type:
+  - `*_key` (INT64 surrogate) → `hidden: true` (joinable, not visible)
+  - `*_id` (STRING natural key) → `hidden: true` (joinable, not visible)
+  - `*_date` (DATE) → `type: date` with `time_intervals: [DAY, WEEK, MONTH, QUARTER, YEAR]`
+  - `*_at` / `*_time` (TIMESTAMP) → `type: timestamp` with same intervals
+  - `is_*` / `has_*` / `was_*` (BOOL) → `type: boolean`
+  - Other STRING → `type: string`
+  - Other numeric → `type: number`
+- Added column-level `meta.metric` block on 23 high-value metric columns across 11 marts. Each carries `type` (sum / count_distinct / average), a human-readable `label`, and a `description`. Reflects the canonical metrics from `docs/metric-contract.md` — no new business semantics introduced; Lightdash surfaces what dbt already defines.
+- Did NOT alter the existing model-level `meta` block (owner, pii, sla, tier) — Lightdash reads those too but they were already in place.
+
+**Trade-offs considered:**
+- Could have used `config.meta` at column level (matching the model-level pattern) instead of top-level `meta`. Chose top-level because Lightdash's documented examples use that form and both are valid in dbt 1.11.
+- Could have added explicit model-level `meta.label` / `meta.group_label` on every fact. Skipped — Lightdash derives a sensible default from the model name. Adding labels is cheap follow-up if needed.

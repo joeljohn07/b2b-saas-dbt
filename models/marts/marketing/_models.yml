@@ -17,6 +17,9 @@ models:
       - name: spend_key
         data_type: int64
         description: '{{ doc("col_spend_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -24,6 +27,9 @@ models:
       - name: spend_id
         data_type: string
         description: '{{ doc("col_spend_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -31,6 +37,9 @@ models:
       - name: spend_date_key
         data_type: int64
         description: '{{ doc("col_spend_date_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -45,12 +54,18 @@ models:
       - name: channel
         data_type: string
         description: '{{ doc("col_channel") }}'
+        meta:
+          dimension:
+            type: string
         data_tests:
           - not_null
 
       - name: channel_key
         data_type: int64
         description: '{{ doc("col_channel_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -65,29 +80,59 @@ models:
       - name: campaign_id
         data_type: string
         description: '{{ doc("col_campaign_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
 
       - name: campaign_name
         data_type: string
         description: '{{ doc("col_campaign_name") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: spend_amount
         data_type: numeric
         description: '{{ doc("col_spend_amount") }}'
+        meta:
+          dimension:
+            type: number
+          metric:
+            type: sum
+            label: "Marketing Spend"
+            description: 'Sum of marketing spend.'
         data_tests:
           - not_null
 
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
+        meta:
+          dimension:
+            type: string
         data_tests:
           - not_null
 
       - name: impressions
         data_type: int64
         description: '{{ doc("col_impressions") }}'
+        meta:
+          dimension:
+            type: number
+          metric:
+            type: sum
+            label: "Impressions"
+            description: 'Sum of ad impressions.'
 
       - name: clicks
         data_type: int64
         description: '{{ doc("col_clicks") }}'
+        meta:
+          dimension:
+            type: number
+          metric:
+            type: sum
+            label: "Clicks"
+            description: 'Sum of ad clicks.'

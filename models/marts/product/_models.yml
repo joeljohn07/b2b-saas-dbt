@@ -17,6 +17,9 @@ models:
       - name: session_key
         data_type: int64
         description: '{{ doc("col_session_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -24,6 +27,9 @@ models:
       - name: session_id
         data_type: string
         description: '{{ doc("col_session_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -31,6 +37,9 @@ models:
       - name: session_date_key
         data_type: int64
         description: '{{ doc("col_session_date_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -45,38 +54,65 @@ models:
       - name: platform
         data_type: string
         description: '{{ doc("col_platform") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: device_type
         data_type: string
         description: '{{ doc("col_device_type") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: browser
         data_type: string
         description: '{{ doc("col_browser") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: utm_source
         data_type: string
         description: '{{ doc("col_utm_source") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: utm_medium
         data_type: string
         description: '{{ doc("col_utm_medium") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: utm_campaign
         data_type: string
         description: '{{ doc("col_utm_campaign") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: session_duration_seconds
         data_type: int64
         description: '{{ doc("col_session_duration_seconds") }}'
+        meta:
+          dimension:
+            type: number
 
       - name: event_count
         data_type: int64
         description: '{{ doc("col_event_count") }}'
+        meta:
+          dimension:
+            type: number
 
       - name: page_view_count
         data_type: int64
         description: '{{ doc("col_page_view_count") }}'
+        meta:
+          dimension:
+            type: number
 
   - name: dim_experiments
     description: '{{ doc("dim_experiments") }}'
@@ -94,6 +130,9 @@ models:
       - name: experiment_key
         data_type: int64
         description: '{{ doc("col_experiment_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -101,6 +140,9 @@ models:
       - name: experiment_id
         data_type: string
         description: '{{ doc("col_experiment_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -108,12 +150,18 @@ models:
       - name: experiment_name
         data_type: string
         description: '{{ doc("col_experiment_name") }}'
+        meta:
+          dimension:
+            type: string
         data_tests:
           - not_null
 
       - name: status
         data_type: string
         description: '{{ doc("col_experiment_status") }}'
+        meta:
+          dimension:
+            type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -126,16 +174,27 @@ models:
       - name: start_date
         data_type: date
         description: '{{ doc("col_experiment_start_date") }}'
+        meta:
+          dimension:
+            type: date
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: end_date
         data_type: date
         description: '{{ doc("col_experiment_end_date") }}'
+        meta:
+          dimension:
+            type: date
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
 
       - name: description
         data_type: string
         description: '{{ doc("col_experiment_description") }}'
+        meta:
+          dimension:
+            type: string
 
   - name: bridge_user_experiments
     description: '{{ doc("bridge_user_experiments") }}'
@@ -153,6 +212,9 @@ models:
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -167,12 +229,18 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
 
       - name: experiment_key
         data_type: int64
         description: '{{ doc("col_experiment_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -187,12 +255,19 @@ models:
       - name: variant
         data_type: string
         description: '{{ doc("col_variant") }}'
+        meta:
+          dimension:
+            type: string
         data_tests:
           - not_null
 
       - name: first_exposure_at
         data_type: timestamp
         description: '{{ doc("col_first_exposure_at") }}'
+        meta:
+          dimension:
+            type: timestamp
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
@@ -219,6 +294,13 @@ models:
       - name: feature_usage_key
         data_type: int64
         description: '{{ doc("col_feature_usage_key") }}'
+        meta:
+          dimension:
+            hidden: true
+          metric:
+            type: count_distinct
+            label: "Feature Usages"
+            description: 'Distinct feature-use events.'
         data_tests:
           - unique
           - not_null
@@ -226,6 +308,9 @@ models:
       - name: event_id
         data_type: string
         description: '{{ doc("col_event_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -233,12 +318,18 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -253,10 +344,16 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
+        meta:
+          dimension:
+            hidden: true
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - relationships:
               arguments:
@@ -271,6 +368,9 @@ models:
       - name: usage_date_key
         data_type: int64
         description: '{{ doc("col_usage_date_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -285,12 +385,19 @@ models:
       - name: usage_at
         data_type: timestamp
         description: '{{ doc("col_usage_at") }}'
+        meta:
+          dimension:
+            type: timestamp
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: feature_name
         data_type: string
         description: '{{ doc("col_feature_name") }}'
+        meta:
+          dimension:
+            type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -310,14 +417,23 @@ models:
       - name: feature_duration_seconds
         data_type: int64
         description: '{{ doc("col_feature_duration_seconds") }}'
+        meta:
+          dimension:
+            type: number
 
       - name: platform
         data_type: string
         description: '{{ doc("col_platform") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: device_type
         data_type: string
         description: '{{ doc("col_device_type") }}'
+        meta:
+          dimension:
+            type: string
 
   - name: fct_sessions
     description: '{{ doc("fct_sessions") }}'
@@ -335,6 +451,13 @@ models:
       - name: session_key
         data_type: int64
         description: '{{ doc("col_session_key") }}'
+        meta:
+          dimension:
+            hidden: true
+          metric:
+            type: count_distinct
+            label: "Sessions"
+            description: 'Distinct session count.'
         data_tests:
           - unique
           - not_null
@@ -350,6 +473,9 @@ models:
       - name: session_id
         data_type: string
         description: '{{ doc("col_session_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - unique
           - not_null
@@ -357,10 +483,16 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
+        meta:
+          dimension:
+            hidden: true
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - relationships:
               arguments:
@@ -375,6 +507,9 @@ models:
       - name: session_date_key
         data_type: int64
         description: '{{ doc("col_session_date_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -389,54 +524,97 @@ models:
       - name: session_start_at
         data_type: timestamp
         description: '{{ doc("col_session_start_at") }}'
+        meta:
+          dimension:
+            type: timestamp
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: session_end_at
         data_type: timestamp
         description: '{{ doc("col_session_end_at") }}'
+        meta:
+          dimension:
+            type: timestamp
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: session_duration_seconds
         data_type: int64
         description: '{{ doc("col_session_duration_seconds") }}'
+        meta:
+          dimension:
+            type: number
+          metric:
+            type: average
+            label: "Avg Session Duration (s)"
+            description: 'Mean session length in seconds.'
         data_tests:
           - not_null
 
       - name: event_count
         data_type: int64
         description: '{{ doc("col_event_count") }}'
+        meta:
+          dimension:
+            type: number
+          metric:
+            type: sum
+            label: "Events"
+            description: 'Sum of events across sessions.'
         data_tests:
           - not_null
 
       - name: page_view_count
         data_type: int64
         description: '{{ doc("col_page_view_count") }}'
+        meta:
+          dimension:
+            type: number
 
       - name: platform
         data_type: string
         description: '{{ doc("col_platform") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: device_type
         data_type: string
         description: '{{ doc("col_device_type") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: browser
         data_type: string
         description: '{{ doc("col_browser") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: utm_source
         data_type: string
         description: '{{ doc("col_utm_source") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: utm_medium
         data_type: string
         description: '{{ doc("col_utm_medium") }}'
+        meta:
+          dimension:
+            type: string
 
       - name: utm_campaign
         data_type: string
         description: '{{ doc("col_utm_campaign") }}'
+        meta:
+          dimension:
+            type: string
 
   - name: fct_experiment_exposures
     description: '{{ doc("fct_experiment_exposures") }}'
@@ -454,12 +632,18 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -474,12 +658,18 @@ models:
       - name: experiment_id
         data_type: string
         description: '{{ doc("col_experiment_id") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
 
       - name: experiment_key
         data_type: int64
         description: '{{ doc("col_experiment_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -494,6 +684,9 @@ models:
       - name: variant
         data_type: string
         description: '{{ doc("col_variant") }}'
+        meta:
+          dimension:
+            type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -505,12 +698,19 @@ models:
       - name: first_exposure_at
         data_type: timestamp
         description: '{{ doc("col_first_exposure_at") }}'
+        meta:
+          dimension:
+            type: timestamp
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: exposure_date_key
         data_type: int64
         description: '{{ doc("col_exposure_date_key") }}'
+        meta:
+          dimension:
+            hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -525,16 +725,26 @@ models:
       - name: converted
         data_type: boolean
         description: '{{ doc("col_converted") }}'
+        meta:
+          dimension:
+            type: boolean
         data_tests:
           - not_null
 
       - name: conversion_at
         data_type: timestamp
         description: '{{ doc("col_conversion_at") }}'
+        meta:
+          dimension:
+            type: timestamp
+            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
 
       - name: exposure_duration_hours
         data_type: int64
         description: '{{ doc("col_exposure_duration_hours") }}'
+        meta:
+          dimension:
+            type: number
         data_tests:
           - not_null
 
