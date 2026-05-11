@@ -67,12 +67,24 @@ jobs:
           mkdir -p ~/.dbt
           cp profiles.yml.example ~/.dbt/profiles.yml
 
+      - name: Parse project (writes target/manifest.json)
+        # `dbt docs generate --no-compile` does NOT write a manifest — it expects
+        # one to exist already. Without an explicit parse, the next step succeeds
+        # (writes catalog.json) but the staging step then can't find manifest.json.
+        run: dbt parse --target dev
+
       - name: Generate dbt docs (no compile, empty catalog — no BQ connection)
-        # --no-compile   : skip query compilation (manifest already covers structure)
+        # --no-compile   : skip query compilation (manifest from prior parse covers structure)
         # --empty-catalog: skip the catalog query that requires a live BQ connection
         # Net result: rendered site has model graph, descriptions, tests, and lineage,
         # but no BQ-derived column types or row counts. Acceptable for a portfolio piece.
         run: dbt docs generate --no-compile --empty-catalog --target dev
+
+      - name: Verify expected artifacts (fail fast if dbt didn't write them)
+        run: |
+          ls -la target/
+          test -f target/manifest.json || { echo "manifest.json missing"; exit 1; }
+          test -f target/index.html || { echo "index.html missing"; exit 1; }
 
       - name: Stage docs site
         run: |
