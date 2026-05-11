@@ -103,7 +103,7 @@ Classification rules (canonical, lifted from `int_mrr_movements`):
 | Definition | (Starting MRR + expansion − contraction − churn) ÷ Starting MRR, per cohort. |
 | Grain | One row per account cohort × period. |
 | Formula | Computed from `fct_mrr_movements` filtered to a starting-MRR cohort. |
-| Source model | Computed at consumption time. Pre-aggregated form planned in `rpt_nrr_by_cohort` (not yet built). |
+| Source model | Computed at consumption time from `fct_mrr_movements`. No pre-aggregated mart model. |
 | Owner | Revenue analytics |
 
 ### Invoices

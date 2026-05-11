@@ -131,7 +131,12 @@ The 36-hour lookback (`events_incremental_lookback_hours` var) is anchored on `_
 
 ### Pre-commit hook `secret-scan.sh` flags a commit
 
-The hook looks for high-entropy strings that match common secret formats. Review the flagged file — if it's a false positive (e.g., a UUID literal in a fixture), prefix the line with a `# noqa: secret` comment and re-commit. Never bypass with `--no-verify` unless you've manually verified no secret is leaking.
+Two failure modes:
+
+1. **Filename pattern match** — paths like `.env`, `*.key`, `*.pem`, `downloads/`, `*-credentials.json`. Move or rename the file (and verify it really shouldn't be committed).
+2. **Content match** — the staged diff contains a quoted value following `api_key`, `secret_key`, `password`, `token`, `sessionid`, `private_key`, or `client_secret`. Review the diff; if a real secret leaked, rotate it. If it's a literal example (fixture, docs example), rephrase the surrounding text so the keyword/value pattern doesn't match — there is no in-line bypass token.
+
+The hook has no allowlist. Never bypass with `--no-verify`.
 
 ## Useful Selectors
 
