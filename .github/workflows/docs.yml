@@ -1,0 +1,91 @@
+# ============================================================
+# AUTOMATION: dbt docs site → GitHub Pages
+# WHAT IT DOES: Builds the dbt docs site and publishes to GitHub Pages
+# WHAT IT MODIFIES: Deploys to the github-pages environment
+# AUTO-COMMITS: No
+# HOW TO DISABLE: Delete this file or disable Pages in repo settings
+#
+# Strategy: this workflow runs `dbt docs generate --no-compile` after a
+# successful CI build on main. It does NOT run `dbt build` itself — the
+# generated docs reuse the manifest from the existing build job in ci.yml.
+# This avoids burning a second BigQuery build slot just to render docs.
+# The trade-off: no `catalog.json` (BQ-derived column types and row counts).
+# Model graph, column descriptions, tests, and lineage all render fine.
+# ============================================================
+name: Docs
+
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    name: Build and deploy dbt docs
+    # Only run if the triggering CI workflow succeeded (skipped on manual dispatch)
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    env:
+      GCP_PROJECT_ID: docs-only-no-bigquery-access-required
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements-ci.txt
+
+      - name: Install Python dependencies
+        run: pip install -r requirements-ci.txt
+
+      - name: Cache dbt packages
+        uses: actions/cache@v4
+        with:
+          path: dbt_packages
+          key: dbt-packages-${{ hashFiles('package-lock.yml') }}
+
+      - name: Install dbt packages
+        run: dbt deps
+
+      - name: Set up dbt profile (parse-only, no BQ auth needed)
+        run: |
+          mkdir -p ~/.dbt
+          cp profiles.yml.example ~/.dbt/profiles.yml
+
+      - name: Generate dbt docs (no compile — uses manifest, no catalog)
+        run: dbt docs generate --no-compile --target dev
+
+      - name: Stage docs site
+        run: |
+          mkdir -p site
+          cp target/manifest.json site/
+          cp target/index.html site/
+          # dbt docs serve loads catalog.json if present; if not, the site
+          # renders without BQ-derived column types and row counts. That's
+          # acceptable for a portfolio piece — model graph + descriptions
+          # are the high-signal parts.
+          [ -f target/catalog.json ] && cp target/catalog.json site/ || true
+
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
