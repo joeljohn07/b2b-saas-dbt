@@ -102,7 +102,7 @@ Subdirectories provide domain context, never role-played in the model name itsel
 
 ## Documentation Ownership
 
-Every column description lives once. Authored in `_<scope>__docs.md` files using `{% docs %}` blocks; referenced from `schema.yml` via `{{ doc('col_name') }}`. Pass-through columns reuse the same doc tag across layers; transformed columns get a new doc block authored where the transformation lives.
+Every column description lives once. Authored in `_<scope>__docs.md` files using dbt's `docs` Jinja blocks; referenced from `schema.yml` via the `doc(...)` macro. Pass-through columns reuse the same doc tag across layers; transformed columns get a new doc block authored where the transformation lives.
 
 Reference: [`docs/doc-block-convention.md`](doc-block-convention.md).
 
