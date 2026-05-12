@@ -297,10 +297,11 @@ models:
         meta:
           dimension:
             hidden: true
-          metric:
-            type: count_distinct
-            label: "Feature Usages"
-            description: 'Distinct feature-use events.'
+          metrics:
+            feature_usages:
+              type: count_distinct
+              label: "Feature Usages"
+              description: 'Distinct feature-use events.'
         data_tests:
           - unique
           - not_null
@@ -454,10 +455,11 @@ models:
         meta:
           dimension:
             hidden: true
-          metric:
-            type: count_distinct
-            label: "Sessions"
-            description: 'Distinct session count.'
+          metrics:
+            sessions:
+              type: count_distinct
+              label: "Sessions"
+              description: 'Distinct session count.'
         data_tests:
           - unique
           - not_null
@@ -547,10 +549,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: average
-            label: "Avg Session Duration (s)"
-            description: 'Mean session length in seconds.'
+          metrics:
+            avg_session_duration_seconds:
+              type: average
+              label: "Avg Session Duration (s)"
+              description: 'Mean session length in seconds.'
         data_tests:
           - not_null
 
@@ -560,10 +563,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Events"
-            description: 'Sum of events across sessions.'
+          metrics:
+            events:
+              type: sum
+              label: "Events"
+              description: 'Sum of events across sessions.'
         data_tests:
           - not_null
 

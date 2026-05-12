@@ -195,10 +195,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Subscription MRR"
-            description: 'Sum of MRR amounts at subscription event time.'
+          metrics:
+            subscription_mrr:
+              type: sum
+              label: "Subscription MRR"
+              description: 'Sum of MRR amounts at subscription event time.'
         data_tests:
           - not_null
 
@@ -381,10 +382,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Net MRR"
-            description: 'Cumulative sum of MRR movements. Decomposes into new / expansion / contraction / churn / reactivation via the movement_type dimension.'
+          metrics:
+            net_mrr:
+              type: sum
+              label: "Net MRR"
+              description: 'Cumulative sum of MRR movements. Decomposes into new / expansion / contraction / churn / reactivation via the movement_type dimension.'
         data_tests:
           - not_null
 
@@ -414,10 +416,11 @@ models:
         meta:
           dimension:
             hidden: true
-          metric:
-            type: count_distinct
-            label: "Invoices"
-            description: 'Distinct invoices issued.'
+          metrics:
+            invoices:
+              type: count_distinct
+              label: "Invoices"
+              description: 'Distinct invoices issued.'
         data_tests:
           - unique
           - not_null
@@ -534,10 +537,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Invoice Amount"
-            description: 'Sum of invoice amounts billed.'
+          metrics:
+            invoice_amount:
+              type: sum
+              label: "Invoice Amount"
+              description: 'Sum of invoice amounts billed.'
         data_tests:
           - not_null
 
@@ -586,10 +590,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Net Revenue"
-            description: 'Sum of net amounts (amount minus refunds). Excludes refunded invoices.'
+          metrics:
+            net_revenue:
+              type: sum
+              label: "Net Revenue"
+              description: 'Sum of net amounts (amount minus refunds). Excludes refunded invoices.'
         data_tests:
           - not_null
 

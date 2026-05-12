@@ -99,10 +99,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Marketing Spend"
-            description: 'Sum of marketing spend.'
+          metrics:
+            marketing_spend:
+              type: sum
+              label: "Marketing Spend"
+              description: 'Sum of marketing spend.'
         data_tests:
           - not_null
 
@@ -121,10 +122,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Impressions"
-            description: 'Sum of ad impressions.'
+          metrics:
+            impressions:
+              type: sum
+              label: "Impressions"
+              description: 'Sum of ad impressions.'
 
       - name: clicks
         data_type: int64
@@ -132,7 +134,8 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Clicks"
-            description: 'Sum of ad clicks.'
+          metrics:
+            clicks:
+              type: sum
+              label: "Clicks"
+              description: 'Sum of ad clicks.'

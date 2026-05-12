@@ -229,10 +229,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Total MRR"
-            description: 'Sum of MRR across all accounts.'
+          metrics:
+            total_mrr:
+              type: sum
+              label: "Total MRR"
+              description: 'Sum of MRR across all accounts.'
 
       - name: currency
         data_type: string
@@ -247,10 +248,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Total Users"
-            description: 'Sum of users across accounts.'
+          metrics:
+            total_users:
+              type: sum
+              label: "Total Users"
+              description: 'Sum of users across accounts.'
 
       - name: health_score
         data_type: float64
@@ -258,10 +260,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: average
-            label: "Avg Health Score"
-            description: 'Mean account health score (0–100).'
+          metrics:
+            avg_health_score:
+              type: average
+              label: "Avg Health Score"
+              description: 'Mean account health score (0–100).'
 
       - name: activity_score
         data_type: float64
@@ -344,10 +347,11 @@ models:
         meta:
           dimension:
             hidden: true
-          metric:
-            type: count_distinct
-            label: "Signups"
-            description: 'Distinct signup events.'
+          metrics:
+            signups:
+              type: count_distinct
+              label: "Signups"
+              description: 'Distinct signup events.'
         data_tests:
           - unique
           - not_null
@@ -517,10 +521,11 @@ models:
         meta:
           dimension:
             hidden: true
-          metric:
-            type: count_distinct
-            label: "Activations"
-            description: 'Distinct activation events — users who completed an activation action within the window.'
+          metrics:
+            activations:
+              type: count_distinct
+              label: "Activations"
+              description: 'Distinct activation events — users who completed an activation action within the window.'
         data_tests:
           - unique
           - not_null
@@ -748,10 +753,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Cohort Size"
-            description: 'Sum of users in each cohort window.'
+          metrics:
+            cohort_size:
+              type: sum
+              label: "Cohort Size"
+              description: 'Sum of users in each cohort window.'
         data_tests:
           - not_null
 
@@ -761,10 +767,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: sum
-            label: "Retained Users"
-            description: 'Sum of users retained at each period.'
+          metrics:
+            retained_count:
+              type: sum
+              label: "Retained Users"
+              description: 'Sum of users retained at each period.'
         data_tests:
           - not_null
 
@@ -774,10 +781,11 @@ models:
         meta:
           dimension:
             type: number
-          metric:
-            type: average
-            label: "Retention Rate"
-            description: 'Mean retention rate across cohorts. Note: cohort_size-weighted mean is preferred for executive reporting.'
+          metrics:
+            retention_rate:
+              type: average
+              label: "Retention Rate"
+              description: 'Mean retention rate across cohorts. Note: cohort_size-weighted mean is preferred for executive reporting.'
         data_tests:
           - not_null
 
