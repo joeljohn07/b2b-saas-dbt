@@ -17,13 +17,15 @@ models:
       - name: ticket_key
         data_type: int64
         description: '{{ doc("col_ticket_key") }}'
-        meta:
-          dimension:
-            hidden: true
-          metric:
-            type: count_distinct
-            label: "Tickets"
-            description: 'Distinct support tickets.'
+        config:
+          meta:
+            dimension:
+              hidden: true
+            metrics:
+              tickets:
+                type: count_distinct
+                label: "Tickets"
+                description: 'Distinct support tickets.'
         data_tests:
           - unique
           - not_null
@@ -31,9 +33,10 @@ models:
       - name: ticket_id
         data_type: string
         description: '{{ doc("col_ticket_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - unique
           - not_null
@@ -41,18 +44,20 @@ models:
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -67,18 +72,20 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -93,9 +100,10 @@ models:
       - name: created_date_key
         data_type: int64
         description: '{{ doc("col_created_date_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -110,27 +118,30 @@ models:
       - name: created_at
         data_type: timestamp
         description: '{{ doc("col_created_at") }}'
-        meta:
-          dimension:
-            type: timestamp
-            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
+        config:
+          meta:
+            dimension:
+              type: timestamp
+              time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: resolved_at
         data_type: timestamp
         description: '{{ doc("col_resolved_at") }}'
-        meta:
-          dimension:
-            type: timestamp
-            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
+        config:
+          meta:
+            dimension:
+              type: timestamp
+              time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
 
       - name: category
         data_type: string
         description: '{{ doc("col_category") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -145,9 +156,10 @@ models:
       - name: priority
         data_type: string
         description: '{{ doc("col_priority") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -161,9 +173,10 @@ models:
       - name: status
         data_type: string
         description: '{{ doc("col_ticket_status") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -177,37 +190,43 @@ models:
       - name: csat_score
         data_type: int64
         description: '{{ doc("col_csat_score") }}'
-        meta:
-          dimension:
-            type: number
-          metric:
-            type: average
-            label: "Avg CSAT"
-            description: 'Mean customer-satisfaction score (1–5). Null responses excluded.'
+        config:
+          meta:
+            dimension:
+              type: number
+            metrics:
+              avg_csat:
+                type: average
+                label: "Avg CSAT"
+                description: 'Mean customer-satisfaction score (1–5). Null responses excluded.'
 
       - name: resolution_time_hours
         data_type: float64
         description: '{{ doc("col_resolution_time_hours") }}'
-        meta:
-          dimension:
-            type: number
-          metric:
-            type: average
-            label: "Avg Resolution Time (h)"
-            description: 'Mean ticket resolution time in hours. Includes only resolved tickets.'
+        config:
+          meta:
+            dimension:
+              type: number
+            metrics:
+              avg_resolution_time_hours:
+                type: average
+                label: "Avg Resolution Time (h)"
+                description: 'Mean ticket resolution time in hours. Includes only resolved tickets.'
 
       - name: first_response_hours
         data_type: float64
         description: '{{ doc("col_first_response_hours") }}'
-        meta:
-          dimension:
-            type: number
+        config:
+          meta:
+            dimension:
+              type: number
 
       - name: is_resolved
         data_type: boolean
         description: '{{ doc("col_is_resolved") }}'
-        meta:
-          dimension:
-            type: boolean
+        config:
+          meta:
+            dimension:
+              type: boolean
         data_tests:
           - not_null

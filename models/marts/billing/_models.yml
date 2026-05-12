@@ -17,9 +17,10 @@ models:
       - name: subscription_event_key
         data_type: int64
         description: '{{ doc("col_subscription_event_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - unique
           - not_null
@@ -27,9 +28,10 @@ models:
       - name: subscription_event_id
         data_type: string
         description: '{{ doc("col_subscription_event_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - unique
           - not_null
@@ -37,27 +39,30 @@ models:
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -72,18 +77,20 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -98,9 +105,10 @@ models:
       - name: event_date_key
         data_type: int64
         description: '{{ doc("col_event_date_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -115,19 +123,21 @@ models:
       - name: event_time
         data_type: timestamp
         description: '{{ doc("col_event_time") }}'
-        meta:
-          dimension:
-            type: timestamp
-            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
+        config:
+          meta:
+            dimension:
+              type: timestamp
+              time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: event_type
         data_type: string
         description: '{{ doc("col_event_type") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -145,9 +155,10 @@ models:
       - name: plan
         data_type: string
         description: '{{ doc("col_plan") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -161,9 +172,10 @@ models:
       - name: previous_plan
         data_type: string
         description: '{{ doc("col_previous_plan") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - accepted_values:
               arguments:
@@ -178,9 +190,10 @@ models:
       - name: billing_cycle
         data_type: string
         description: '{{ doc("col_billing_cycle") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -192,22 +205,25 @@ models:
       - name: mrr_amount
         data_type: numeric
         description: '{{ doc("col_mrr_amount") }}'
-        meta:
-          dimension:
-            type: number
-          metric:
-            type: sum
-            label: "Subscription MRR"
-            description: 'Sum of MRR amounts at subscription event time.'
+        config:
+          meta:
+            dimension:
+              type: number
+            metrics:
+              subscription_mrr:
+                type: sum
+                label: "Subscription MRR"
+                description: 'Sum of MRR amounts at subscription event time.'
         data_tests:
           - not_null
 
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -219,32 +235,36 @@ models:
       - name: cancel_reason
         data_type: string
         description: '{{ doc("col_cancel_reason") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
 
       - name: is_voluntary
         data_type: boolean
         description: '{{ doc("col_is_voluntary") }}'
-        meta:
-          dimension:
-            type: boolean
+        config:
+          meta:
+            dimension:
+              type: boolean
 
       - name: is_active
         data_type: boolean
         description: '{{ doc("col_is_active") }}'
-        meta:
-          dimension:
-            type: boolean
+        config:
+          meta:
+            dimension:
+              type: boolean
         data_tests:
           - not_null
 
       - name: days_since_previous_event
         data_type: int64
         description: '{{ doc("col_days_since_previous_event") }}'
-        meta:
-          dimension:
-            type: number
+        config:
+          meta:
+            dimension:
+              type: number
 
   - name: fct_mrr_movements
     description: '{{ doc("fct_mrr_movements") }}'
@@ -262,9 +282,10 @@ models:
       - name: mrr_movement_key
         data_type: int64
         description: '{{ doc("col_mrr_movement_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - unique
           - not_null
@@ -272,18 +293,20 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -298,27 +321,30 @@ models:
       - name: subscription_event_id
         data_type: string
         description: '{{ doc("col_subscription_event_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: movement_date_key
         data_type: int64
         description: '{{ doc("col_movement_date_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -333,19 +359,21 @@ models:
       - name: movement_date
         data_type: date
         description: '{{ doc("col_movement_date") }}'
-        meta:
-          dimension:
-            type: date
-            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
+        config:
+          meta:
+            dimension:
+              type: date
+              time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: movement_type
         data_type: string
         description: '{{ doc("col_movement_type") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -360,31 +388,35 @@ models:
       - name: mrr_before
         data_type: numeric
         description: '{{ doc("col_mrr_before") }}'
-        meta:
-          dimension:
-            type: number
+        config:
+          meta:
+            dimension:
+              type: number
         data_tests:
           - not_null
 
       - name: mrr_after
         data_type: numeric
         description: '{{ doc("col_mrr_after") }}'
-        meta:
-          dimension:
-            type: number
+        config:
+          meta:
+            dimension:
+              type: number
         data_tests:
           - not_null
 
       - name: mrr_delta
         data_type: numeric
         description: '{{ doc("col_mrr_delta") }}'
-        meta:
-          dimension:
-            type: number
-          metric:
-            type: sum
-            label: "Net MRR"
-            description: 'Cumulative sum of MRR movements. Decomposes into new / expansion / contraction / churn / reactivation via the movement_type dimension.'
+        config:
+          meta:
+            dimension:
+              type: number
+            metrics:
+              net_mrr:
+                type: sum
+                label: "Net MRR"
+                description: 'Cumulative sum of MRR movements. Decomposes into new / expansion / contraction / churn / reactivation via the movement_type dimension.'
         data_tests:
           - not_null
 
@@ -411,13 +443,15 @@ models:
       - name: invoice_key
         data_type: int64
         description: '{{ doc("col_invoice_key") }}'
-        meta:
-          dimension:
-            hidden: true
-          metric:
-            type: count_distinct
-            label: "Invoices"
-            description: 'Distinct invoices issued.'
+        config:
+          meta:
+            dimension:
+              hidden: true
+            metrics:
+              invoices:
+                type: count_distinct
+                label: "Invoices"
+                description: 'Distinct invoices issued.'
         data_tests:
           - unique
           - not_null
@@ -425,9 +459,10 @@ models:
       - name: invoice_id
         data_type: string
         description: '{{ doc("col_invoice_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - unique
           - not_null
@@ -435,27 +470,30 @@ models:
       - name: subscription_id
         data_type: string
         description: '{{ doc("col_subscription_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: user_id
         data_type: string
         description: '{{ doc("col_user_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: user_key
         data_type: int64
         description: '{{ doc("col_user_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -470,18 +508,20 @@ models:
       - name: account_id
         data_type: string
         description: '{{ doc("col_account_id") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
 
       - name: account_key
         data_type: int64
         description: '{{ doc("col_account_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -496,9 +536,10 @@ models:
       - name: issued_date_key
         data_type: int64
         description: '{{ doc("col_issued_date_key") }}'
-        meta:
-          dimension:
-            hidden: true
+        config:
+          meta:
+            dimension:
+              hidden: true
         data_tests:
           - not_null
           - relationships:
@@ -513,40 +554,45 @@ models:
       - name: issued_at
         data_type: timestamp
         description: '{{ doc("col_issued_at") }}'
-        meta:
-          dimension:
-            type: timestamp
-            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
+        config:
+          meta:
+            dimension:
+              type: timestamp
+              time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
         data_tests:
           - not_null
 
       - name: paid_at
         data_type: timestamp
         description: '{{ doc("col_paid_at") }}'
-        meta:
-          dimension:
-            type: timestamp
-            time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
+        config:
+          meta:
+            dimension:
+              type: timestamp
+              time_intervals: ["DAY", "WEEK", "MONTH", "QUARTER", "YEAR"]
 
       - name: amount
         data_type: numeric
         description: '{{ doc("col_amount") }}'
-        meta:
-          dimension:
-            type: number
-          metric:
-            type: sum
-            label: "Invoice Amount"
-            description: 'Sum of invoice amounts billed.'
+        config:
+          meta:
+            dimension:
+              type: number
+            metrics:
+              invoice_amount:
+                type: sum
+                label: "Invoice Amount"
+                description: 'Sum of invoice amounts billed.'
         data_tests:
           - not_null
 
       - name: currency
         data_type: string
         description: '{{ doc("col_currency") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -558,9 +604,10 @@ models:
       - name: status
         data_type: string
         description: '{{ doc("col_invoice_status") }}'
-        meta:
-          dimension:
-            type: string
+        config:
+          meta:
+            dimension:
+              type: string
         data_tests:
           - not_null
           - accepted_values:
@@ -574,30 +621,34 @@ models:
       - name: refund_amount
         data_type: numeric
         description: '{{ doc("col_refund_amount") }}'
-        meta:
-          dimension:
-            type: number
+        config:
+          meta:
+            dimension:
+              type: number
         data_tests:
           - not_null
 
       - name: net_amount
         data_type: numeric
         description: '{{ doc("col_net_amount") }}'
-        meta:
-          dimension:
-            type: number
-          metric:
-            type: sum
-            label: "Net Revenue"
-            description: 'Sum of net amounts (amount minus refunds). Excludes refunded invoices.'
+        config:
+          meta:
+            dimension:
+              type: number
+            metrics:
+              net_revenue:
+                type: sum
+                label: "Net Revenue"
+                description: 'Sum of net amounts (amount minus refunds). Excludes refunded invoices.'
         data_tests:
           - not_null
 
       - name: is_paid
         data_type: boolean
         description: '{{ doc("col_is_paid") }}'
-        meta:
-          dimension:
-            type: boolean
+        config:
+          meta:
+            dimension:
+              type: boolean
         data_tests:
           - not_null
