@@ -133,9 +133,9 @@ models:
             dimension:
               type: number
             metrics:
-              impressions:
+              total_impressions:
                 type: sum
-                label: "Impressions"
+                label: "Total Impressions"
                 description: 'Sum of ad impressions.'
 
       - name: clicks
@@ -146,7 +146,7 @@ models:
             dimension:
               type: number
             metrics:
-              clicks:
+              total_clicks:
                 type: sum
-                label: "Clicks"
+                label: "Total Clicks"
                 description: 'Sum of ad clicks.'
