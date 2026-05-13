@@ -814,9 +814,9 @@ models:
             dimension:
               type: number
             metrics:
-              cohort_size:
+              total_cohort_size:
                 type: sum
-                label: "Cohort Size"
+                label: "Total Cohort Size"
                 description: 'Sum of users in each cohort window.'
         data_tests:
           - not_null
@@ -829,9 +829,9 @@ models:
             dimension:
               type: number
             metrics:
-              retained_count:
+              total_retained_users:
                 type: sum
-                label: "Retained Users"
+                label: "Total Retained Users"
                 description: 'Sum of users retained at each period.'
         data_tests:
           - not_null
@@ -844,9 +844,9 @@ models:
             dimension:
               type: number
             metrics:
-              retention_rate:
+              avg_retention_rate:
                 type: average
-                label: "Retention Rate"
+                label: "Avg Retention Rate"
                 description: 'Mean retention rate across cohorts. Note: cohort_size-weighted mean is preferred for executive reporting.'
         data_tests:
           - not_null
